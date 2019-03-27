@@ -6,7 +6,7 @@ import ev3dev.ev3 as ev3
 from time import sleep
 from time import time
 
-
+ev3.Sound.speak('The Corsa is going to roll over').wait()
 lm1 = ev3.LargeMotor('outA')
 lm2 = ev3.LargeMotor('outB')
 #steer_pair = ev3.MoveSteering('outA', 'outB', motor_class=LargeMotor)
