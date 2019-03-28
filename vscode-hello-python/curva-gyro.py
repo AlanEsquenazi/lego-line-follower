@@ -22,7 +22,7 @@ sleep(1)
 gyro = ev3.GyroSensor('in1','GYRO-ANG')
 a1 = gyro.value()
 a2 = 0
-while((a2-a1) < 90)
+while((a2-a1) < 90):
     #steer_pair.on_for_seconds(steering=100, speed=50, seconds=1)
     lm2.run_timed(speed_sp = 600, time_sp = 1, stop_action = 'coast')
     lm1.run_timed(speed_sp = -600, time_sp = 1, stop_action = 'coast')
