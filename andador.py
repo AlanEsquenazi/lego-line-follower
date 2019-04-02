@@ -10,8 +10,8 @@ from time import time
 lm1 = ev3.LargeMotor('outA')
 lm2 = ev3.LargeMotor('outB')
 
-se = ColorSensor('in1','COL-COLOR')
-sd = ColorSensor('in2','COL-COLOR')
+se = ev3.ColorSensor('in1','COL-COLOR')
+sd = ev3.ColorSensor('in2','COL-COLOR')
 while(True):
     esq = se.value()
     dir = sd.value()
