@@ -1,4 +1,3 @@
-
 #!/usr/bin/env python3
 # coding: utf-8
 
@@ -7,18 +6,18 @@ import ev3dev.ev3 as ev3
 from time import sleep
 from time import time
 
-lm1 = ev3.LargeMotor('outA')
-lm2 = ev3.LargeMotor('outB')
+lm1 = ev3.LargeMotor('outD')
+lm2 = ev3.LargeMotor('outA')
 
-se = ColorSensor('in1','COL-COLOR')
-sd = ColorSensor('in2','COL-COLOR')
+se = ev3.ColorSensor('in4','COL-COLOR')
+sd = ev3.ColorSensor('in1','COL-COLOR')
 while(True):
     esq = se.value()
     dir = sd.value()
     if(se == 6 and sd == 6): #white and white
         #go forward
-        lm1.run_timed(speed_sp = 600, time_sp = 1, stop_action = 'coast')
-        lm2.run_timed(speed_sp = 600, time_sp = 1, stop_action = 'coast')
+        lm1.run_timed(speed_sp = 600, time_sp = 100, stop_action = 'coast')
+        lm2.run_timed(speed_sp = 600, time_sp = 100, stop_action = 'coast')
     if(se == 1 and sd == 6): #black and white
         #turn left
         lm1.run_timed(speed_sp = -600, time_sp = 1, stop_action = 'coast')
