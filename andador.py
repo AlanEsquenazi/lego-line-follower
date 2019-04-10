@@ -16,16 +16,16 @@ while(True):
     dir = sd.value()
     if(se == 6 and sd == 6): #white and white
         #go forward
-        lm1.run_timed(speed_sp = 600, time_sp = 100, stop_action = 'coast')
-        lm2.run_timed(speed_sp = 600, time_sp = 100, stop_action = 'coast')
+        lm1.run_timed(speed_sp = -800, time_sp = 100, stop_action = 'coast')
+        lm2.run_timed(speed_sp = =800, time_sp = 100, stop_action = 'coast')
     if(se == 1 and sd == 6): #black and white
         #turn left
-        lm1.run_timed(speed_sp = -600, time_sp = 1, stop_action = 'coast')
-        lm2.run_timed(speed_sp = 600, time_sp = 1, stop_action = 'coast')
+        lm1.run_timed(speed_sp = -800, time_sp = 1, stop_action = 'coast')
+        lm2.run_timed(speed_sp = -800, time_sp = 1, stop_action = 'coast')
     if(se == 6 and sd == 1): #white and black
         #turn right
-        lm1.run_timed(speed_sp = 600, time_sp = 1, stop_action = 'coast')
-        lm2.run_timed(speed_sp = -600, time_sp = 1, stop_action = 'coast')
+        lm1.run_timed(speed_sp = -800, time_sp = 1, stop_action = 'coast')
+        lm2.run_timed(speed_sp = -800, time_sp = 1, stop_action = 'coast')
     if(se == 1 and sd == 1): #black and black
         #stop
         sleep(1)
