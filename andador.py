@@ -10,7 +10,7 @@ lm1 = ev3.LargeMotor('outD')
 lm2 = ev3.LargeMotor('outA')
 
 se = ev3.ColorSensor('in1','COL-COLOR')
-sd = ev3.ColorSensor('in2','COL-COLOR')
+sd = ev3.ColorSensor('in4','COL-COLOR')
 while(True):
     esq = se.value()
     dir = sd.value()
