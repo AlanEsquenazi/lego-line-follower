@@ -2,15 +2,16 @@
 # coding: utf-8
 
 import ev3dev.ev3 as ev3
+from ev3dev.ev3 import *
 #from multiprocessing import Process
 from time import sleep
 from time import time
 
-lm1 = ev3.LargeMotor('outD')
-lm2 = ev3.LargeMotor('outA')
+lm1 = ev3.LargeMotor('outD'); assert lm1.connected
+lm2 = ev3.LargeMotor('outA'); assert lm2.connected
 
-se = ev3.ColorSensor('in1','COL-COLOR')
-sd = ev3.ColorSensor('in4','COL-COLOR')
+se = ev3.ColorSensor('in1'); assert se.connected
+sd = ev3.ColorSensor('in4'); assert sd.connected
 while(True):
     esq = se.value()
     dir = sd.value()
