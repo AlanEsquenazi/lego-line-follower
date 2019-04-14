@@ -12,21 +12,38 @@ lm2 = ev3.LargeMotor('outA'); assert lm2.connected
 
 se = ev3.ColorSensor('in1'); assert se.connected
 sd = ev3.ColorSensor('in4'); assert sd.connected
+
+class Robot:
+    def __init__(self):
+
+    def turn_left(self,speed,time):
+        lm1.run_timed(speed_sp = -speed, time_sp = time, stop_action = 'coast')
+        lm2.run_timed(speed_sp = speed, time_sp = time, stop_action = 'coast')
+    def turn_right(self,speed,time):
+        lm1.run_timed(speed_sp = speed, time_sp = time, stop_action = 'coast')
+        lm2.run_timed(speed_sp = -speed, time_sp = time, stop_action = 'coast')
+    def go_forward(self,speed,time):
+        lm1.run_timed(speed_sp = speed, time_sp = time, stop_action = 'coast')
+        lm2.run_timed(speed_sp = speed, time_sp = time, stop_action = 'coast')
+
+class LineFollower(Robot):
+    def __init__(self):
+        Robot.__init__(self)
+
+    def follow(self,speed):
+        #obs.: sem calibração, primeiro vamos testar com a leitura padrão do sensor
+        self.esq = se.value()
+        self.dir = sd.value()
+        if(self.esq == 6 and self.dir == 6): #white and white
+            Robot.go_forward(speed,1)
+            #precisa do Robot. ?
+        if(self.esq == 1 and self.dir == 6): #black and white
+            Robot.turn_left(speed,1)
+        if(self.esq == 6 and self.dir == 1): #white and black
+            Robot.turn_right(speed,1)
+        if(self.esq == 1 and self.dir == 1): #black and black
+            sleep(1)
+
 while(True):
-    esq = se.value()
-    dir = sd.value()
-    if(se == 6 and sd == 6): #white and white
-        #go forward
-        lm1.run_timed(speed_sp = 800, time_sp = 100, stop_action = 'coast')
-        lm2.run_timed(speed_sp = 800, time_sp = 100, stop_action = 'coast')
-    if(se == 1 and sd == 6): #black and white
-        #turn left
-        lm1.run_timed(speed_sp = -800, time_sp = 1, stop_action = 'coast')
-        lm2.run_timed(speed_sp = 800, time_sp = 1, stop_action = 'coast')
-    if(se == 6 and sd == 1): #white and black
-        #turn right
-        lm1.run_timed(speed_sp = 800, time_sp = 1, stop_action = 'coast')
-        lm2.run_timed(speed_sp = -800, time_sp = 1, stop_action = 'coast')
-    if(se == 1 and sd == 1): #black and black
-        #stop
-        sleep(1)
+    LineFollower.follow(800)
+
