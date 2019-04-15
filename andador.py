@@ -14,8 +14,6 @@ se = ev3.ColorSensor('in1'); assert se.connected
 sd = ev3.ColorSensor('in4'); assert sd.connected
 
 class Robot:
-    def __init__(self):
-
     def turn_left(self,speed,time):
         lm1.run_timed(speed_sp = -speed, time_sp = time, stop_action = 'coast')
         lm2.run_timed(speed_sp = speed, time_sp = time, stop_action = 'coast')
@@ -32,36 +30,45 @@ class Calibration(Robot):
 
     def white():
         with open("white_esq.txt", "w") as white_esq:
-        self.esq_lida = se.raw
-        self.esq_lida = str(esq_lida)
-        white_esq.write(esq_lida);
+            esq_lida = se.raw
+            esq_lida = str(esq_lida)
+            white_esq.write(esq_lida);
 
         with open("white_dir.txt", "w") as white_dir:
-        dir_lida = sd.raw
-        dir_lida = str(dir_lida)
-        white_dir.write(dir_lida);
+            dir_lida = sd.raw
+            dir_lida = str(dir_lida)
+            white_dir.write(dir_lida);
+
+    def black():
+        with open("black_esq.txt", "w") as black_esq:
+            esq_lida = se.raw
+            esq_lida = str(esq_lida)
+            black_esq.write(esq_lida);
+
+        with open("black_dir.txt", "w") as black_dir:
+            dir_lida = sd.raw
+            dir_lida = str(dir_lida)
+            black_dir.write(dir_lida);
 
 class LineFollower(Robot):
     def __init__(self):
         Robot.__init__(self)
 
-    def follow(self,speed):
+    def follow(speed):
         #obs.: sem calibração, primeiro vamos testar com a leitura padrão do sensor
-        self.esq = se.value()
-        self.dir = sd.value()
-        if(self.esq == 6 and self.dir == 6): #white and white
-            Robot.go_forward(speed,1)
-            #precisa do Robot. ?
-        if(self.esq == 1 and self.dir == 6): #black and white
-            Robot.turn_left(speed,1)
-        if(self.esq == 6 and self.dir == 1): #white and black
-            Robot.turn_right(speed,1)
-        if(self.esq == 1 and self.dir == 1): #black and black
+        esq = se.value()
+        dir = sd.value()
+        if(esq == 6 and dir == 6): #white and white
+            go_forward(speed,1)
+        if(esq == 1 and dir == 6): #black and white
+            turn_left(speed,1)
+        if(esq == 6 and dir == 1): #white and black
+            turn_right(speed,1)
+        if(esq == 1 and dir == 1): #black and black
             sleep(1)
 
 Calibration.white()
-
+Calibration.black()
 while(True):
-
     LineFollower.follow(800)
 
