@@ -26,6 +26,21 @@ class Robot:
         lm1.run_timed(speed_sp = speed, time_sp = time, stop_action = 'coast')
         lm2.run_timed(speed_sp = speed, time_sp = time, stop_action = 'coast')
 
+class Calibration(Robot):
+    def __init__(self):
+        Robot.__init__(self)
+
+    def white():
+        with open("white_esq.txt", "w") as white_esq:
+        self.esq_lida = se.raw
+        self.esq_lida = str(esq_lida)
+        white_esq.write(esq_lida);
+
+        with open("white_dir.txt", "w") as white_dir:
+        dir_lida = sd.raw
+        dir_lida = str(dir_lida)
+        white_dir.write(dir_lida);
+
 class LineFollower(Robot):
     def __init__(self):
         Robot.__init__(self)
@@ -44,6 +59,9 @@ class LineFollower(Robot):
         if(self.esq == 1 and self.dir == 1): #black and black
             sleep(1)
 
+Calibration.white()
+
 while(True):
+
     LineFollower.follow(800)
 
