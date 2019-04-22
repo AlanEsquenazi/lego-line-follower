@@ -42,7 +42,6 @@ class LineFollower(Robot):
             white = [int(x) for x in white]     # tornamos as strings em inteiros
     except:
         white = [47, 47, 47]                         # caso nao haja arquivo, criamos a lista
-    return white                                  # Retorna a lista "aprendizado"
 
     def abrirAprendizadoBlack():
     ## try: tenta abrir um arquivo de aprendizado
@@ -55,7 +54,6 @@ class LineFollower(Robot):
             black = [int(x) for x in black]     # tornamos as strings em inteiros
     except:
         black = [47, 47, 47]                         # caso nao haja arquivo, criamos a lista
-    return black                                  # Retorna a lista "aprendizado"
 
 
     def sensorEsquerdo():
