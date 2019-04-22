@@ -24,14 +24,15 @@ class Robot:
         lm2.run_timed(speed_sp = -1*speed, time_sp = time, stop_action = 'coast')
 
     def abrirAprendizado(self):
-        with open(txt, "r") as ft:            # a lista de aprendizado serah "azul, verde, vermelho"
+        with open(self.txt, "r") as ft:            # a lista de aprendizado serah "azul, verde, vermelho"
             self.color = ft.read().split(',')              # aqui, criamos uma lista de strings, cada elemento eh a cor
+            self.color.pop()
             for x in self.color:
                 print("x", x, "int(x)", int(x))
             self.color = [int(x) for x in self.color]     # tornamos as strings em inteiros
 
-    def verificaCor():
-        esq = se.raw()
+    def verificaCor(self):
+        esq = se.raw
         if branco[0]<=esq[0] and branco[1]>=esq[0] and branco[2]<=esq[1] and branco[3]>=esq[1] and branco[4]<=esq[2] and branco[5]>=esq[2]:
             esq = 0
             print("BRANCO/WHITE/BLANC")
