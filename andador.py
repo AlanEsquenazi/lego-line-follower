@@ -48,7 +48,7 @@ class Robot:
         elif lims_preto[0]<=direito[0] and lims_preto[1]>=direito[0] and lims_preto[2]<=direito[1] and lims_preto[3]>=direito[1] and lims_preto[4]<=direito[2] and lims_preto[5]>=direito[2]:
             direito = 1
         # 1 preto e 0 branco
-        print(esq, " ", dir, '\n')
+        print(esq, " ", direito, '\n')
         if(esq == 0 and direito() == 0): #white and white
             Robot.go_forward(self, self.speed, 1)
 
@@ -58,20 +58,20 @@ class Robot:
             if(esq == 1 and direito == 0): #black and white
                 while(not(esq == 0 and esq == 0)):
                     Robot.turn_left(self, self.speed, 1)
-                    print(esq, " ", dir, '\n')
+                    print(esq, " ", direito, '\n')
                     print("esquerda")
             if(esq == 0 and direito == 1): #white and black
                 while(not (esq == 0 and direito == 0)):
                     Robot.turn_right(self, self.speed, 1)
                     print("direita")
-                    print(esq, " ", dir, '\n')
+                    print(esq, " ", direito, '\n')
 
 #APLICAR CALIBRAÇÃO
 Corsa = LineFollower()
 Corsa.speed = 400
 Corsa.time = 1000
-Corsa.abrirAprendizadoWhite()
-Corsa.abrirAPrendizadoBlack()
+Corsa.receive_white()
+Corsa.receive_black()
 while(True):
-    Corsa.follow()
+    Corsa.follow_line()
 
