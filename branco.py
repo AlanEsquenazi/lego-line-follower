@@ -29,16 +29,14 @@ class Calibracao_andando:
             self.p3[0] = min(cor.raw[2], self.p3[0])
             self.p3[1] = max(cor.raw[2], self.p3[1])
 class Calibracao_parado:
-    def __init__(self, color, speed, time):
+    def __init__(self, color):
         self.color = color
-        self.speed = speed
-        self.time = time
         self.p1 = [1021,-1]
         self.p2 = [1021,-1]
         self.p3 = [1021,-1]
-    def calibrat(self, speed,time):
+    def calibrate(self):
         for i in range(10):
-            wait(1000)
+            sleep(1000)
             cor_lida = cor.raw
             self.p1[0] = min(cor.raw[0], self.p1[0])
             self.p1[1] = max(cor.raw[0], self.p1[1])
@@ -54,4 +52,10 @@ class Calibracao_parado:
             arquivo.write("\n") 
             arquivo.write(p3)
             arquivo.write("\n")  
-white = Calibracao_andando("white.txt", 400, 10)
+branco = Calibracao_andando("branco.txt", 400, 10)
+branco.calibrate(400, 10)
+branco.escrever()
+sleep(10000)
+preto = Calibracao_parado("preto.txt")
+preto.calibrate()
+preto.escrever()
