@@ -43,7 +43,7 @@ class Calibracao_parado:
             self.p2[0] = min(cor.raw[1], self.p2[0])
             self.p2[1] = max(cor.raw[1], self.p2[1])
             self.p3[0] = min(cor.raw[2], self.p3[0])
-            self.p3[1] = max(cor.raw[2], self.p3[1])https://www.w3schools.com/python/python_for_loops.asp
+            self.p3[1] = max(cor.raw[2], self.p3[1])
     def escrever(self):
         with open(self.color, "w") as arquivo:
             arquivo.write(p1)
