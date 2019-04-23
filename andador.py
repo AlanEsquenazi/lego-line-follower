@@ -3,75 +3,100 @@
 
 import ev3dev.ev3 as ev3
 from ev3dev.ev3 import *
+from enum import Enum
 #from multiprocessing import Process
 from time import sleep
 from time import time
 
-lm1 = ev3.LargeMotor('outD'); assert lm1.connected
-lm2 = ev3.LargeMotor('outA'); assert lm2.connected
+class States(Enum):
+    turnLeft = -1
+    goForward = 0
+    turnRight = 1
+    sleep = 2
 
-se = ev3.ColorSensor('in2'); assert se.connected
-sd = ev3.ColorSensor('in4'); assert sd.connected
 
 class Robot:
-    def __init__(self):
-        self.speed = 0
-        self.time = 0
+    def __init__(self,out1,out2,in1,in2):
+        self.speed = speed
+        self.time = time
+
+        self.self.lm1 = ev3.LargeMotor(self.out1); assert self.lm1.connected
+        self.self.lm2 = ev3.LargeMotor(self.out2); assert self.lm2.connected
+        self.se = ev3.ColorSensor(self.in1); assert self.se.connected
+        self.sd = ev3.ColorSensor(self.in2); assert self.sd.connected
+
     def turn_left(self,speed,time):
-        lm1.run_timed(speed_sp = -speed, time_sp = time, stop_action = 'coast')
-        lm2.run_timed(speed_sp = speed, time_sp = time, stop_action = 'coast')
+        self.lm1.run_timed(speed_sp = -speed, time_sp = time, stop_action = 'coast')
+        self.lm2.run_timed(speed_sp = speed, time_sp = time, stop_action = 'coast')
     def turn_right(self,speed,time):
-        lm1.run_timed(speed_sp = speed, time_sp = time, stop_action = 'coast')
-        lm2.run_timed(speed_sp = -speed, time_sp = time, stop_action = 'coast')
+        self.lm1.run_timed(speed_sp = speed, time_sp = time, stop_action = 'coast')
+        self.lm2.run_timed(speed_sp = -speed, time_sp = time, stop_action = 'coast')
     def go_forward(self,speed,time):
-        lm1.run_timed(speed_sp = -1*speed, time_sp = time, stop_action = 'coast')
-        lm2.run_timed(speed_sp = -1*speed, time_sp = time, stop_action = 'coast')
-    def receive_white(self):
-        with open("branco.txt", "r") as branco:
-            lims_branco = branco.read.split(",")
-        for i in range(6):
-            lims_branco[i] = int(lims_branco[i])
-    def receive_black(self):
-        with open("preto.txt", "r") as preto:
-            lims_preto = preto.read.split(",")
-        for i in range(6):
-            lims_preto[i] = int(lims_branco[i])
-    def follow_line(self):
-        esq = se.raw()
-        direito = sd.raw()
-        if lims_branco[0]<=esq[0] and lims_branco[1]>=esq[0] and lims_branco[2]<=esq[1] and lims_branco[3]>=esq[1] and lims_branco[4]<=esq[2] and lims_branco[5]>=esq[2]:
-            esq = 0
-        elif lims_preto[0]<=esq[0] and lims_preto[1]>=esq[0] and lims_preto[2]<=esq[1] and lims_preto[3]>=esq[1] and lims_preto[4]<=esq[2] and lims_preto[5]>=esq[2]:
-            esq = 1
-        if lims_branco[0]<=direito[0] and lims_branco[1]>=direito[0] and lims_branco[2]<=direito[1] and lims_branco[3]>=direito[1] and lims_branco[4]<=direito[2] and lims_branco[5]>=direito[2]:
-            direito = 0
-        elif lims_preto[0]<=direito[0] and lims_preto[1]>=direito[0] and lims_preto[2]<=direito[1] and lims_preto[3]>=direito[1] and lims_preto[4]<=direito[2] and lims_preto[5]>=direito[2]:
-            direito = 1
+        self.lm1.run_timed(speed_sp = -1*speed, time_sp = time, stop_action = 'coast')
+        self.lm2.run_timed(speed_sp = -1*speed, time_sp = time, stop_action = 'coast')
+    def abrirAprendizado(self,color,txt):
+        with open(self.txt, "r") as ft:            # a lista de aprendizado serah "azul, verde, vermelho"
+            self.color = ft.read().split(',')              # aqui, criamos uma lista de strings, cada elemento eh a cor
+            self.color.pop()
+            for x in self.color:
+                print("x", x, "int(x)", int(x))
+            self.color = [int(x) for x in self.color]     # tornamos as strings em inteiros
+
+    def verificaCor(self):
         # 1 preto e 0 branco
-        print(esq, " ", direito, '\n')
-        if(esq == 0 and direito() == 0): #white and white
-            Robot.go_forward(self, self.speed, 1)
+        left = self.se.raw()
+        right = self.sd.raw()
+        if branco[0]<=left[0] and branco[1]>=left[0] and branco[2]<=left[1] and branco[3]>=left[1] and branco[4]<=left[2] and branco[5]>=left[2]:
+            left = 0
+        elif preto[0]<=left[0] and preto[1]>=left[0] and preto[2]<=left[1] and preto[3]>=left[1] and preto[4]<=left[2] and preto[5]>=left[2]:
+            left = 1
+        if branco[0]<=right[0] and branco[1]>=right[0] and branco[2]<=right[1] and branco[3]>=right[1] and branco[4]<=right[2] and branco[5]>=right[2]:
+            right = 0
+        elif preto[0]<=right[0] and preto[1]>=right[0] and preto[2]<=right[1] and preto[3]>=right[1] and preto[4]<=right[2] and preto[5]>=right[2]:
+            right = 1
 
-        if(esq == 1 and direito == 1): #black and black
-            sleep(1)
-        else:
-            if(esq == 1 and direito == 0): #black and white
-                while(not(esq == 0 and esq == 0)):
-                    Robot.turn_left(self, self.speed, 1)
-                    print(esq, " ", direito, '\n')
-                    print("esquerda")
-            if(esq == 0 and direito == 1): #white and black
-                while(not (esq == 0 and direito == 0)):
-                    Robot.turn_right(self, self.speed, 1)
-                    print("direita")
-                    print(esq, " ", direito, '\n')
+    def verificaEstado(self):
+        if left == 1 and right == 0:
+            estado = States(-1)
+        if left == 0 and right == 0:
+            estado = States(0)
+        if left == 0 and right == 1:
+            estado = States(1)
+        if left == 1 and right == 1:
+            estado = States(2)
 
-#APLICAR CALIBRAÇÃO
-Corsa = LineFollower()
-Corsa.speed = 400
-Corsa.time = 1000
-Corsa.receive_white()
-Corsa.receive_black()
-while(True):
-    Corsa.follow_line()
+    def follow_line(self,speed_reta,speed_curva):
+        while(True):
+            Robot.verificaCor()
+            Robot.verificaEstado()
+            print(left, " ", right, " ", estado '\n')
+
+
+            if(estado == States(0)): #white and white
+                Robot.go_forward(self.speed_reta, 1)
+                print(States(0))
+
+            if(estado == States(2)): #black and black
+                sleep(1)
+                print(States(2))
+
+            if(estado == States(-1)): #black and white
+                sleep(0.1)
+                while(not(left == 0 and left == 0)):
+                    Robot.turn_left(self.speed_curva, 1)
+                    print(left, " ", right, '\n')
+                    print(States(-1))
+
+            if(estado == States(1)): #white and black
+                sleep(0.1)
+                while(not (left == 0 and right == 0)):
+                    Robot.turn_right(self.speed_curva, 1)
+                    print(left, " ", right, '\n')
+                    print(States(1))
+
+Corsa = Robot('outA','outD','in2','in4')
+Corsa.abrirAprendizado(branco,branco.txt)
+Corsa.abrirAprendizado(preto,preto.txt)
+Corsa.follow_line(400,800)
+#obs.: testar curva com duas rodas girando (uma muito pouco), com uma parada e outra girando ou com uma para cada lado
 
