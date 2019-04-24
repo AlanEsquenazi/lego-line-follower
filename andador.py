@@ -69,7 +69,7 @@ class Robot:
         while(True):
             Robot.verificaCor()
             Robot.verificaEstado()
-            print(left, " ", right, " ", estado '\n')
+            print(left, " ", right, " ", estado, '\n')
 
 
             if(estado == States(0)): #white and white
