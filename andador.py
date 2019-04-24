@@ -17,11 +17,9 @@ class States(Enum):
 
 class Robot:
     def __init__(self,out1,out2,in1,in2):
-        self.speed = speed
-        self.time = time
 
-        self.self.lm1 = ev3.LargeMotor(self.out1); assert self.lm1.connected
-        self.self.lm2 = ev3.LargeMotor(self.out2); assert self.lm2.connected
+        self.lm1 = ev3.LargeMotor(self.out1); assert self.lm1.connected
+        self.lm2 = ev3.LargeMotor(self.out2); assert self.lm2.connected
         self.se = ev3.ColorSensor(self.in1); assert self.se.connected
         self.sd = ev3.ColorSensor(self.in2); assert self.sd.connected
 
