@@ -1,0 +1,8 @@
+with open('branco.txt', "r") as ft:            # a lista de aprendizado serah "azul, verde, vermelho"
+            branco = ft.read().split(',')              # aqui, criamos uma lista de strings, cada elemento eh a cor
+            branco.pop()
+            for x in branco:
+                print("x", x, "int(x)", int(x))
+            branco = [int(x) for x in branco]     # tornamos as strings em inteiros
+
+print(branco)

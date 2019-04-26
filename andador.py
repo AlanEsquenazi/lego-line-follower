@@ -16,18 +16,12 @@ class States(Enum):
 
 class Robot:
     def __init__(self,out1,out2,in1,in2):
-<<<<<<< HEAD
 
-        self.lm1 = ev3.LargeMotor(self.out1); assert self.lm1.connected
-        self.lm2 = ev3.LargeMotor(self.out2); assert self.lm2.connected
-        self.se = ev3.ColorSensor(self.in1); assert self.se.connected
-        self.sd = ev3.ColorSensor(self.in2); assert self.sd.connected
-=======
+
         self.lm1 = ev3.LargeMotor(out1); assert self.lm1.connected
         self.lm2 = ev3.LargeMotor(out2); assert self.lm2.connected
         self.se = ev3.ColorSensor(in1); assert self.se.connected
         self.sd = ev3.ColorSensor(in2); assert self.sd.connected
->>>>>>> 4330009a27616662bea054563beb627a4061aec5
 
     def turn_left(self,speed,time):
         self.lm1.run_timed(speed_sp = -speed, time_sp = time, stop_action = 'coast')
@@ -48,57 +42,73 @@ class Robot:
 
     def verificaCor(self):
         # 1 preto e 0 branco
+        global left
+        global right
+        global esquerdo
+        global direito
         left = self.se.raw
         right = self.sd.raw
         if branco[0]<=left[0] and branco[1]>=left[0] and branco[2]<=left[1] and branco[3]>=left[1] and branco[4]<=left[2] and branco[5]>=left[2]:
-            left = 0
+            esquerdo = 0
         elif preto[0]<=left[0] and preto[1]>=left[0] and preto[2]<=left[1] and preto[3]>=left[1] and preto[4]<=left[2] and preto[5]>=left[2]:
-            left = 1
+            esquerdo = 1
         if branco[0]<=right[0] and branco[1]>=right[0] and branco[2]<=right[1] and branco[3]>=right[1] and branco[4]<=right[2] and branco[5]>=right[2]:
-            right = 0
+            direito = 0
         elif preto[0]<=right[0] and preto[1]>=right[0] and preto[2]<=right[1] and preto[3]>=right[1] and preto[4]<=right[2] and preto[5]>=right[2]:
-            right = 1
+            direito = 1
 
     def verificaEstado(self):
-        left = self.se.raw
-        right = self.sd.raw
-        if branco[0]<=left[0] and branco[1]>=left[0] and branco[2]<=left[1] and branco[3]>=left[1] and branco[4]<=left[2] and branco[5]>=left[2]:
+        global esquerdo
+        global direito
+        global estado
+        if esquerdo == 1 and direito == 0:
             estado = States(-1)
-        elif preto[0]<=left[0] and preto[1]>=left[0] and preto[2]<=left[1] and preto[3]>=left[1] and preto[4]<=left[2] and preto[5]>=left[2]:
+        elif esquerdo == 0 and direito == 0:
             estado = States(0)
-        if branco[0]<=right[0] and branco[1]>=right[0] and branco[2]<=right[1] and branco[3]>=right[1] and branco[4]<=right[2] and branco[5]>=right[2]:
+        if esquerdo == 0 and direito == 1:
             estado = States(1)
-        elif preto[0]<=right[0] and preto[1]>=right[0] and preto[2]<=right[1] and preto[3]>=right[1] and preto[4]<=right[2] and preto[5]>=right[2]:
+        elif esquerdo == 1 and direito == 1:
             estado = States(2)
 
     def follow_line(self,speed_reta,speed_curva):
         while(True):
+            global left
+            global right
+            global esquerdo
+            global direito
+            global estado
             Robot.verificaCor(self)
             Robot.verificaEstado(self)
-            print(left, " ", right, " ", estado, '\n')
+            print(left, " ", esquerdo, " ", right, " ", direito, " ", estado, '\n')
 
 
             if(estado == States(0)): #white and white
-                Robot.go_forward(self.speed_reta, 1)
-                print(States(0))
+                Robot.go_forward(self,speed_reta, 1)
 
             if(estado == States(2)): #black and black
                 sleep(1)
-                print(States(2))
 
             if(estado == States(-1)): #black and white
                 sleep(0.1)
-                while(not(left == 0 and left == 0)):
-                    Robot.turn_left(self.speed_curva, 1)
-                    print(left, " ", right, '\n')
-                    print(States(-1))
+                while(not(estado == States(0))):
+                    Robot.verificaCor(self)
+                    Robot.verificaEstado(self)
+                    Robot.turn_left(self,speed_curva, 1)
+                    print(left, " ", esquerdo, " ", right, " ", direito, " ", estado, '\n')
 
             if(estado == States(1)): #white and black
                 sleep(0.1)
-                while(not (left == 0 and right == 0)):
-                    Robot.turn_right(self.speed_curva, 1)
-                    print(left, " ", right, '\n')
-                    print(States(1))
+                while(not (estado == States(0))):
+                    Robot.verificaCor(self)
+                    Robot.verificaEstado(self)
+                    Robot.turn_right(self,speed_curva, 1)
+                    print(left, " ", esquerdo, " ", right, " ", direito, " ", estado, '\n')
+
+esquerdo = 0
+direito = 0
+estado = '0'
+left = [0,0,0]
+right = [0,0,0]
 branco = [0,0,0,0,0,0]
 preto = [0,0,0,0,0,0]
 Corsa = Robot('outB','outD','in2','in4')
