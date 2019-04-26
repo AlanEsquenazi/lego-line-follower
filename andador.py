@@ -24,21 +24,27 @@ class Robot:
         self.sd = ev3.ColorSensor(in2); assert self.sd.connected
 
     def turn_left(self,speed,time):
-        self.lm1.run_timed(speed_sp = -speed, time_sp = time, stop_action = 'coast')
-        self.lm2.run_timed(speed_sp = speed, time_sp = time, stop_action = 'coast')
-    def turn_right(self,speed,time):
         self.lm1.run_timed(speed_sp = speed, time_sp = time, stop_action = 'coast')
         self.lm2.run_timed(speed_sp = -speed, time_sp = time, stop_action = 'coast')
+    def turn_right(self,speed,time):
+        self.lm1.run_timed(speed_sp = -speed, time_sp = time, stop_action = 'coast')
+        self.lm2.run_timed(speed_sp = speed, time_sp = time, stop_action = 'coast')
     def go_forward(self,speed,time):
         self.lm1.run_timed(speed_sp = -1*speed, time_sp = time, stop_action = 'coast')
         self.lm2.run_timed(speed_sp = -1*speed, time_sp = time, stop_action = 'coast')
-    def abrirAprendizado(self,color,txt):
-        with open(txt, "r") as ft:            # a lista de aprendizado serah "azul, verde, vermelho"
-            color = ft.read().split(',')              # aqui, criamos uma lista de strings, cada elemento eh a cor
-            color.pop()
-            for x in color:
-                print("x", x, "int(x)", int(x))
-            color = [int(x) for x in color]     # tornamos as strings em inteiros
+    def abrirAprendizadoBranco(self):
+        global branco
+        with open('branco.txt', "r") as ft:            # a lista de aprendizado serah "azul, verde, vermelho"
+            branco = ft.read().split(',')              # aqui, criamos uma lista de strings, cada elemento eh a cor
+            branco.pop()
+            branco = [int(x) for x in branco]     # tornamos as strings em inteiros
+
+    def abrirAprendizadoPreto(self):
+        global preto
+        with open('preto.txt', "r") as ft:            # a lista de aprendizado serah "azul, verde, vermelho"
+            preto = ft.read().split(',')              # aqui, criamos uma lista de strings, cada elemento eh a cor
+            preto.pop()
+            preto = [int(x) for x in preto]     # tornamos as strings em inteiros
 
     def verificaCor(self):
         # 1 preto e 0 branco
@@ -79,7 +85,7 @@ class Robot:
             global estado
             Robot.verificaCor(self)
             Robot.verificaEstado(self)
-            print(left, " ", esquerdo, " ", right, " ", direito, " ", estado, '\n')
+            print(esquerdo, " ", direito, " ", estado)
 
 
             if(estado == States(0)): #white and white
@@ -89,20 +95,19 @@ class Robot:
                 sleep(1)
 
             if(estado == States(-1)): #black and white
-                sleep(0.1)
+                sleep(0.5)
                 while(not(estado == States(0))):
                     Robot.verificaCor(self)
                     Robot.verificaEstado(self)
                     Robot.turn_left(self,speed_curva, 1)
-                    print(left, " ", esquerdo, " ", right, " ", direito, " ", estado, '\n')
-
+                    print(esquerdo, " ", direito, " ", estado)
             if(estado == States(1)): #white and black
-                sleep(0.1)
+                sleep(0.5)
                 while(not (estado == States(0))):
                     Robot.verificaCor(self)
                     Robot.verificaEstado(self)
                     Robot.turn_right(self,speed_curva, 1)
-                    print(left, " ", esquerdo, " ", right, " ", direito, " ", estado, '\n')
+                    print(esquerdo, " ", direito, " ", estado)
 
 esquerdo = 0
 direito = 0
@@ -112,8 +117,8 @@ right = [0,0,0]
 branco = [0,0,0,0,0,0]
 preto = [0,0,0,0,0,0]
 Corsa = Robot('outB','outD','in2','in4')
-Corsa.abrirAprendizado(branco,"branco.txt")
-Corsa.abrirAprendizado(preto,"preto.txt")
-Corsa.follow_line(400,800)
+Corsa.abrirAprendizadoBranco()
+Corsa.abrirAprendizadoPreto()
+Corsa.follow_line(600,950)
 #obs.: testar curva com duas rodas girando (uma muito pouco), com uma parada e outra girando ou com uma para cada lado
 
