@@ -12,28 +12,34 @@ class Robot:
     def __init__(self):
         self.speed = 0
         self.time = 0
-        branco = [0,0,0,0,0,0]
-        preto = [0,0,0,0,0,0]
+        self.branco = [0,0,0,0,0,0]
+        self.preto = [0,0,0,0,0,0]
 
     def abrirAprendizado(self,txt,color):
-        with open('branco.txt', "r") as ft:            # a lista de aprendizado serah "azul, verde, vermelho"
+        with open(txt, "r") as ft:            # a lista de aprendizado serah "azul, verde, vermelho"
             color = ft.read().split(',')              # aqui, criamos uma lista de strings, cada elemento eh a cor
             color.pop()
-            for x in color:
-                print("x", x, "int(x)", int(x))
-            color = [int(x) for x in color]     # tornamos as strings em inteiros
-        print(branco, " ", preto)
+            for i in range (len(color)):
+                print("color[i]",color[i], '\n')
+            for i in range(len(color)):
+                color[i] = int(color[i])
+              # tornamos as strings em inteiros
 
     def verificaCor(self):
+        #TODO ver se mudando self. por Robot. e ver se funciona
         esq = se.raw
         #print(esq, " ", branco, " ", preto)
-        if branco[0] - 30<=esq[0] and branco[1] + 30>=esq[0] and branco[2] - 30<=esq[1] and branco[3] + 30>=esq[1] and branco[4] - 30<=esq[2] and branco[5] + 30>=esq[2]:
-            print("BRANCO/WHITE/BLANC")
-        elif preto[0] - 30<=esq[0] and preto[1] + 30>=esq[0] and preto[2] - 30<=esq[1] and preto[3] + 30>=esq[1] and preto[4] - 30<=esq[2] and preto[5] + 30>=esq[2]:
-            print("PRETO/BLACK/NOIR")
+        #print(esq, '\n', self.branco)
+        if self.branco[0] - 30<=esq[0] and self.branco[1] + 30>=esq[0] and self.branco[2] - 30<=esq[1] and self.branco[3] + 30>=esq[1] and self.branco[4] - 30<=esq[2] and self.branco[5] + 30>=esq[2]:
+            #print("BRANCO/WHITE/BLANC")
+            pass
+        elif self.preto[0] - 30<=esq[0] and self.preto[1] + 30>=esq[0] and self.preto[2] - 30<=esq[1] and self.preto[3] + 30>=esq[1] and self.preto[4] - 30<=esq[2] and self.preto[5] + 30>=esq[2]:
+            #print("PRETO/BLACK/NOIR")
+            pass
 Teste = Robot()
-Teste.abrirAprendizado('branco.txt',branco)
-Teste.abrirAprendizado('preto.txt',preto)
+Teste.abrirAprendizado('branco.txt',Teste.branco)
+Teste.abrirAprendizado('preto.txt',Teste.preto)
+print("Teste.branco", Teste.branco)
 while(True):
     Teste.verificaCor()
 
