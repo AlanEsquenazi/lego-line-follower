@@ -30,8 +30,8 @@ class Robot:
         self.lm1.run_timed(speed_sp = -speed, time_sp = time, stop_action = 'coast')
         self.lm2.run_timed(speed_sp = speed, time_sp = time, stop_action = 'coast')
     def go_forward(self,speed,time):
-        self.lm1.run_timed(speed_sp = -1*speed, time_sp = time, stop_action = 'coast')
-        self.lm2.run_timed(speed_sp = -1*speed, time_sp = time, stop_action = 'coast')
+        self.lm1.run_timed(speed_sp = -speed, time_sp = time, stop_action = 'coast')
+        self.lm2.run_timed(speed_sp = -speed, time_sp = time, stop_action = 'coast')
     def abrirAprendizadoBranco(self):
         global branco
         with open('branco.txt', "r") as ft:            # a lista de aprendizado serah "azul, verde, vermelho"
@@ -89,24 +89,26 @@ class Robot:
 
 
             if(estado == States(0)): #white and white
-                Robot.go_forward(self,speed_reta, 1)
+                Robot.go_forward(self,speed_reta, 30)
 
             if(estado == States(2)): #black and black
                 sleep(1)
 
             if(estado == States(-1)): #black and white
-                sleep(0.5)
+                self.lm1.run_timed(speed_sp = 0, time_sp = 500, stop_action = 'coast')
+                self.lm2.run_timed(speed_sp = 0, time_sp = 500, stop_action = 'coast')
                 while(not(estado == States(0))):
                     Robot.verificaCor(self)
                     Robot.verificaEstado(self)
-                    Robot.turn_left(self,speed_curva, 1)
+                    Robot.turn_left(self,speed_curva, 60)
                     print(esquerdo, " ", direito, " ", estado)
             if(estado == States(1)): #white and black
-                sleep(0.5)
+                self.lm1.run_timed(speed_sp = 0, time_sp = 500, stop_action = 'coast')
+                self.lm2.run_timed(speed_sp = 0, time_sp = 500, stop_action = 'coast')
                 while(not (estado == States(0))):
                     Robot.verificaCor(self)
                     Robot.verificaEstado(self)
-                    Robot.turn_right(self,speed_curva, 1)
+                    Robot.turn_right(self,speed_curva, 40)
                     print(esquerdo, " ", direito, " ", estado)
 
 esquerdo = 0
