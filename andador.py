@@ -8,20 +8,26 @@ from time import sleep
 from time import time
 
 class States(Enum):
-    turnLeft = -1
-    goForward = 0
-    turnRight = 1
-    sleep = 2
-
+    '''P = preto
+    N = not(preto)'''
+    NPP = 1
+    PPN = 2
+    NPN = 3
+    PPP = 4
+    NNP = 5
+    PNN = 6
+    NNN = 7
+    PNP = 8
 
 class Robot:
-    def __init__(self,out1,out2,in1,in2):
+    def __init__(self,out1,out2,in1,in2,in3):
 
 
         self.lm1 = ev3.LargeMotor(out1); assert self.lm1.connected
         self.lm2 = ev3.LargeMotor(out2); assert self.lm2.connected
         self.se = ev3.ColorSensor(in1); assert self.se.connected
-        self.sd = ev3.ColorSensor(in2); assert self.sd.connected
+        self.sm = ev3.ColorSensor(in2); assert self.sm.connected
+        self.sd = ev3.ColorSensor(in3); assert self.sd.connected
 
     def turn_left(self,speed,time):
         self.lm1.run_timed(speed_sp = speed, time_sp = time, stop_action = 'coast')
@@ -46,14 +52,37 @@ class Robot:
             preto.pop()
             preto = [int(x) for x in preto]     # tornamos as strings em inteiros
 
+    def abrirAprendizadoVerde(self):
+        global verde
+        with open('verde.txt', "r") as ft:            # a lista de aprendizado serah "azul, verde, vermelho"
+            verde = ft.read().split(',')              # aqui, criamos uma lista de strings, cada elemento eh a cor
+            verde.pop()
+            verde = [int(x) for x in verde]     # tornamos as strings em inteiros
+
+    def verificaVerde(self):
+        e_verde = False
+        d_verde = False
+        if verde[0]<=left[0] and verde[1]>=left[0] and verde[2]<=left[1] and verde[3]>=left[1] and verde[4]<=left[2] and verde[5]>=left[2]:
+            e_verde= True
+        elif l
+        if verde[0]<=right[0] and verde[1]>=right[0] and verde[2]<=right[1] and verde[3]>=right[1] and verde[4]<=right[2] and verde[5]>=right[2]:
+            d_verde = True
+
     def verificaCor(self):
         # 1 preto e 0 branco
         global left
         global right
+        global middle
         global esquerdo
         global direito
+        global meio
         left = self.se.raw
         right = self.sd.raw
+        middle = self.sm.raw
+        if branco[0]<=middle[0] and branco[1]>=middle[0] and branco[2]<=middle[1] and branco[3]>=middle[1] and branco[4]<=middle[2] and branco[5]>=middle[2]:
+            meio = 0
+        elif preto[0]<=middle[0] and preto[1]>=middle[0] and preto[2]<=middle[1] and preto[3]>=middle[1] and preto[4]<=middle[2] and preto[5]>=middle[2]:
+            meio = 1
         if branco[0]<=left[0] and branco[1]>=left[0] and branco[2]<=left[1] and branco[3]>=left[1] and branco[4]<=left[2] and branco[5]>=left[2]:
             esquerdo = 0
         elif preto[0]<=left[0] and preto[1]>=left[0] and preto[2]<=left[1] and preto[3]>=left[1] and preto[4]<=left[2] and preto[5]>=left[2]:
@@ -113,12 +142,14 @@ class Robot:
 
 esquerdo = 0
 direito = 0
+meio = 0
 estado = '0'
 left = [0,0,0]
 right = [0,0,0]
+middle = [0,0,0]
 branco = [0,0,0,0,0,0]
 preto = [0,0,0,0,0,0]
-Corsa = Robot('outB','outD','in2','in4')
+Corsa = Robot('outB','outD','in2','in3','in4')
 Corsa.abrirAprendizadoBranco()
 Corsa.abrirAprendizadoPreto()
 Corsa.follow_line(600,950)
