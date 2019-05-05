@@ -60,11 +60,10 @@ class Robot:
             verde = [int(x) for x in verde]     # tornamos as strings em inteiros
 
     def verificaVerde(self):
-        e_verde = False
-        d_verde = False
+        global e_verde
+        global d_verde
         if verde[0]<=left[0] and verde[1]>=left[0] and verde[2]<=left[1] and verde[3]>=left[1] and verde[4]<=left[2] and verde[5]>=left[2]:
             e_verde= True
-        elif l
         if verde[0]<=right[0] and verde[1]>=right[0] and verde[2]<=right[1] and verde[3]>=right[1] and verde[4]<=right[2] and verde[5]>=right[2]:
             d_verde = True
 
@@ -107,15 +106,47 @@ class Robot:
 
     def follow_line(self,speed_reta,speed_curva):
         while(True):
+            global e_verde
+            global d_verde
             global left
             global right
             global esquerdo
             global direito
             global estado
+            Robot.verificaVerde(self)
             Robot.verificaCor(self)
             Robot.verificaEstado(self)
             print(esquerdo, " ", direito, " ", estado)
 
+            if(estado == States(1)): #NPP
+                if
+
+            if(estado == States(2)):
+
+            if(estado == States(3)):
+
+            if(estado == States(4)):
+
+            if(estado == States(5)):
+
+            if(estado == States(6)):
+
+            if(estado == States(7)):
+
+            if(estado == States(8)):
+
+
+
+
+
+
+
+
+
+
+
+            ]
+            ]
 
             if(estado == States(0)): #white and white
                 Robot.go_forward(self,speed_reta, 30)
