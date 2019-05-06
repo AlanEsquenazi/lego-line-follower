@@ -10,5 +10,8 @@ from time import time
 lm1 = ev3.LargeMotor('outB'); assert lm1.connected
 lm2 = ev3.LargeMotor('outD'); assert lm2.connected
 
-lm1.run_forever(speed_sp = 100,stop_action = 'coast')
-lm2.run_forever(speed_sp = 800,stop_action = 'coast')
+while(True):
+    lm1.run_timed(speed_sp = 600, time_sp = 60, stop_action = 'coast')
+    lm2.run_timed(speed_sp = -600, time_sp = 60, stop_action = 'coast')
+    lm1.run_timed(speed_sp = 0, time_sp = 30, stop_action = 'coast')
+    lm2.run_timed(speed_sp = 0, time_sp = 30, stop_action = 'coast')
