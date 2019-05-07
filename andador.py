@@ -61,7 +61,7 @@ class Robot:
             Robot.turn_right(self,speed, 60)
             print(esquerdo, " ", direito, " ", estado)
 
-    def meia_volta(self,speed,estado):
+    #def meia_volta(self,speed,estado):
         #TODO isso aqui
 
     def abrirAprendizadoBranco(self):
@@ -91,7 +91,7 @@ class Robot:
 
         if verde[0]<=left[0] and verde[1]>=left[0] and verde[2]<=left[1] and verde[3]>=left[1] and verde[4]<=left[2] and verde[5]>=left[2]:
             e_verde= True
-        elif l
+        #elif #TODO
         if verde[0]<=right[0] and verde[1]>=right[0] and verde[2]<=right[1] and verde[3]>=right[1] and verde[4]<=right[2] and verde[5]>=right[2]:
             d_verde = True
 
@@ -177,10 +177,10 @@ class Robot:
                     #curva para a direita
                     Robot.curva_direita(self,speed_curva,estado)
 
-                elif(e_verde == True and d_verde == True):
+                #elif(e_verde == True and d_verde == True):
                     #meia_volta
 
-                elif(e_verde == False and d_verde == False):
+                #elif(e_verde == False and d_verde == False):
                     #procurar verde
 
             if(estado == States(5)): #caso NNP
@@ -204,10 +204,10 @@ class Robot:
                     #curva para a direita
                     Robot.curva_direita(self,speed_curva,estado)
 
-                elif(e_verde == True and d_verde == True):
+                #elif(e_verde == True and d_verde == True):
                     #meia_volta
 
-                elif(e_verde == False and d_verde == False):
+                #elif(e_verde == False and d_verde == False):
                     #procurar verde
 
 e_verde = False
@@ -222,7 +222,7 @@ middle = [0,0,0]
 branco = [0,0,0,0,0,0]
 preto = [0,0,0,0,0,0]
 verde = [0,0,0,0,0,0]
-Corsa = Robot('outB','outD','in2','in3','in4')
+Corsa = Robot('outD','ouB','in4','in3','in2')
 Corsa.abrirAprendizadoBranco()
 Corsa.abrirAprendizadoPreto()
 Corsa.follow_line(600,950)
