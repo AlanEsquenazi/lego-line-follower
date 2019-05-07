@@ -30,12 +30,16 @@ class Robot:
         self.sd = ev3.ColorSensor(in3); assert self.sd.connected
 
     def turn_left(self,speed,time):
-        self.lm1.run_timed(speed_sp = speed, time_sp = time, stop_action = 'coast')
-        self.lm2.run_timed(speed_sp = -speed, time_sp = time, stop_action = 'coast')
+        self.lm1.run_timed(speed_sp = 600, time_sp = 60, stop_action = 'coast')
+        self.lm2.run_timed(speed_sp = -600, time_sp = 60, stop_action = 'coast')
+        self.lm1.run_timed(speed_sp = 0, time_sp = 30, stop_action = 'coast')
+        self.lm2.run_timed(speed_sp = 0, time_sp = 30, stop_action = 'coast')
 
     def turn_right(self,speed,time):
-        self.lm1.run_timed(speed_sp = -speed, time_sp = time, stop_action = 'coast')
-        self.lm2.run_timed(speed_sp = speed, time_sp = time, stop_action = 'coast')
+        self.lm1.run_timed(speed_sp = -600, time_sp = 60, stop_action = 'coast')
+        self.lm2.run_timed(speed_sp = 600, time_sp = 60, stop_action = 'coast')
+        self.lm1.run_timed(speed_sp = 0, time_sp = 30, stop_action = 'coast')
+        self.lm2.run_timed(speed_sp = 0, time_sp = 30, stop_action = 'coast')
 
     def go_forward(self,speed,time):
         self.lm1.run_timed(speed_sp = -speed, time_sp = time, stop_action = 'coast')
@@ -91,9 +95,12 @@ class Robot:
 
         if verde[0]<=left[0] and verde[1]>=left[0] and verde[2]<=left[1] and verde[3]>=left[1] and verde[4]<=left[2] and verde[5]>=left[2]:
             e_verde= True
-        #elif #TODO
+        elif esquerdo == 0:
+            e_verde = False
         if verde[0]<=right[0] and verde[1]>=right[0] and verde[2]<=right[1] and verde[3]>=right[1] and verde[4]<=right[2] and verde[5]>=right[2]:
             d_verde = True
+        elif direito == 0:
+            d_verde = False
 
     def verificaCor(self):
         # 1 preto e 0 branco
