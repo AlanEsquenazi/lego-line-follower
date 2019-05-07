@@ -122,15 +122,25 @@ class Robot:
     def verificaEstado(self):
         global esquerdo
         global direito
+        global meio
         global estado
-        if esquerdo == 1 and direito == 0:
-            estado = States(-1)
-        elif esquerdo == 0 and direito == 0:
-            estado = States(0)
-        if esquerdo == 0 and direito == 1:
+        if(esquerdo != 1 and meio == 1 and direito == 1): #NPP
             estado = States(1)
-        elif esquerdo == 1 and direito == 1:
+        if(esquerdo == 1 and meio == 1 and direito != 1): #PPN
             estado = States(2)
+        if(esquerdo != 1 and meio == 1 and direito != 1): #NPN
+            estado = States(3)
+        if(esquerdo == 1 and meio == 1 and direito == 1): #PPP
+            estado = States(4)
+        if(esquerdo != 1 and meio != 1 and direito == 1): #NNP
+            estado = States(5)
+        if(esquerdo == 1 and meio != 1 and direito != 1): #PNN
+            estado = States(6)
+        if(esquerdo != 1 and meio != 1 and direito != 1): #NNN
+            estado = States(7)
+        if(esquerdo == 1 and meio != 1 and direito == 1): #PNP
+            estado = States(8)
+
 
     def follow_line(self,speed_reta,speed_curva):
         while(True):
@@ -222,7 +232,7 @@ middle = [0,0,0]
 branco = [0,0,0,0,0,0]
 preto = [0,0,0,0,0,0]
 verde = [0,0,0,0,0,0]
-Corsa = Robot('outD','ouB','in4','in3','in2')
+Corsa = Robot('outB','outD','in4','in3','in2')
 Corsa.abrirAprendizadoBranco()
 Corsa.abrirAprendizadoPreto()
 Corsa.follow_line(600,950)
