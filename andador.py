@@ -229,7 +229,7 @@ middle = [0,0,0]
 branco = [0,0,0,0,0,0]
 preto = [0,0,0,0,0,0]
 verde = [0,0,0,0,0,0]
-Corsa = Robot('outD','ouB','in4','in3','in2')
+Corsa = Robot('outD','outB','in4','in3','in2')
 Corsa.abrirAprendizadoBranco()
 Corsa.abrirAprendizadoPreto()
 Corsa.follow_line(600,950)
