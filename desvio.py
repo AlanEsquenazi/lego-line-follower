@@ -30,7 +30,7 @@ class Robot_US:
         self.lm1.run_timed(speed_sp = -speed, time_sp = time, stop_action = 'coast')
         self.lm2.run_timed(speed_sp = -speed, time_sp = time, stop_action = 'coast')
     def desvia_do_obstaculo(self, speed,time):
-        Robot_US_US.turn_right(self,speed,time)
+        Robot_US.turn_right(self,speed,time)
         Robot_US.go_forward(self,speed,time)
         Robot_US.turn_left(self,speed,time)
         Robot_US.go_forward(self,speed,time)
@@ -39,9 +39,9 @@ class Robot_US:
         Robot_US.turn_right(self,speed,time)
 
     def encontrar_obstaculo(self):
-        self.us.mode = 'US_DIST_CM'
-        if(us.value()<=50):
-            Robot_US.desvia_do_obstaculo(self)
+        self.us.mode = 'US-DIST-CM'
+        if(self.us.value()<=50):
+            Robot_US.desvia_do_obstaculo(self, 600,950)
 
 corsinha2  = Robot_US("outB", "outD", "in4")
 while(1):
