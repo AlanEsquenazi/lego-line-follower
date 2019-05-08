@@ -7,7 +7,7 @@ from enum import Enum
 from time import sleep
 from time import time
 
-class Robot_US_US_US:
+class Robot_US:
     def __init__(self,out1,out2,in1):
 
         self.lm1 = ev3.LargeMotor(out1); assert self.lm1.connected
@@ -43,8 +43,9 @@ class Robot_US_US_US:
         if(us.value()<=50):
             Robot_US.desvia_do_obstaculo(self)
 
-corsinha2  = Robot_US("outA", "outB", "in4")
-corsinha2.encontrar_obstaculo()
+corsinha2  = Robot_US("outB", "outD", "in4")
+while(1):
+    corsinha2.encontrar_obstaculo()
 
 
 
