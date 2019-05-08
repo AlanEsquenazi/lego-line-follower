@@ -30,14 +30,14 @@ class Robot:
         self.sd = ev3.ColorSensor(in3); assert self.sd.connected
 
     def turn_left(self,speed,time):
-        self.lm1.run_timed(speed_sp = 600, time_sp = 60, stop_action = 'coast')
-        self.lm2.run_timed(speed_sp = -600, time_sp = 60, stop_action = 'coast')
+        self.lm1.run_timed(speed_sp = 600, time_sp = 80, stop_action = 'coast')
+        self.lm2.run_timed(speed_sp = -600, time_sp = 80, stop_action = 'coast')
         self.lm1.run_timed(speed_sp = 0, time_sp = 30, stop_action = 'coast')
         self.lm2.run_timed(speed_sp = 0, time_sp = 30, stop_action = 'coast')
 
     def turn_right(self,speed,time):
-        self.lm1.run_timed(speed_sp = -600, time_sp = 60, stop_action = 'coast')
-        self.lm2.run_timed(speed_sp = 600, time_sp = 60, stop_action = 'coast')
+        self.lm1.run_timed(speed_sp = -600, time_sp = 80, stop_action = 'coast')
+        self.lm2.run_timed(speed_sp = 600, time_sp = 80, stop_action = 'coast')
         self.lm1.run_timed(speed_sp = 0, time_sp = 30, stop_action = 'coast')
         self.lm2.run_timed(speed_sp = 0, time_sp = 30, stop_action = 'coast')
 
@@ -48,22 +48,22 @@ class Robot:
     def curva_esquerda(self,speed,estado):
         self.lm1.run_timed(speed_sp = 0, time_sp = 500, stop_action = 'coast')
         self.lm2.run_timed(speed_sp = 0, time_sp = 500, stop_action = 'coast')
-        while(not(estado == States(3))):
+        while(not(meio == 1)):
             Robot.verificaCor(self)
             Robot.verificaEstado(self)
             Robot.verificaVerde(self)
             Robot.turn_left(self,speed, 60)
-            print(esquerdo, " ", direito, " ", estado)
+            print(esquerdo, " ", meio, " ", direito, " ", estado)
 
     def curva_direita(self,speed,estado):
         self.lm1.run_timed(speed_sp = 0, time_sp = 500, stop_action = 'coast')
         self.lm2.run_timed(speed_sp = 0, time_sp = 500, stop_action = 'coast')
-        while(not(estado == States(3))):
+        while(not(meio == 1)):
             Robot.verificaCor(self)
             Robot.verificaEstado(self)
             Robot.verificaVerde(self)
             Robot.turn_right(self,speed, 60)
-            print(esquerdo, " ", direito, " ", estado)
+            print(esquerdo, " ", meio, " ", direito, " ", estado)
 
     #def meia_volta(self,speed,estado):
         #TODO isso aqui
@@ -75,12 +75,26 @@ class Robot:
             branco.pop()
             branco = [int(x) for x in branco]     # tornamos as strings em inteiros
 
+    def abrirAprendizadoBranco_meio(self):
+        global branco_meio
+        with open('branco_meio.txt', "r") as ft:            # a lista de aprendizado serah "azul, verde, vermelho"
+            branco_meio = ft.read().split(',')              # aqui, criamos uma lista de strings, cada elemento eh a cor
+            branco_meio.pop()
+            branco_meio = [int(x) for x in branco_meio]     # tornamos as strings em inteiros
+
     def abrirAprendizadoPreto(self):
         global preto
         with open('preto.txt', "r") as ft:            # a lista de aprendizado serah "azul, verde, vermelho"
             preto = ft.read().split(',')              # aqui, criamos uma lista de strings, cada elemento eh a cor
             preto.pop()
             preto = [int(x) for x in preto]     # tornamos as strings em inteiros
+
+    def abrirAprendizadoPreto_meio(self):
+        global preto_meio
+        with open('preto_meio.txt', "r") as ft:            # a lista de aprendizado serah "azul, verde, vermelho"
+            preto_meio = ft.read().split(',')              # aqui, criamos uma lista de strings, cada elemento eh a cor
+            preto_meio.pop()
+            preto_meio = [int(x) for x in preto_meio]     # tornamos as strings em inteiros
 
     def abrirAprendizadoVerde(self):
         global verde
@@ -92,6 +106,7 @@ class Robot:
     def verificaVerde(self):
         global e_verde
         global d_verde
+        global verde
 
         if verde[0]<=left[0] and verde[1]>=left[0] and verde[2]<=left[1] and verde[3]>=left[1] and verde[4]<=left[2] and verde[5]>=left[2]:
             e_verde= True
@@ -104,6 +119,10 @@ class Robot:
 
     def verificaCor(self):
         # 1 preto e 0 branco
+        global branco
+        global branco_meio
+        global preto
+        global preto_meio
         global left
         global right
         global middle
@@ -113,18 +132,20 @@ class Robot:
         left = self.se.raw
         right = self.sd.raw
         middle = self.sm.raw
-        if branco[0]<=middle[0] and branco[1]>=middle[0] and branco[2]<=middle[1] and branco[3]>=middle[1] and branco[4]<=middle[2] and branco[5]>=middle[2]:
-            meio = 0
-        elif preto[0]<=middle[0] and preto[1]>=middle[0] and preto[2]<=middle[1] and preto[3]>=middle[1] and preto[4]<=middle[2] and preto[5]>=middle[2]:
+        if preto_meio[0]<=middle[0] and preto_meio[1]>=middle[0] and preto_meio[2]<=middle[1] and preto_meio[3]>=middle[1] and preto_meio[4]<=middle[2] and preto_meio[5]>=middle[2]:
             meio = 1
-        if branco[0]<=left[0] and branco[1]>=left[0] and branco[2]<=left[1] and branco[3]>=left[1] and branco[4]<=left[2] and branco[5]>=left[2]:
-            esquerdo = 0
-        elif preto[0]<=left[0] and preto[1]>=left[0] and preto[2]<=left[1] and preto[3]>=left[1] and preto[4]<=left[2] and preto[5]>=left[2]:
+        else:
+            meio = 0
+
+        if preto[0]<=left[0] and preto[1]>=left[0] and preto[2]<=left[1] and preto[3]>=left[1] and preto[4]<=left[2] and preto[5]>=left[2]:
             esquerdo = 1
-        if branco[0]<=right[0] and branco[1]>=right[0] and branco[2]<=right[1] and branco[3]>=right[1] and branco[4]<=right[2] and branco[5]>=right[2]:
-            direito = 0
-        elif preto[0]<=right[0] and preto[1]>=right[0] and preto[2]<=right[1] and preto[3]>=right[1] and preto[4]<=right[2] and preto[5]>=right[2]:
+        else:
+            esquerdo = 0
+
+        if preto[0]<=right[0] and preto[1]>=right[0] and preto[2]<=right[1] and preto[3]>=right[1] and preto[4]<=right[2] and preto[5]>=right[2]:
             direito = 1
+        else:
+            direito = 0
 
     def verificaEstado(self):
         global esquerdo
@@ -162,7 +183,7 @@ class Robot:
             Robot.verificaCor(self)
             Robot.verificaEstado(self)
             Robot.verificaVerde(self)
-            print(esquerdo, " ", direito, " ", estado)
+            print(esquerdo, " ", meio, " ", direito, " ", estado)
 
             if(estado == States(1)): #caso NPP
                 if(d_verde == True):
@@ -237,11 +258,15 @@ left = [0,0,0]
 right = [0,0,0]
 middle = [0,0,0]
 branco = [0,0,0,0,0,0]
+branco_meio = [0,0,0,0,0,0]
 preto = [0,0,0,0,0,0]
+preto_meio = [0,0,0,0,0,0]
 verde = [0,0,0,0,0,0]
-Corsa = Robot('outB','outD','in4','in3','in2')
+Corsa = Robot('outB','outD','in2','in3','in4')
 Corsa.abrirAprendizadoBranco()
 Corsa.abrirAprendizadoPreto()
+Corsa.abrirAprendizadoBranco_meio()
+Corsa.abrirAprendizadoPreto_meio()
 Corsa.follow_line(600,950)
-#obs.: testar curva com duas rodas girando (uma muito pouco), com uma parada e outra girando ou com uma para cada lado
+
 
