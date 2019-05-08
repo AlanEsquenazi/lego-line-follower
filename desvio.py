@@ -12,8 +12,7 @@ class Robot:
 
         self.lm1 = ev3.LargeMotor(out1); assert self.lm1.connected
         self.lm2 = ev3.LargeMotor(out2); assert self.lm2.connected
-        #self.od = ev3.ColorSensor(in1); assert self.se.connected
-        #self.om = ev3.ColorSensor(in2); assert self.sm.connected
+        self.us = ev3.UltrasonicSensor(in4); assert self.us.connected
 
     def stop(self,time):
         self.lm1.run_timed(speed_sp = 0, time_sp = time, stop_action = 'coast')
@@ -30,17 +29,19 @@ class Robot:
     def go_forward(self,speed,time):
         self.lm1.run_timed(speed_sp = -speed, time_sp = time, stop_action = 'coast')
         self.lm2.run_timed(speed_sp = -speed, time_sp = time, stop_action = 'coast')
+    def desvia_do_obstaculo(self, speed,time):
+        Robot.turn_right(self,speed,time)
+        Robot.go_forward(self,speed,time)
+        Robot.turn_left(self,speed,time)
+        Robot.go_forward(self,speed,time)
+        Robot.turn_left(self,speed,time)
+        Robot.go_forward(self,speed,time)
+        Robot.turn_right(self,speed,time)
 
-    def desviar(self,minimo1,minimo2):
-        if(om.distancia <= minimo1):
-            #para
-            Robot.stop(self,1000)
-            #vira até achar o obstáculo com o sensor direito
-            while(not(od.distancia <= minimo1)):
-                Robot.turn_left(self,600,60)
-
-            while(not(estado == States(3)):
-                Robot.turn_right(self,?,?) #Fazer curva com raio mt longo até encontrar a reta dnv
+    def encontrar_obstaculo(self):
+        self.us.mode = 'US_DIST_CM'
+        if(us.value()<=50):
+            Robot.desvia_do_obstaculo(self)
 
 
 
