@@ -30,16 +30,12 @@ class Robot:
         self.sd = ev3.ColorSensor(in3); assert self.sd.connected
 
     def turn_left(self,speed,time):
-        self.lm1.run_timed(speed_sp = 600, time_sp = 80, stop_action = 'coast')
-        self.lm2.run_timed(speed_sp = -600, time_sp = 80, stop_action = 'coast')
-        self.lm1.run_timed(speed_sp = 0, time_sp = 30, stop_action = 'coast')
-        self.lm2.run_timed(speed_sp = 0, time_sp = 30, stop_action = 'coast')
+        self.lm1.run_timed(speed_sp = -600, time_sp = 80, stop_action = 'coast')
+        self.lm2.run_timed(speed_sp = 0, time_sp = 80, stop_action = 'coast')
 
     def turn_right(self,speed,time):
-        self.lm1.run_timed(speed_sp = -600, time_sp = 80, stop_action = 'coast')
-        self.lm2.run_timed(speed_sp = 600, time_sp = 80, stop_action = 'coast')
-        self.lm1.run_timed(speed_sp = 0, time_sp = 30, stop_action = 'coast')
-        self.lm2.run_timed(speed_sp = 0, time_sp = 30, stop_action = 'coast')
+        self.lm1.run_timed(speed_sp = 0, time_sp = 80, stop_action = 'coast')
+        self.lm2.run_timed(speed_sp = -600, time_sp = 80, stop_action = 'coast')
 
     def go_forward(self,speed,time):
         self.lm1.run_timed(speed_sp = -speed, time_sp = time, stop_action = 'coast')
