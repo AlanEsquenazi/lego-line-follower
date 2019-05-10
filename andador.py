@@ -61,8 +61,18 @@ class Robot:
             Robot.turn_right(self,speed, 60)
             print(esquerdo, " ", meio, " ", direito, " ", estado)
 
-    #def meia_volta(self,speed,estado):
-        #TODO isso aqui
+    def meia_volta(self,speed, lendo_preto = 0, conta=0):
+        global direito
+        if not conta=2:
+            Robot.curva_direita(self, speed, 50)
+            Robot.verificaCor(self)
+            if direito==1:
+                    meia_volta(self, speed, 1,conta)
+            if direito==0 and lendo_preto==1:
+                    meia_volta(self,speed,0, 1)
+            if direito==1 and conta==1:
+                meia_volta(self,speed,1,2)
+            
 
     def abrirAprendizadoBranco(self):
         global branco
