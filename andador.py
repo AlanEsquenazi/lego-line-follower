@@ -66,11 +66,11 @@ class Robot:
         if not conta=2:
             Robot.curva_direita(self, speed, 50)
             Robot.verificaCor(self)
-            if direito==1:
+            if meio==1:
                     meia_volta(self, speed, 1,conta)
-            if direito==0 and lendo_preto==1:
+            if meio==0 and lendo_preto==1:
                     meia_volta(self,speed,0, 1)
-            if direito==1 and conta==1:
+            if meio==1 and conta==1:
                 meia_volta(self,speed,1,2)
             
 
@@ -221,10 +221,10 @@ class Robot:
                     #curva para a direita
                     Robot.curva_direita(self,speed_curva,estado)
 
-                #elif(e_verde == True and d_verde == True):
-                    #meia_volta
+                elif(e_verde == True and d_verde == True):
+                    Robot.meia_volta(self,600)
 
-                #elif(e_verde == False and d_verde == False):
+                elif(e_verde == False and d_verde == False):
                     #procurar verde
 
             if(estado == States(5)): #caso NNP
