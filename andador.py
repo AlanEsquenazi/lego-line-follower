@@ -248,8 +248,8 @@ class Robot:
                     #curva para a direita
                     Robot.curva_direita(self,speed_curva,estado)
 
-                #elif(e_verde == True and d_verde == True):
-                    #meia_volta
+                elif(e_verde == True and d_verde == True):
+                    meia_volta(self, 600)
 
                 #elif(e_verde == False and d_verde == False):
                     #procurar verde
