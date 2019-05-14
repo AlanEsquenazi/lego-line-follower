@@ -186,6 +186,7 @@ class Robot:
             global left
             global right
             global esquerdo
+            global meio
             global direito
             global estado
             global e_verde
