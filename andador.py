@@ -63,7 +63,7 @@ class Robot:
 
     def meia_volta(self,speed, lendo_preto = 0, conta=0):
         global direito
-        if not conta=2:
+        if not conta==2:
             Robot.curva_direita(self, speed, 50)
             Robot.verificaCor(self)
             if meio==1:
@@ -224,7 +224,7 @@ class Robot:
                 elif(e_verde == True and d_verde == True):
                     Robot.meia_volta(self,600)
 
-                elif(e_verde == False and d_verde == False):
+                #elif(e_verde == False and d_verde == False):
                     #procurar verde
 
             if(estado == States(5)): #caso NNP
