@@ -281,6 +281,6 @@ Corsa.abrirAprendizadoBranco()
 Corsa.abrirAprendizadoPreto()
 Corsa.abrirAprendizadoBranco_meio()
 Corsa.abrirAprendizadoPreto_meio()
-Corsa.follow_line(600,950)
+Corsa.follow_line(600,700)
 
 
