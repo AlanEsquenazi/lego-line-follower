@@ -17,8 +17,8 @@ def stop(time):
 
 def curva_esquerda(speed,time):
     while(True):
-        lm1.run_timed(speed_sp = -speed, time_sp = time, stop_action = 'coast')
-        lm2.run_timed(speed_sp = 0, time_sp = time, stop_action = 'coast')
+        lm1.run_timed(speed_sp = speed, time_sp = time, stop_action = 'coast')
+        lm2.run_timed(speed_sp = 0, time_sp = time, stop_action = 'coast')s
 
 
 curva_esquerda(600,60)

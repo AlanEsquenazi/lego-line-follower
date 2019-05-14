@@ -29,12 +29,12 @@ class Robot:
         self.sd = ev3.ColorSensor(in3); assert self.sd.connected
 
     def turn_left(self,speed,time):
-        self.lm1.run_timed(speed_sp = -600, time_sp = 80, stop_action = 'coast')
-        self.lm2.run_timed(speed_sp = 0, time_sp = 80, stop_action = 'coast')
-
-    def turn_right(self,speed,time):
         self.lm1.run_timed(speed_sp = 0, time_sp = 80, stop_action = 'coast')
         self.lm2.run_timed(speed_sp = -600, time_sp = 80, stop_action = 'coast')
+
+    def turn_right(self,speed,time):
+        self.lm1.run_timed(speed_sp = -600, time_sp = 80, stop_action = 'coast')
+        self.lm2.run_timed(speed_sp = 0, time_sp = 80, stop_action = 'coast')
 
     def go_forward(self,speed,time):
         self.lm1.run_timed(speed_sp = -speed, time_sp = time, stop_action = 'coast')
@@ -66,7 +66,7 @@ class Robot:
             Robot.stop(self,30)
             print(esquerdo, " ", meio, " ", direito, " ", estado)
 
-    def meia_volta(self,speed, lendo_preto = 0, conta=0):
+    '''def meia_volta(self,speed, lendo_preto = 0, conta=0):
         global direito
         if not conta=2:
             Robot.curva_direita(self, speed, 50)
@@ -76,7 +76,7 @@ class Robot:
             if meio==0 and lendo_preto==1:
                     meia_volta(self,speed,0, 1)
             if meio==1 and conta==1:
-                meia_volta(self,speed,1,2)
+                meia_volta(self,speed,1,2)'''
 
 
     def abrirAprendizadoBranco(self):
@@ -226,11 +226,12 @@ class Robot:
                     #curva para a direita
                     Robot.curva_direita(self,speed_curva,estado)
 
-                elif(e_verde == True and d_verde == True):
-                    Robot.meia_volta(self,600)
+                '''elif(e_verde == True and d_verde == True):
+                    #Robot.meia_volta(self,600)
 
                 elif(e_verde == False and d_verde == False):
                     #procurar verde
+                    '''
 
             if(estado == States(5)): #caso NNP
                 #curva para a direita
