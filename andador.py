@@ -10,14 +10,6 @@ from time import time
 class States(Enum):
     '''P = preto
     N = not(preto)'''
-    global NPP
-    global PPN
-    global NPN
-    global PPP
-    global NNP
-    global PNN
-    global NNN
-    global PNP
 
     NPP = 1
     PPN = 2
