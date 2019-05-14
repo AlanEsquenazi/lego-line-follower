@@ -22,7 +22,6 @@ class States(Enum):
 class Robot:
     def __init__(self,out1,out2,in1,in2,in3):
 
-
         self.lm1 = ev3.LargeMotor(out1); assert self.lm1.connected
         self.lm2 = ev3.LargeMotor(out2); assert self.lm2.connected
         self.se = ev3.ColorSensor(in1); assert self.se.connected
@@ -30,16 +29,20 @@ class Robot:
         self.sd = ev3.ColorSensor(in3); assert self.sd.connected
 
     def turn_left(self,speed,time):
-        self.lm1.run_timed(speed_sp = -600, time_sp = 80, stop_action = 'coast')
-        self.lm2.run_timed(speed_sp = 0, time_sp = 80, stop_action = 'coast')
-
-    def turn_right(self,speed,time):
         self.lm1.run_timed(speed_sp = 0, time_sp = 80, stop_action = 'coast')
         self.lm2.run_timed(speed_sp = -600, time_sp = 80, stop_action = 'coast')
+
+    def turn_right(self,speed,time):
+        self.lm1.run_timed(speed_sp = -600, time_sp = 80, stop_action = 'coast')
+        self.lm2.run_timed(speed_sp = 0, time_sp = 80, stop_action = 'coast')
 
     def go_forward(self,speed,time):
         self.lm1.run_timed(speed_sp = -speed, time_sp = time, stop_action = 'coast')
         self.lm2.run_timed(speed_sp = -speed, time_sp = time, stop_action = 'coast')
+
+    def stop(self,time):
+        self.lm1.run_timed(speed_sp = 0, time_sp = time, stop_action = 'coast')
+        self.lm2.run_timed(speed_sp = 0, time_sp = time, stop_action = 'coast')
 
     def curva_esquerda(self,speed,estado):
         self.lm1.run_timed(speed_sp = 0, time_sp = 500, stop_action = 'coast')
@@ -49,6 +52,7 @@ class Robot:
             Robot.verificaEstado(self)
             Robot.verificaVerde(self)
             Robot.turn_left(self,speed, 60)
+            Robot.stop(self,30)
             print(esquerdo, " ", meio, " ", direito, " ", estado)
 
     def curva_direita(self,speed,estado):
@@ -59,9 +63,10 @@ class Robot:
             Robot.verificaEstado(self)
             Robot.verificaVerde(self)
             Robot.turn_right(self,speed, 60)
+            Robot.stop(self,30)
             print(esquerdo, " ", meio, " ", direito, " ", estado)
 
-    def meia_volta(self,speed, lendo_preto = 0, conta=0):
+    '''def meia_volta(self,speed, lendo_preto = 0, conta=0):
         global direito
         if not conta==2:
             Robot.curva_direita(self, speed, 50)
@@ -71,8 +76,8 @@ class Robot:
             if meio==0 and lendo_preto==1:
                     meia_volta(self,speed,0, 1)
             if meio==1 and conta==1:
-                meia_volta(self,speed,1,2)
-            
+                meia_volta(self,speed,1,2)'''
+
 
     def abrirAprendizadoBranco(self):
         global branco
@@ -181,6 +186,7 @@ class Robot:
             global left
             global right
             global esquerdo
+            global meio
             global direito
             global estado
             global e_verde
@@ -221,11 +227,12 @@ class Robot:
                     #curva para a direita
                     Robot.curva_direita(self,speed_curva,estado)
 
-                elif(e_verde == True and d_verde == True):
-                    Robot.meia_volta(self,600)
+                '''elif(e_verde == True and d_verde == True):
+                    #Robot.meia_volta(self,600)
 
                 #elif(e_verde == False and d_verde == False):
                     #procurar verde
+                    '''
 
             if(estado == States(5)): #caso NNP
                 #curva para a direita
