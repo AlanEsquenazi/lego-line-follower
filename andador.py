@@ -87,6 +87,13 @@ class Robot:
             branco.pop()
             branco = [int(x) for x in branco]     # tornamos as strings em inteiros
 
+    def abrirAprendizadoBranco_direito(self):
+        global branco_direito
+        with open('branco_direito.txt', "r") as ft:            # a lista de aprendizado serah "azul, verde, vermelho"
+            branco_direito = ft.read().split(',')              # aqui, criamos uma lista de strings, cada elemento eh a cor
+            branco_direito.pop()
+            branco_direito = [int(x) for x in branco_direito]     # tornamos as strings em inteiros
+
     def abrirAprendizadoBranco_meio(self):
         global branco_meio
         with open('branco_meio.txt', "r") as ft:            # a lista de aprendizado serah "azul, verde, vermelho"
@@ -100,7 +107,12 @@ class Robot:
             preto = ft.read().split(',')              # aqui, criamos uma lista de strings, cada elemento eh a cor
             preto.pop()
             preto = [int(x) for x in preto]     # tornamos as strings em inteiros
-
+     def abrirAprendizadoPreto_direito(self):
+        global preto_direito
+        with open('preto_direito.txt', "r") as ft:            # a lista de aprendizado serah "azul, verde, vermelho"
+            preto_direito = ft.read().split(',')              # aqui, criamos uma lista de strings, cada elemento eh a cor
+            preto_direito.pop()
+            preto_direito = [int(x) for x in preto_direito]     # tornamos as strings em inteiros
     def abrirAprendizadoPreto_meio(self):
         global preto_meio
         with open('preto_meio.txt', "r") as ft:            # a lista de aprendizado serah "azul, verde, vermelho"
@@ -113,18 +125,25 @@ class Robot:
         with open('verde.txt', "r") as ft:            # a lista de aprendizado serah "azul, verde, vermelho"
             verde = ft.read().split(',')              # aqui, criamos uma lista de strings, cada elemento eh a cor
             verde.pop()
-            verde = [int(x) for x in verde]     # tornamos as strings em inteiros
+            verde = [int(x) for x in verde]     # tornamos as strings em inteiros   
+    def abrirAprendizadoVerde_direito(self):
+        global verde_direito
+        with open('verde_direito.txt', "r") as ft:            # a lista de aprendizado serah "azul, verde, vermelho"
+            verde_direito = ft.read().split(',')              # aqui, criamos uma lista de strings, cada elemento eh a cor
+            verde_direito.pop()
+            verde_direito = [int(x) for x in verde_direito]     # tornamos as strings em inteiros
 
     def verificaVerde(self):
         global e_verde
         global d_verde
         global verde
+        global verde_direito
 
         if verde[0]<=left[0] and verde[1]>=left[0] and verde[2]<=left[1] and verde[3]>=left[1] and verde[4]<=left[2] and verde[5]>=left[2]:
             e_verde= True
         elif esquerdo == 0:
             e_verde = False
-        if verde[0]<=right[0] and verde[1]>=right[0] and verde[2]<=right[1] and verde[3]>=right[1] and verde[4]<=right[2] and verde[5]>=right[2]:
+        if verde_direito[0]<=right[0] and verde_direito[1]>=right[0] and verde_direito[2]<=right[1] and verde_direito[3]>=right[1] and verde_direito[4]<=right[2] and verde_direito[5]>=right[2]:
             d_verde = True
         elif direito == 0:
             d_verde = False
@@ -133,8 +152,10 @@ class Robot:
         # 1 preto e 0 branco
         global branco
         global branco_meio
+        global branco_direito
         global preto
         global preto_meio
+        global preto_direito
         global left
         global right
         global middle
@@ -154,7 +175,7 @@ class Robot:
         else:
             esquerdo = 0
 
-        if preto[0]<=right[0] and preto[1]>=right[0] and preto[2]<=right[1] and preto[3]>=right[1] and preto[4]<=right[2] and preto[5]>=right[2]:
+        if preto_direito[0]<=right[0] and preto_direito[1]>=right[0] and preto_direito[2]<=right[1] and preto_direito[3]>=right[1] and preto_direito[4]<=right[2] and preto_direito[5]>=right[2]:
             direito = 1
         else:
             direito = 0
@@ -272,10 +293,13 @@ left = [0,0,0]
 right = [0,0,0]
 middle = [0,0,0]
 branco = [0,0,0,0,0,0]
+branco_direito = [0,0,0,0,0,0]
 branco_meio = [0,0,0,0,0,0]
 preto = [0,0,0,0,0,0]
+preto_direito = [0,0,0,0,0,0]
 preto_meio = [0,0,0,0,0,0]
 verde = [0,0,0,0,0,0]
+verde_direito = [0,0,0,0,0,0]
 Corsa = Robot('outB','outD','in2','in3','in4')
 Corsa.abrirAprendizadoBranco()
 Corsa.abrirAprendizadoPreto()
