@@ -10,6 +10,15 @@ from time import time
 class States(Enum):
     '''P = preto
     N = not(preto)'''
+    global NPP
+    global PPN
+    global NPN
+    global PPP
+    global NNP
+    global PNN
+    global NNN
+    global PNP
+
     NPP = 1
     PPN = 2
     NPN = 3
@@ -266,7 +275,7 @@ d_verde = False
 esquerdo = 0
 direito = 0
 meio = 0
-estado = '0'
+estado = 0
 left = [0,0,0]
 right = [0,0,0]
 middle = [0,0,0]
