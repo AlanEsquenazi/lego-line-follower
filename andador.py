@@ -30,12 +30,12 @@ class Robot:
         self.sd = ev3.ColorSensor(in3); assert self.sd.connected
 
     def turn_left(self,speed,time):
-        self.lm1.run_timed(speed_sp = 0, time_sp = 80, stop_action = 'coast')
-        self.lm2.run_timed(speed_sp = -600, time_sp = 80, stop_action = 'coast')
+        self.lm1.run_timed(speed_sp = speed, time_sp = time, stop_action = 'coast')
+        self.lm2.run_timed(speed_sp = 0, time_sp = time, stop_action = 'coast')
 
     def turn_right(self,speed,time):
-        self.lm1.run_timed(speed_sp = -600, time_sp = 80, stop_action = 'coast')
-        self.lm2.run_timed(speed_sp = 0, time_sp = 80, stop_action = 'coast')
+        self.lm1.run_timed(speed_sp = 0, time_sp = time, stop_action = 'coast')
+        self.lm2.run_timed(speed_sp = speed, time_sp = time, stop_action = 'coast')
 
     def go_forward(self,speed,time):
         self.lm1.run_timed(speed_sp = -speed, time_sp = time, stop_action = 'coast')
@@ -45,7 +45,7 @@ class Robot:
         self.lm1.run_timed(speed_sp = 0, time_sp = time, stop_action = 'coast')
         self.lm2.run_timed(speed_sp = 0, time_sp = time, stop_action = 'coast')
 
-    def curva_esquerda(self,speed,estado):
+    def curva_esquerda(self,speed):
         #self.lm1.run_timed(speed_sp = 0, time_sp = 500, stop_action = 'coast')
         #self.lm2.run_timed(speed_sp = 0, time_sp = 500, stop_action = 'coast')
         while(not(meio == 1)):
@@ -56,7 +56,7 @@ class Robot:
             Robot.stop(self,30)
             print(esquerdo, " ", meio, " ", direito, " ", estado)
 
-    def curva_direita(self,speed,estado):
+    def curva_direita(self,speed):
         #self.lm1.run_timed(speed_sp = 0, time_sp = 500, stop_action = 'coast')
         #self.lm2.run_timed(speed_sp = 0, time_sp = 500, stop_action = 'coast')
         while(not(meio == 1)):
@@ -64,7 +64,7 @@ class Robot:
             Robot.verificaEstado(self)
             Robot.verificaVerde(self)
             Robot.turn_right(self,speed, 60)
-            Robot.stop(self,30)
+            Robot.stop(self,20)
             print(esquerdo, " ", meio, " ", direito, " ", estado)
 
     '''def meia_volta(self,speed, lendo_preto = 0, conta=0):
@@ -107,12 +107,14 @@ class Robot:
             preto = ft.read().split(',')              # aqui, criamos uma lista de strings, cada elemento eh a cor
             preto.pop()
             preto = [int(x) for x in preto]     # tornamos as strings em inteiros
-     def abrirAprendizadoPreto_direito(self):
+
+    def abrirAprendizadoPreto_direito(self):
         global preto_direito
         with open('preto_direito.txt', "r") as ft:            # a lista de aprendizado serah "azul, verde, vermelho"
             preto_direito = ft.read().split(',')              # aqui, criamos uma lista de strings, cada elemento eh a cor
             preto_direito.pop()
             preto_direito = [int(x) for x in preto_direito]     # tornamos as strings em inteiros
+
     def abrirAprendizadoPreto_meio(self):
         global preto_meio
         with open('preto_meio.txt', "r") as ft:            # a lista de aprendizado serah "azul, verde, vermelho"
@@ -125,7 +127,7 @@ class Robot:
         with open('verde.txt', "r") as ft:            # a lista de aprendizado serah "azul, verde, vermelho"
             verde = ft.read().split(',')              # aqui, criamos uma lista de strings, cada elemento eh a cor
             verde.pop()
-            verde = [int(x) for x in verde]     # tornamos as strings em inteiros   
+            verde = [int(x) for x in verde]     # tornamos as strings em inteiros
     def abrirAprendizadoVerde_direito(self):
         global verde_direito
         with open('verde_direito.txt', "r") as ft:            # a lista de aprendizado serah "azul, verde, vermelho"
@@ -165,6 +167,7 @@ class Robot:
         left = self.se.raw
         right = self.sd.raw
         middle = self.sm.raw
+
         if preto_meio[0]<=middle[0] and preto_meio[1]>=middle[0] and preto_meio[2]<=middle[1] and preto_meio[3]>=middle[1] and preto_meio[4]<=middle[2] and preto_meio[5]>=middle[2]:
             meio = 1
         else:
@@ -222,7 +225,7 @@ class Robot:
             if(estado == States(1)): #caso NPP
                 if(d_verde == True):
                     #curva para a direita
-                    Robot.curva_direita(self,speed_curva,estado)
+                    Robot.curva_direita(self,speed_curva)
                 else:
                     #segue reto
                     Robot.go_forward(self,speed_reta,30)
@@ -230,7 +233,7 @@ class Robot:
             if(estado == States(2)): #caso PPN
                 if(e_verde == True):
                     #curva para a esquerda
-                    Robot.curva_esquerda(self,speed_curva,estado)
+                    Robot.curva_esquerda(self,speed_curva)
 
                 else:
                     #segue reto
@@ -243,11 +246,11 @@ class Robot:
             if(estado == States(4)): #caso PPP
                 if(e_verde == True and d_verde == False):
                     #curva para a esquerda
-                    Robot.curva_esquerda(self,speed_curva,estado)
+                    Robot.curva_esquerda(self,speed_curva)
 
                 elif(e_verde == False and d_verde == True):
                     #curva para a direita
-                    Robot.curva_direita(self,speed_curva,estado)
+                    Robot.curva_direita(self,speed_curva)
 
                 '''elif(e_verde == True and d_verde == True):
                     #Robot.meia_volta(self,600)
@@ -258,11 +261,11 @@ class Robot:
 
             if(estado == States(5)): #caso NNP
                 #curva para a direita
-                Robot.curva_direita(self,speed_curva,estado)
+                Robot.curva_direita(self,speed_curva)
 
             if(estado == States(6)): #caso PNN
                 #curva para a esquerda
-                Robot.curva_esquerda(self,speed_curva,estado)
+                Robot.curva_esquerda(self,speed_curva)
 
             if(estado == States(7)): #caso NNN
                 #segue reto
@@ -271,11 +274,11 @@ class Robot:
             if(estado == States(8)): #caso PNP
                 if(e_verde == True and d_verde == False):
                     #curva para a esquerda
-                    Robot.curva_esquerda(self,speed_curva,estado)
+                    Robot.curva_esquerda(self,speed_curva)
 
                 elif(e_verde == False and d_verde == True):
                     #curva para a direita
-                    Robot.curva_direita(self,speed_curva,estado)
+                    Robot.curva_direita(self,speed_curva)
 
                 elif(e_verde == True and d_verde == True):
                     meia_volta(self, 600)
@@ -303,8 +306,12 @@ verde_direito = [0,0,0,0,0,0]
 Corsa = Robot('outB','outD','in2','in3','in4')
 Corsa.abrirAprendizadoBranco()
 Corsa.abrirAprendizadoPreto()
+Corsa.abrirAprendizadoVerde()
 Corsa.abrirAprendizadoBranco_meio()
 Corsa.abrirAprendizadoPreto_meio()
-Corsa.follow_line(600,700)
+Corsa.abrirAprendizadoBranco_direito()
+Corsa.abrirAprendizadoPreto_direito()
+Corsa.abrirAprendizadoVerde_direito()
+Corsa.follow_line(600,500)
 
 
