@@ -54,8 +54,8 @@ class Robot:
         self.lm2.run_timed(speed_sp = 0, time_sp = time, stop_action = 'coast')
 
     def curva_esquerda(self,speed,estado):
-        self.lm1.run_timed(speed_sp = 0, time_sp = 500, stop_action = 'coast')
-        self.lm2.run_timed(speed_sp = 0, time_sp = 500, stop_action = 'coast')
+        #self.lm1.run_timed(speed_sp = 0, time_sp = 500, stop_action = 'coast')
+        #self.lm2.run_timed(speed_sp = 0, time_sp = 500, stop_action = 'coast')
         while(not(meio == 1)):
             Robot.verificaCor(self)
             Robot.verificaEstado(self)
@@ -65,8 +65,8 @@ class Robot:
             print(esquerdo, " ", meio, " ", direito, " ", estado)
 
     def curva_direita(self,speed,estado):
-        self.lm1.run_timed(speed_sp = 0, time_sp = 500, stop_action = 'coast')
-        self.lm2.run_timed(speed_sp = 0, time_sp = 500, stop_action = 'coast')
+        #self.lm1.run_timed(speed_sp = 0, time_sp = 500, stop_action = 'coast')
+        #self.lm2.run_timed(speed_sp = 0, time_sp = 500, stop_action = 'coast')
         while(not(meio == 1)):
             Robot.verificaCor(self)
             Robot.verificaEstado(self)
