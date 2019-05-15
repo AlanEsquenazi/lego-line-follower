@@ -15,10 +15,10 @@ def stop(time):
     lm1.run_timed(speed_sp = 0, time_sp = time, stop_action = 'coast')
     lm2.run_timed(speed_sp = 0, time_sp = time, stop_action = 'coast')
 
-def curva_esquerda(speed,time):
+def frente(speed,time):
     while(True):
         lm1.run_timed(speed_sp = -speed, time_sp = time, stop_action = 'coast')
-        lm2.run_timed(speed_sp = 0, time_sp = time, stop_action = 'coast')
+        lm2.run_timed(speed_sp = -speed, time_sp = time, stop_action = 'coast')
 
 
-curva_esquerda(600,60)
+frente(600,60)
