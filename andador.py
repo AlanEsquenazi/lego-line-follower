@@ -21,13 +21,14 @@ class States(Enum):
     PNP = 8
 
 class Robot:
-    def __init__(self,out1,out2,in1,in2,in3):
+    def __init__(self,out1,out2,in1,in2,in3, in4):
 
         self.lm1 = ev3.LargeMotor(out1); assert self.lm1.connected
         self.lm2 = ev3.LargeMotor(out2); assert self.lm2.connected
         self.se = ev3.ColorSensor(in1); assert self.se.connected
         self.sm = ev3.ColorSensor(in2); assert self.sm.connected
         self.sd = ev3.ColorSensor(in3); assert self.sd.connected
+        self.us = ev3.UltrasonicSensor(in4); assert self.us.connected
 
     def turn_left(self,speed,time):
         self.lm1.run_timed(speed_sp = speed, time_sp = time, stop_action = 'coast')
@@ -204,8 +205,18 @@ class Robot:
             estado = States(7)
         if(esquerdo == 1 and meio != 1 and direito == 1): #PNP
             estado = States(8)
-
-
+    def desvia_do_obstaculo(self, speed,time):
+        Robot.turn_right(self,speed,time)
+        Robot.go_forward(self,speed,time)
+        Robot.turn_left(self,speed,time)
+        Robot.go_forward(self,speed,time)
+        Robot.turn_left(self,speed,time)
+        Robot.go_forward(self,speed,time)
+        Robot.turn_right(self,speed,time)
+    def encontrar_obstaculo(self):
+        self.us.mode = 'US-DIST-CM'
+        if(self.us.value()<=50):
+            Robot.desvia_do_obstaculo(self, 600,950)
     def follow_line(self,speed_reta,speed_curva):
         while(True):
             global left
@@ -216,7 +227,7 @@ class Robot:
             global estado
             global e_verde
             global d_verde
-
+            Robot.encontrar_obstaculo(self)
             Robot.verificaCor(self)
             Robot.verificaEstado(self)
             Robot.verificaVerde(self)
