@@ -69,19 +69,19 @@ class Robot:
             Robot.stop(self,20)
             print(esquerdo, " ", meio, " ", direito, " ", estado)
     '''
-    def curva_esquerda(v_curva,pos_esq):
+    def curva_esquerda(self,v_curva,pos_esq):
         while(not(meio == 1)):
-            motorDir.run_to_rel_pos(position_sp = pos_esq, speed_sp = v_curva)
-            motorEsq.run_to_rel_pos(position_sp = - pos_esq, speed_sp = v_curva)
-            motorDir.wait_while("running")
-            motorEsq.wait_while("running")
-    def curva_direita(v_curva, pos_dir):
+            lm2.run_to_rel_pos(position_sp = pos_esq, speed_sp = v_curva)
+            lm1.run_to_rel_pos(position_sp = - pos_esq, speed_sp = v_curva)
+            lm2.wait_while("running")
+            lm1.wait_while("running")
+    def curva_direita(self,v_curva, pos_dir):
         print("curva direita")
         while(not(meio == 1)):
-            motorDir.run_to_rel_pos(position_sp = - pos_dir, speed_sp = v_curva)
-            motorEsq.run_to_rel_pos(position_sp = pos_dir, speed_sp = v_curva)
-            motorDir.wait_while("running")
-            motorEsq.wait_while("running")
+            lm2.run_to_rel_pos(position_sp = - pos_dir, speed_sp = v_curva)
+            lm1.run_to_rel_pos(position_sp = pos_dir, speed_sp = v_curva)
+            lm2.wait_while("running")
+            lm1.wait_while("running")
 
     '''def meia_volta(self,speed, lendo_preto = 0, conta=0):
         global direito
