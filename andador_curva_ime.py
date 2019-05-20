@@ -21,14 +21,15 @@ class States(Enum):
     PNP = 8
 
 class Robot:
-    def __init__(self,out1,out2,in1,in2,in3, in4):
+    #def __init__(self,out1,out2,in1,in2,in3, in4):
+    def __init__(self,out1,out2,in1,in2,in3):
 
         self.lm1 = ev3.LargeMotor(out1); assert self.lm1.connected
         self.lm2 = ev3.LargeMotor(out2); assert self.lm2.connected
         self.se = ev3.ColorSensor(in1); assert self.se.connected
         self.sm = ev3.ColorSensor(in2); assert self.sm.connected
         self.sd = ev3.ColorSensor(in3); assert self.sd.connected
-        self.us = ev3.UltrasonicSensor(in4); assert self.us.connected
+        #self.us = ev3.UltrasonicSensor(in4); assert self.us.connected
 
     def turn_left(self,speed,time):
         self.lm1.run_timed(speed_sp = speed, time_sp = time, stop_action = 'coast')
@@ -45,7 +46,7 @@ class Robot:
     def stop(self,time):
         self.lm1.run_timed(speed_sp = 0, time_sp = time, stop_action = 'coast')
         self.lm2.run_timed(speed_sp = 0, time_sp = time, stop_action = 'coast')
-
+    '''
     def curva_esquerda(self,speed):
         #self.lm1.run_timed(speed_sp = 0, time_sp = 500, stop_action = 'coast')
         #self.lm2.run_timed(speed_sp = 0, time_sp = 500, stop_action = 'coast')
@@ -67,6 +68,20 @@ class Robot:
             Robot.turn_right(self,speed, 60)
             Robot.stop(self,20)
             print(esquerdo, " ", meio, " ", direito, " ", estado)
+    '''
+    def curva_esquerda(v_curva,pos_esq):
+        while(not(meio == 1)):
+            motorDir.run_to_rel_pos(position_sp = pos_esq, speed_sp = v_curva)
+            motorEsq.run_to_rel_pos(position_sp = - pos_esq, speed_sp = v_curva)
+            motorDir.wait_while("running")
+            motorEsq.wait_while("running")
+    def curva_direita(v_curva, pos_dir):
+        print("curva direita")
+        while(not(meio == 1)):
+            motorDir.run_to_rel_pos(position_sp = - pos_dir, speed_sp = v_curva)
+            motorEsq.run_to_rel_pos(position_sp = pos_dir, speed_sp = v_curva)
+            motorDir.wait_while("running")
+            motorEsq.wait_while("running")
 
     '''def meia_volta(self,speed, lendo_preto = 0, conta=0):
         global direito
@@ -205,6 +220,7 @@ class Robot:
             estado = States(7)
         if(esquerdo == 1 and meio != 1 and direito == 1): #PNP
             estado = States(8)
+    '''
     def desvia_do_obstaculo(self, speed,time):
         Robot.turn_right(self,speed,time)
         Robot.go_forward(self,speed,time)
@@ -217,6 +233,7 @@ class Robot:
         self.us.mode = 'US-DIST-CM'
         if(self.us.value()<=50):
             Robot.desvia_do_obstaculo(self, 600,950)
+    '''
     def follow_line(self,speed_reta,speed_curva):
         while(True):
             global left
@@ -227,7 +244,7 @@ class Robot:
             global estado
             global e_verde
             global d_verde
-            Robot.encontrar_obstaculo(self)
+            #Robot.encontrar_obstaculo(self)
             Robot.verificaCor(self)
             Robot.verificaEstado(self)
             Robot.verificaVerde(self)
@@ -236,7 +253,7 @@ class Robot:
             if(estado == States(1)): #caso NPP
                 if(d_verde == True):
                     #curva para a direita
-                    Robot.curva_direita(self,speed_curva)
+                    Robot.curva_direita(self,speed_curva, 10)
                 else:
                     #segue reto
                     Robot.go_forward(self,speed_reta,30)
@@ -244,7 +261,7 @@ class Robot:
             if(estado == States(2)): #caso PPN
                 if(e_verde == True):
                     #curva para a esquerda
-                    Robot.curva_esquerda(self,speed_curva)
+                    Robot.curva_esquerda(self,speed_curva, 10)
 
                 else:
                     #segue reto
@@ -257,25 +274,26 @@ class Robot:
             if(estado == States(4)): #caso PPP
                 if(e_verde == True and d_verde == False):
                     #curva para a esquerda
-                    Robot.curva_esquerda(self,speed_curva)
+                    Robot.curva_esquerda(self,speed_curva, 10)
 
                 elif(e_verde == False and d_verde == True):
                     #curva para a direita
-                    Robot.curva_direita(self,speed_curva)
+                    Robot.curva_direita(self,speed_curva, 10)
 
                 '''elif(e_verde == True and d_verde == True):
                     #Robot.meia_volta(self,600)
+
                 #elif(e_verde == False and d_verde == False):
                     #procurar verde
                     '''
 
             if(estado == States(5)): #caso NNP
                 #curva para a direita
-                Robot.curva_direita(self,speed_curva)
+                Robot.curva_direita(self,speed_curva, 10)
 
             if(estado == States(6)): #caso PNN
                 #curva para a esquerda
-                Robot.curva_esquerda(self,speed_curva)
+                Robot.curva_esquerda(self,speed_curva, 10)
 
             if(estado == States(7)): #caso NNN
                 #segue reto
@@ -284,11 +302,11 @@ class Robot:
             if(estado == States(8)): #caso PNP
                 if(e_verde == True and d_verde == False):
                     #curva para a esquerda
-                    Robot.curva_esquerda(self,speed_curva)
+                    Robot.curva_esquerda(self,speed_curva, 10)
 
                 elif(e_verde == False and d_verde == True):
                     #curva para a direita
-                    Robot.curva_direita(self,speed_curva)
+                    Robot.curva_direita(self,speed_curva, 10)
 
                 elif(e_verde == True and d_verde == True):
                     meia_volta(self, 600)
@@ -323,3 +341,5 @@ Corsa.abrirAprendizadoBranco_direito()
 Corsa.abrirAprendizadoPreto_direito()
 Corsa.abrirAprendizadoVerde_direito()
 Corsa.follow_line(600,500)
+
+

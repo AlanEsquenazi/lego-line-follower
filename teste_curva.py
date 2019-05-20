@@ -22,7 +22,7 @@ def curva_esquerda(v_curva,pos_esq):
         motorEsq.wait_while("running")
 
 
-curva_esquerda(400,460)
+curva_esquerda(400,46)
 
 
 

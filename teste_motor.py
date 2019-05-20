@@ -19,6 +19,7 @@ def frente(speed,time):
     while(True):
         lm1.run_timed(speed_sp = -speed, time_sp = time, stop_action = 'coast')
         lm2.run_timed(speed_sp = -speed, time_sp = time, stop_action = 'coast')
+        stop(30)
 
 
 frente(600,60)
