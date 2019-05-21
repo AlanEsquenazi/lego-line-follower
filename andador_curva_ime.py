@@ -71,15 +71,21 @@ class Robot:
     '''
     def curva_esquerda(self,v_curva,pos_esq):
         while(not(meio == 1)):
-            lm2.run_to_rel_pos(position_sp = pos_esq, speed_sp = v_curva)
-            lm1.run_to_rel_pos(position_sp = - pos_esq, speed_sp = v_curva)
-            lm2.wait_while("running")
-            lm1.wait_while("running")
+            Robot.verificaCor(self)
+            Robot.verificaVerde(self)
+            print(esquerdo, " ", meio, " ", direito, " ", estado)
+            self.lm2.run_to_rel_pos(position_sp =  0, speed_sp = v_curva)
+            self.lm1.run_to_rel_pos(position_sp = pos_esq, speed_sp = v_curva)
+            self.lm2.wait_while("holding")
+            self.lm1.wait_while("running")
     def curva_direita(self,v_curva, pos_dir):
         print("curva direita")
         while(not(meio == 1)):
-            lm2.run_to_rel_pos(position_sp = - pos_dir, speed_sp = v_curva)
-            lm1.run_to_rel_pos(position_sp = pos_dir, speed_sp = v_curva)
+            Robot.verificaCor(self)
+            Robot.verificaVerde(self)
+            print(esquerdo, " ", meio, " ", direito, " ", estado)
+            lm2.run_to_rel_pos(position_sp =  pos_dir + 100, speed_sp = v_curva)
+            lm1.run_to_rel_pos(position_sp = - pos_dir, speed_sp = v_curva)
             lm2.wait_while("running")
             lm1.wait_while("running")
 
@@ -253,32 +259,32 @@ class Robot:
             if(estado == States(1)): #caso NPP
                 if(d_verde == True):
                     #curva para a direita
-                    Robot.curva_direita(self,speed_curva, 10)
+                    Robot.curva_direita(self,speed_curva, 150)
                 else:
                     #segue reto
-                    Robot.go_forward(self,speed_reta,30)
+                    Robot.go_forward(self,speed_reta,150)
 
             if(estado == States(2)): #caso PPN
                 if(e_verde == True):
                     #curva para a esquerda
-                    Robot.curva_esquerda(self,speed_curva, 10)
+                    Robot.curva_esquerda(self,speed_curva, 150)
 
                 else:
                     #segue reto
-                    Robot.go_forward(self,speed_reta,30)
+                    Robot.go_forward(self,speed_reta,150)
 
             if(estado == States(3)): #caso NPN
                 #segue reto
-                Robot.go_forward(self,speed_reta,30)
+                Robot.go_forward(self,speed_reta,150)
 
             if(estado == States(4)): #caso PPP
                 if(e_verde == True and d_verde == False):
                     #curva para a esquerda
-                    Robot.curva_esquerda(self,speed_curva, 10)
+                    Robot.curva_esquerda(self,speed_curva, 150)
 
                 elif(e_verde == False and d_verde == True):
                     #curva para a direita
-                    Robot.curva_direita(self,speed_curva, 10)
+                    Robot.curva_direita(self,speed_curva, 150)
 
                 '''elif(e_verde == True and d_verde == True):
                     #Robot.meia_volta(self,600)
@@ -289,24 +295,24 @@ class Robot:
 
             if(estado == States(5)): #caso NNP
                 #curva para a direita
-                Robot.curva_direita(self,speed_curva, 10)
+                Robot.curva_direita(self,speed_curva, 150)
 
             if(estado == States(6)): #caso PNN
                 #curva para a esquerda
-                Robot.curva_esquerda(self,speed_curva, 10)
+                Robot.curva_esquerda(self,speed_curva, 150)
 
             if(estado == States(7)): #caso NNN
                 #segue reto
-                Robot.go_forward(self,speed_reta,30)
+                Robot.go_forward(self,speed_reta,150)
 
             if(estado == States(8)): #caso PNP
                 if(e_verde == True and d_verde == False):
                     #curva para a esquerda
-                    Robot.curva_esquerda(self,speed_curva, 10)
+                    Robot.curva_esquerda(self,speed_curva, 150)
 
                 elif(e_verde == False and d_verde == True):
                     #curva para a direita
-                    Robot.curva_direita(self,speed_curva, 10)
+                    Robot.curva_direita(self,speed_curva, 150)
 
                 elif(e_verde == True and d_verde == True):
                     meia_volta(self, 600)
@@ -340,6 +346,6 @@ Corsa.abrirAprendizadoPreto_meio()
 Corsa.abrirAprendizadoBranco_direito()
 Corsa.abrirAprendizadoPreto_direito()
 Corsa.abrirAprendizadoVerde_direito()
-Corsa.follow_line(600,500)
+Corsa.follow_line(200,170)
 
 

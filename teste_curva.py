@@ -16,13 +16,14 @@ def stop(time):
     lm2.run_timed(speed_sp = 0, time_sp = time, stop_action = 'coast')
 
 def curva_esquerda(v_curva,pos_esq):
-        motorDir.run_to_rel_pos(position_sp = pos_esq, speed_sp = v_curva)
-        motorEsq.run_to_rel_pos(position_sp = - pos_esq, speed_sp = v_curva)
-        motorDir.wait_while("running")
-        motorEsq.wait_while("running")
+    while(True):
+            lm2.run_to_rel_pos(position_sp =  0, speed_sp = v_curva)
+            lm1.run_to_rel_pos(position_sp = pos_esq, speed_sp = v_curva)
+            lm2.wait_while("holding")
+            lm1.wait_while("running")
 
 
-curva_esquerda(400,46)
+curva_esquerda(170,150)
 
 
 
