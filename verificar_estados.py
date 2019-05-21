@@ -47,8 +47,6 @@ class Robot:
         print(esquerdo, " ", meio, " ", direito, " ", estado)
         self.lm2.run_to_rel_pos(position_sp =  0, speed_sp = v_curva)
         self.lm1.run_to_rel_pos(position_sp = pos_esq, speed_sp = v_curva)
-        self.lm2.wait_while("holding")
-        self.lm1.wait_while("running")
 
     def curva_direita(self,v_curva, pos_dir):
         print("curva direita")
@@ -58,8 +56,7 @@ class Robot:
         print(esquerdo, " ", meio, " ", direito, " ", estado)
         self.lm2.run_to_rel_pos(position_sp =  pos_dir, speed_sp = v_curva)
         self.lm1.run_to_rel_pos(position_sp = 0, speed_sp = v_curva)
-        lm2.wait_while("running")
-        lm1.wait_while("holding")
+
 
     '''def meia_volta(self,speed, lendo_preto = 0, conta=0):
         global direito
@@ -184,7 +181,9 @@ class Robot:
         global estado
 
         if(estado == States(-1)):
-            if(esquerdo != 1 and meio != 1 and direito != 1): #BBB
+            if(meio == 1):
+                estado = States(0)
+            elif(esquerdo != 1 and meio != 1 and direito != 1): #BBB
                 estado = States(0)
             elif(esquerdo != 1 and meio == 1 and direito != 1): #BPB
                 estado = States(0)
@@ -197,7 +196,7 @@ class Robot:
             '''elif(esquerdo == 1 and meio == 1 and direito == 1): #PPP
                  ???'''
             #BBP e BPP não tem transição direta -> viram para a direita
-        if(estado == States(0)):
+        elif(estado == States(0)):
             if(esquerdo != 1 and meio != 1 and direito != 1): #BBB
                 estado = States(0)
             elif(esquerdo != 1 and meio != 1 and direito == 1): #BBP
@@ -215,8 +214,10 @@ class Robot:
             '''elif(esquerdo == 1 and meio == 1 and direito == 1): #PPP
                  ???'''
 
-        if(estado == States(1)):
-            if(esquerdo != 1 and meio != 1 and direito != 1): #BBB
+        elif(estado == States(1)):
+            if(meio == 1):
+                estado = States(0)
+            elif(esquerdo != 1 and meio != 1 and direito != 1): #BBB
                 estado = States(0)
             elif(esquerdo != 1 and meio != 1 and direito == 1): #BBP
                 estado = States(1)
@@ -233,7 +234,7 @@ class Robot:
 
 
     def escrever_estados(self):
-        with open('estados.txt', "w") as arquivo:
+        with open('estados.txt', "a") as arquivo:
             arquivo.write(str(esquerdo))
             arquivo.write(" ")
             arquivo.write(",")
