@@ -8,17 +8,9 @@ from time import sleep
 from time import time
 
 class States(Enum):
-    '''P = preto
-    N = not(preto)'''
-
-    NPP = 1
-    PPN = 2
-    NPN = 3
-    PPP = 4
-    NNP = 5
-    PNN = 6
-    NNN = 7
-    PNP = 8
+    Esquerda = -1
+    Andar reto = 0
+    Direita = 1
 
 class Robot:
     #def __init__(self,out1,out2,in1,in2,in3, in4):
@@ -46,30 +38,9 @@ class Robot:
     def stop(self,time):
         self.lm1.run_timed(speed_sp = 0, time_sp = time, stop_action = 'coast')
         self.lm2.run_timed(speed_sp = 0, time_sp = time, stop_action = 'coast')
-    '''
-    def curva_esquerda(self,speed):
-        #self.lm1.run_timed(speed_sp = 0, time_sp = 500, stop_action = 'coast')
-        #self.lm2.run_timed(speed_sp = 0, time_sp = 500, stop_action = 'coast')
-        while(not(meio == 1)):
-            Robot.verificaCor(self)
-            Robot.verificaEstado(self)
-            Robot.verificaVerde(self)
-            Robot.turn_left(self,speed, 60)
-            Robot.stop(self,30)
-            print(esquerdo, " ", meio, " ", direito, " ", estado)
 
-    def curva_direita(self,speed):
-        #self.lm1.run_timed(speed_sp = 0, time_sp = 500, stop_action = 'coast')
-        #self.lm2.run_timed(speed_sp = 0, time_sp = 500, stop_action = 'coast')
-        while(not(meio == 1)):
-            Robot.verificaCor(self)
-            Robot.verificaEstado(self)
-            Robot.verificaVerde(self)
-            Robot.turn_right(self,speed, 60)
-            Robot.stop(self,20)
-            print(esquerdo, " ", meio, " ", direito, " ", estado)
-    '''
     def curva_esquerda(self,v_curva,pos_esq):
+        print("curva esquerda")
         while(not(meio == 1)):
             Robot.verificaCor(self)
             Robot.verificaVerde(self)
@@ -78,16 +49,17 @@ class Robot:
             self.lm1.run_to_rel_pos(position_sp = pos_esq, speed_sp = v_curva)
             self.lm2.wait_while("holding")
             self.lm1.wait_while("running")
+
     def curva_direita(self,v_curva, pos_dir):
         print("curva direita")
         while(not(meio == 1)):
             Robot.verificaCor(self)
             Robot.verificaVerde(self)
             print(esquerdo, " ", meio, " ", direito, " ", estado)
-            lm2.run_to_rel_pos(position_sp =  pos_dir + 100, speed_sp = v_curva)
-            lm1.run_to_rel_pos(position_sp = - pos_dir, speed_sp = v_curva)
+            self.lm2.run_to_rel_pos(position_sp =  pos_dir, speed_sp = v_curva)
+            self.lm1.run_to_rel_pos(position_sp = 0, speed_sp = v_curva)
             lm2.wait_while("running")
-            lm1.wait_while("running")
+            lm1.wait_while("holding")
 
     '''def meia_volta(self,speed, lendo_preto = 0, conta=0):
         global direito
@@ -210,23 +182,55 @@ class Robot:
         global direito
         global meio
         global estado
-        if(esquerdo != 1 and meio == 1 and direito == 1): #NPP
-            estado = States(1)
-        if(esquerdo == 1 and meio == 1 and direito != 1): #PPN
-            estado = States(2)
-        if(esquerdo != 1 and meio == 1 and direito != 1): #NPN
-            estado = States(3)
-        if(esquerdo == 1 and meio == 1 and direito == 1): #PPP
-            estado = States(4)
-        if(esquerdo != 1 and meio != 1 and direito == 1): #NNP
-            estado = States(5)
-        if(esquerdo == 1 and meio != 1 and direito != 1): #PNN
-            estado = States(6)
-        if(esquerdo != 1 and meio != 1 and direito != 1): #NNN
-            estado = States(7)
-        if(esquerdo == 1 and meio != 1 and direito == 1): #PNP
-            estado = States(8)
-    '''
+
+        if(estado == States(-1)):
+            if(esquerdo != 1 and meio != 1 and direito != 1): #BBB
+                estado = States(0)
+            elif(esquerdo != 1 and meio == 1 and direito != 1): #BPB
+                estado = States(0)
+            elif(esquerdo == 1 and meio != 1 and direito != 1): #PBB
+                estado = States(-1)
+            elif(esquerdo == 1 and meio == 1 and direito != 1): #PPB
+                estado = States(-1)
+            '''elif(esquerdo == 1 and meio == 1 and direito != 1): #PBP
+                ?? '''
+            '''elif(esquerdo == 1 and meio == 1 and direito == 1): #PPP
+                 ???'''
+            #BBP e BPP não tem transição direta -> viram para a direita
+        if(estado == States(0)):
+            if(esquerdo != 1 and meio != 1 and direito != 1): #BBB
+                estado = States(0)
+            elif(esquerdo != 1 and meio != 1 and direito == 1): #BBP
+                estado = States(1)
+            elif(esquerdo != 1 and meio == 1 and direito != 1): #BPB
+                estado = States(0)
+            elif(esquerdo == 1 and meio != 1 and direito != 1): #PBB
+                estado = States(-1)
+            elif(esquerdo == 1 and meio == 1 and direito != 1): #PPB
+                estado = States(-1)
+            '''elif(esquerdo == 1 and meio == 1 and direito != 1): #PBP
+                ?? '''
+            elif(esquerdo != 1 and meio == 1 and direito == 1):
+                estado = States(1)
+            '''elif(esquerdo == 1 and meio == 1 and direito == 1): #PPP
+                 ???'''
+
+        if(estado == States(1)):
+            if(esquerdo != 1 and meio != 1 and direito != 1): #BBB
+                estado = States(0)
+            elif(esquerdo != 1 and meio != 1 and direito == 1): #BBP
+                estado = States(1)
+            elif(esquerdo != 1 and meio == 1 and direito != 1): #BPB
+                estado = States(0)
+            '''elif(esquerdo == 1 and meio == 1 and direito != 1): #PBP
+                ?? '''
+            elif(esquerdo != 1 and meio == 1 and direito == 1):
+                estado = States(1)
+            '''elif(esquerdo == 1 and meio == 1 and direito == 1): #PPP
+                 ???'''
+            #PBB e PPB não tem transição direta -> viram para a esquerda
+
+
     def desvia_do_obstaculo(self, speed,time):
         Robot.turn_right(self,speed,time)
         Robot.go_forward(self,speed,time)
