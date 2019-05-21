@@ -7,8 +7,8 @@ from enum import Enum
 from time import sleep
 from time import time
 
-motorEsq = ev3.LargeMotor('outB'); assert motorEsq.connected
-motorDir = ev3.LargeMotor('outD'); assert motorDir.connected
+lm1 = ev3.LargeMotor('outB'); assert lm1.connected
+lm2 = ev3.LargeMotor('outD'); assert lm2.connected
 
 
 def stop(time):

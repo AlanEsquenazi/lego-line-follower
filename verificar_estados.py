@@ -229,21 +229,26 @@ class Robot:
             '''elif(esquerdo == 1 and meio == 1 and direito == 1): #PPP
                  ???'''
             #PBB e PPB não tem transição direta -> viram para a esquerda
+        Robot.escrever_estados(self)
 
 
-    '''def desvia_do_obstaculo(self, speed,time):
-        Robot.turn_right(self,speed,time)
-        Robot.go_forward(self,speed,time)
-        Robot.turn_left(self,speed,time)
-        Robot.go_forward(self,speed,time)
-        Robot.turn_left(self,speed,time)
-        Robot.go_forward(self,speed,time)
-        Robot.turn_right(self,speed,time)
-    def encontrar_obstaculo(self):
-        self.us.mode = 'US-DIST-CM'
-        if(self.us.value()<=50):
-            Robot.desvia_do_obstaculo(self, 600,950)
-    '''
+    def escrever_estados(self):
+        with open('estados.txt', "w") as arquivo:
+            arquivo.write(str(esquerdo))
+            arquivo.write(" ")
+            arquivo.write(",")
+            arquivo.write(" ")
+            arquivo.write(str(meio))
+            arquivo.write(" ")
+            arquivo.write(",")
+            arquivo.write(" ")
+            arquivo.write(str(direito))
+            arquivo.write(" ")
+            arquivo.write(",")
+            arquivo.write(" ")
+            arquivo.write(str(estado))
+            arquivo.write("\n")
+
     def follow_line(self,speed_reta,speed_curva):
         while(True):
             global left
