@@ -45,10 +45,9 @@ class Robot:
         Robot.verificaEstado(self)
         Robot.verificaVerde(self)
         print(esquerdo, " ", meio, " ", direito, " ", estado)
-        self.lm2.run_to_rel_pos(position_sp =  0, speed_sp = v_curva)
+        self.lm2.run_to_rel_pos(position_sp = -pos_esq, speed_sp = v_curva)
         self.lm1.run_to_rel_pos(position_sp = pos_esq, speed_sp = v_curva)
-        self.lm1.wait_while('running')
-        self.lm2.wait_while('running')
+        self.lm1.wait_while("running")
 
     def curva_direita(self,v_curva, pos_dir):
         print("curva direita")
@@ -57,9 +56,8 @@ class Robot:
         Robot.verificaVerde(self)
         print(esquerdo, " ", meio, " ", direito, " ", estado)
         self.lm2.run_to_rel_pos(position_sp =  pos_dir, speed_sp = v_curva)
-        self.lm1.run_to_rel_pos(position_sp = 0, speed_sp = v_curva)
-        lm2.wait_while("running")
-        lm1.wait_while("running")
+        self.lm1.run_to_rel_pos(position_sp =  -pos_dir, speed_sp = v_curva)
+        self.lm2.wait_while("running")
 
     '''def meia_volta(self,speed, lendo_preto = 0, conta=0):
         global direito
@@ -186,8 +184,8 @@ class Robot:
         if(estado == States(-1)):
             if(meio == 1):
                 estado = States(0)
-            elif(esquerdo != 1 and meio != 1 and direito != 1): #BBB
-                estado = States(0)
+            #elif(esquerdo != 1 and meio != 1 and direito != 1): #BBB
+            #    estado = States(0)
             elif(esquerdo != 1 and meio == 1 and direito != 1): #BPB
                 estado = States(0)
             elif(esquerdo == 1 and meio != 1 and direito != 1): #PBB
@@ -220,19 +218,20 @@ class Robot:
         elif(estado == States(1)):
             if(meio == 1):
                 estado = States(0)
-            elif(esquerdo != 1 and meio != 1 and direito != 1): #BBB
-                estado = States(0)
+            #elif(esquerdo != 1 and meio != 1 and direito != 1): #BBB
+            #    estado = States(0)
             elif(esquerdo != 1 and meio != 1 and direito == 1): #BBP
                 estado = States(1)
             elif(esquerdo != 1 and meio == 1 and direito != 1): #BPB
                 estado = States(0)
-            elif(esquerdo != 1 and meio == 1 and direito == 1):
+            elif(esquerdo != 1 and meio == 1 and direito == 1): #PBB
                 estado = States(1)
             '''elif(esquerdo == 1 and meio == 1 and direito != 1): #PBP
                 ?? '''
             '''elif(esquerdo == 1 and meio == 1 and direito == 1): #PPP
                  ???'''
             #PBB e PPB não tem transição direta -> viram para a esquerda
+
         Robot.escrever_estados(self)
 
 
