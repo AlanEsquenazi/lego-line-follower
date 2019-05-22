@@ -19,7 +19,7 @@ def curva_esquerda(v_curva,pos_esq):
     while(True):
             lm2.run_to_rel_pos(position_sp =  0, speed_sp = v_curva, stop_action = 'hold')
             lm1.run_to_rel_pos(position_sp = pos_esq, speed_sp = v_curva)
-            lm2.wait_while("holding")
+            lm2.wait_while("running")
             lm1.wait_while("running")
 
 
