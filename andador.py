@@ -1,325 +1,660 @@
 #!/usr/bin/env python3
 # coding: utf-8
+
 import ev3dev.ev3 as ev3
-from ev3dev.ev3 import *
-from enum import Enum
 #from multiprocessing import Process
 from time import sleep
 from time import time
+velocidade = -500
+v_ajeita = -100
 
-class States(Enum):
-    '''P = preto
-    N = not(preto)'''
+deltaDir = -200         # delta de velocidade ao ajeitar caminho
+deltaEsq = -200
+v_curva = -300          # velocidade em curvas
 
-    NPP = 1
-    PPN = 2
-    NPN = 3
-    PPP = 4
-    NNP = 5
-    PNN = 6
-    NNN = 7
-    PNP = 8
+pos_dir = 413           # as curvas
+pos_esq = 411
+pos_volta = 842         # quantidade angular de giro dos motores para
 
+t = 3000                 # tempo do andaReto()
+x_avancar = -300        # avanco ao chegar na lajota (ideal 250)
+x_cor = -340
+x_inicio = -550
+
+avanco_bonecos = 500
+avanco_pre_0 = 320
+avanco_pre_1 = 320
+
+dist_bonecos = 160
+
+branco = [11, 12, 13, 14, 15, 16, 17]
+corLat = [0, 2, 3, 4, 5]
+
+lm1 = ev3.LargeMotor('outA')
+lm2 = ev3.LargeMotor('outB')
+
+
+lm1.run_timed(speed_sp = velocidade -20, time_sp = t, stop_action = 'coast')
+lm2.run_timed(speed_sp = velocidade -20, time_sp = t, stop_action = 'coast')
+sleep(1)
+#lm1.run_timed(speed_sp = velocidade -20, time_sp = t, stop_action = 'coast')
+sleep(1)
+#lm2.run_timed(speed_sp = velocidade -20, time_sp = t, stop_action = 'coast')
+sleep(1)
+steer_pair = ev3.MoveSteering('outA', 'outB', motor_class=LargeMotor)
+#steer_pair.on_for_seconds(steering=-100, speed=50, seconds=2)
+'''
+motorEsq = ev3.LargeMotor('outC'); assert motorEsq.connected
+motorDir = ev3.LargeMotor('outB'); assert motorDir.connected
+motorGarra = ev3.MediumMotor('outA'); assert motorGarra.connected
+motorCatapulta =  ev3.MediumMotor('outD'); assert motorCatapulta.connected
+corEsq = ev3.ColorSensor('in4'); assert corEsq.connected
+corEsq.mode = 'COL-COLOR'
+corDir = ev3.ColorSensor('in1'); assert corDir.connected
+corDir.mode = 'COL-COLOR'
+corCheck = ev3.Sensor(address = 'in2', driver_name = 'ht-nxt-color-v2')
+corCheck.mode = 'ALL'
+ultrassom = ev3.UltrasonicSensor('in3'); assert ultrassom.connected
+ultrassom.mode = 'US-DIST-CM'
+velocidade = -500
+v_ajeita = -100
+deltaDir = -200         # delta de velocidade ao ajeitar caminho
+deltaEsq = -200
+v_curva = -300          # velocidade em curvas
+pos_dir = 413           # as curvas
+pos_esq = 411
+pos_volta = 842         # quantidade angular de giro dos motores para
+t = 100                 # tempo do andaReto()
+x_avancar = -300        # avanco ao chegar na lajota (ideal 250)
+x_cor = -340
+x_inicio = -550
+avanco_bonecos = 500
+avanco_pre_0 = 320
+avanco_pre_1 = 320
+dist_bonecos = 160
+branco = [11, 12, 13, 14, 15, 16, 17]
+corLat = [0, 2, 3, 4, 5]
 class Robot:
-    def __init__(self,out1,out2,in1,in2,in3):
-
-        self.lm1 = ev3.LargeMotor(out1); assert self.lm1.connected
-        self.lm2 = ev3.LargeMotor(out2); assert self.lm2.connected
-        self.se = ev3.ColorSensor(in1); assert self.se.connected
-        self.sm = ev3.ColorSensor(in2); assert self.sm.connected
-        self.sd = ev3.ColorSensor(in3); assert self.sd.connected
-        #self.us = ev3.UltrasonicSensor(in4); assert self.us.connected
-
-    def turn_left(self,speed,time):
-        self.lm1.run_timed(speed_sp = speed, time_sp = time, stop_action = 'coast')
-        self.lm2.run_timed(speed_sp = 0, time_sp = time, stop_action = 'coast')
-
-    def turn_right(self,speed,time):
-        self.lm1.run_timed(speed_sp = 0, time_sp = time, stop_action = 'coast')
-        self.lm2.run_timed(speed_sp = speed, time_sp = time, stop_action = 'coast')
-
-    def go_forward(self,speed,time):
-        self.lm1.run_timed(speed_sp = -speed, time_sp = time, stop_action = 'coast')
-        self.lm2.run_timed(speed_sp = -speed, time_sp = time, stop_action = 'coast')
-
-    def stop(self,time):
-        self.lm1.run_timed(speed_sp = 0, time_sp = time, stop_action = 'coast')
-        self.lm2.run_timed(speed_sp = 0, time_sp = time, stop_action = 'coast')
-
-    def curva_esquerda(self,speed):
-        #self.lm1.run_timed(speed_sp = 0, time_sp = 500, stop_action = 'coast')
-        #self.lm2.run_timed(speed_sp = 0, time_sp = 500, stop_action = 'coast')
-        while(not(meio == 1)):
-            Robot.verificaCor(self)
-            Robot.verificaEstado(self)
-            Robot.verificaVerde(self)
-            Robot.turn_left(self,speed, 60)
-            Robot.stop(self,30)
-            print(esquerdo, " ", meio, " ", direito, " ", estado)
-
-    def curva_direita(self,speed):
-        #self.lm1.run_timed(speed_sp = 0, time_sp = 500, stop_action = 'coast')
-        #self.lm2.run_timed(speed_sp = 0, time_sp = 500, stop_action = 'coast')
-        while(not(meio == 1)):
-            Robot.verificaCor(self)
-            Robot.verificaEstado(self)
-            Robot.verificaVerde(self)
-            Robot.turn_right(self,speed, 60)
-            Robot.stop(self,20)
-            print(esquerdo, " ", meio, " ", direito, " ", estado)
-
-    '''def meia_volta(self,speed, lendo_preto = 0, conta=0):
-        global direito
-        if not conta==2:
-            Robot.curva_direita(self, speed, 50)
-            Robot.verificaCor(self)
-            if meio==1:
-                    meia_volta(self, speed, 1,conta)
-            if meio==0 and lendo_preto==1:
-                    meia_volta(self,speed,0, 1)
-            if meio==1 and conta==1:
-                meia_volta(self,speed,1,2)'''
-
-
-    def abrirAprendizadoBranco(self):
-        global branco
-        with open('branco.txt', "r") as ft:            # a lista de aprendizado serah "azul, verde, vermelho"
-            branco = ft.read().split(',')              # aqui, criamos uma lista de strings, cada elemento eh a cor
-            branco.pop()
-            branco = [int(x) for x in branco]     # tornamos as strings em inteiros
-
-    def abrirAprendizadoBranco_direito(self):
-        global branco_direito
-        with open('branco_direito.txt', "r") as ft:            # a lista de aprendizado serah "azul, verde, vermelho"
-            branco_direito = ft.read().split(',')              # aqui, criamos uma lista de strings, cada elemento eh a cor
-            branco_direito.pop()
-            branco_direito = [int(x) for x in branco_direito]     # tornamos as strings em inteiros
-
-    def abrirAprendizadoBranco_meio(self):
-        global branco_meio
-        with open('branco_meio.txt', "r") as ft:            # a lista de aprendizado serah "azul, verde, vermelho"
-            branco_meio = ft.read().split(',')              # aqui, criamos uma lista de strings, cada elemento eh a cor
-            branco_meio.pop()
-            branco_meio = [int(x) for x in branco_meio]     # tornamos as strings em inteiros
-
-    def abrirAprendizadoPreto(self):
-        global preto
-        with open('preto.txt', "r") as ft:            # a lista de aprendizado serah "azul, verde, vermelho"
-            preto = ft.read().split(',')              # aqui, criamos uma lista de strings, cada elemento eh a cor
-            preto.pop()
-            preto = [int(x) for x in preto]     # tornamos as strings em inteiros
-
-    def abrirAprendizadoPreto_direito(self):
-        global preto_direito
-        with open('preto_direito.txt', "r") as ft:            # a lista de aprendizado serah "azul, verde, vermelho"
-            preto_direito = ft.read().split(',')              # aqui, criamos uma lista de strings, cada elemento eh a cor
-            preto_direito.pop()
-            preto_direito = [int(x) for x in preto_direito]     # tornamos as strings em inteiros
-
-    def abrirAprendizadoPreto_meio(self):
-        global preto_meio
-        with open('preto_meio.txt', "r") as ft:            # a lista de aprendizado serah "azul, verde, vermelho"
-            preto_meio = ft.read().split(',')              # aqui, criamos uma lista de strings, cada elemento eh a cor
-            preto_meio.pop()
-            preto_meio = [int(x) for x in preto_meio]     # tornamos as strings em inteiros
-
-    def abrirAprendizadoVerde(self):
-        global verde
-        with open('verde.txt', "r") as ft:            # a lista de aprendizado serah "azul, verde, vermelho"
-            verde = ft.read().split(',')              # aqui, criamos uma lista de strings, cada elemento eh a cor
-            verde.pop()
-            verde = [int(x) for x in verde]     # tornamos as strings em inteiros
-    def abrirAprendizadoVerde_direito(self):
-        global verde_direito
-        with open('verde_direito.txt', "r") as ft:            # a lista de aprendizado serah "azul, verde, vermelho"
-            verde_direito = ft.read().split(',')              # aqui, criamos uma lista de strings, cada elemento eh a cor
-            verde_direito.pop()
-            verde_direito = [int(x) for x in verde_direito]     # tornamos as strings em inteiros
-
-    def verificaVerde(self):
-        global e_verde
-        global d_verde
-        global verde
-        global verde_direito
-
-        if verde[0]<=left[0] and verde[1]>=left[0] and verde[2]<=left[1] and verde[3]>=left[1] and verde[4]<=left[2] and verde[5]>=left[2]:
-            e_verde= True
-        elif esquerdo == 0:
-            e_verde = False
-        if verde_direito[0]<=right[0] and verde_direito[1]>=right[0] and verde_direito[2]<=right[1] and verde_direito[3]>=right[1] and verde_direito[4]<=right[2] and verde_direito[5]>=right[2]:
-            d_verde = True
-        elif direito == 0:
-            d_verde = False
-
-    def verificaCor(self):
-        # 1 preto e 0 branco
-        global branco
-        global branco_meio
-        global branco_direito
-        global preto
-        global preto_meio
-        global preto_direito
-        global left
-        global right
-        global middle
-        global esquerdo
-        global direito
-        global meio
-        left = self.se.raw
-        right = self.sd.raw
-        middle = self.sm.raw
-
-        if preto_meio[0]<=middle[0] and preto_meio[1]>=middle[0] and preto_meio[2]<=middle[1] and preto_meio[3]>=middle[1] and preto_meio[4]<=middle[2] and preto_meio[5]>=middle[2]:
-            meio = 1
+    def __init__(self):
+        self.corAntiga = 47      # ao chegar em cor, indica o valor da cor vista antes (pode ser preto)
+        self.contador = -1       ## conta quantas vezes o robot testou a cor; se acertar a direcao, zera o contador
+        self.ida = 0            # Faremos ida += 1 quando chegarmos no fim do percurso
+        self.ladrilhos = 0      # Checa numero de ladrilhos
+        self.bonecos = 0
+        self.rampa_pos = -1
+        self.rampa_bool = False
+        self.plaza = True
+        self.variavel = -1      # para fazer o botao de ativar o
+        self.andaRetoRe = -1    # pra andaretore
+        self.aprendizado = [47, 47, 47]
+robot = Robot()
+def abrirAprendizado():
+    ## try: tenta abrir um arquivo de aprendizado
+    try:
+        with open("aprendizado.txt", "r") as ft:            # a lista de aprendizado serah "azul, verde, vermelho"
+            robot.aprendizado = ft.read().split(',')              # aqui, criamos uma lista de strings, cada elemento eh a cor
+            robot.aprendizado.pop()
+            for x in robot.aprendizado:
+                print("x", x, "int(x)", int(x))
+            robot.aprendizado = [int(x) for x in robot.aprendizado]     # tornamos as strings em inteiros
+    except:
+        robot.aprendizado = [47, 47, 47]                         # caso nao haja arquivo, criamos a lista
+    return robot.aprendizado                                  # Retorna a lista "aprendizado"
+def salvarAprendizado(aprendizado):
+    with open("aprendizado.txt", "w") as fw:
+        for cor in aprendizado:
+            fw.write("%s," % cor)
+def reverte(aprendizado):
+    return [(-1)*i for i in aprendizado]
+robot.aprendizado = abrirAprendizado()
+def andaReto(velocidade = velocidade):
+    # Testar NO-COLOR nos sensores para ajeitar o caminho
+    if corDir.value() in [0, 1]:
+        motorEsq.run_timed(speed_sp = velocidade -20, time_sp = t, stop_action = 'coast')
+        motorDir.run_timed(speed_sp = velocidade - deltaEsq, time_sp = t, stop_action = 'coast')
+    if corEsq.value() in [0, 1]:
+        motorDir.run_timed(speed_sp = velocidade -10, time_sp = t, stop_action = 'coast')
+        motorEsq.run_timed(speed_sp = velocidade - deltaDir, time_sp = t, stop_action = 'coast')
+    else:
+        motorEsq.run_timed(speed_sp = velocidade, time_sp = t, stop_action = 'coast')
+        motorDir.run_timed(speed_sp = velocidade, time_sp = t, stop_action = 'coast')
+def andaRetoRe(x):
+    if x == 0:
+        # Testar NO-COLOR nos sensores para ajeitar o caminho
+        if corDir.value() in [0, 1]:
+            motorEsq.run_timed(speed_sp = -velocidade +20, time_sp = t)
+            motorDir.run_timed(speed_sp = -velocidade + deltaEsq, time_sp = t)
+            if robot.andaRetoRe == -1:
+                robot.andaRetoRe = 0 #direita
+        if corEsq.value() in [0, 1]:
+            motorDir.run_timed(speed_sp = -velocidade +10, time_sp = t)
+            motorEsq.run_timed(speed_sp = -velocidade + deltaDir, time_sp = t)
+            if robot.andaRetoRe == -1:
+                robot.andaRetoRe = 2 #esquerda
         else:
-            meio = 0
-
-        if preto[0]<=left[0] and preto[1]>=left[0] and preto[2]<=left[1] and preto[3]>=left[1] and preto[4]<=left[2] and preto[5]>=left[2]:
-            esquerdo = 1
+            motorEsq.run_timed(speed_sp = -velocidade, time_sp = t)
+            motorDir.run_timed(speed_sp = -velocidade, time_sp = t)
+    if x == 1:
+        if robot.andaRetoRe == 2:
+            motorEsq.run_timed(speed_sp = -velocidade, time_sp = t)
+#            motorDir.run_timed(speed_sp = 0, time_sp = t)
+        if robot.andaRetoRe == 0:
+            motorDir.run_timed(speed_sp = -velocidade, time_sp = t)
+#            motorEsq.run_timed(speed_sp = 0, time_sp = t)
+        if robot.andaRetoRe == -1:
+            motorEsq.run_timed(speed_sp = -velocidade, time_sp = t)
+            motorDir.run_timed(speed_sp = -velocidade, time_sp = t)
+def saindoReto(velocidade = velocidade/1.5, branco = branco, lista = [0,1], listas = [6], alinhar = True, tempo = False):
+    print("saindo reto")
+    while(atribuiCor(corCheck.value()) not in branco):                                       ## MUDOU: era != 6 agora é not in branco
+        motorEsq.run_timed(speed_sp = velocidade, time_sp = t)
+        motorDir.run_timed(speed_sp = velocidade, time_sp = t)
+            # Testar NO-COLOR nos sensores para ajeitar o caminho
+        if corDir.value() in lista:
+            motorEsq.run_timed(speed_sp = velocidade - 20, time_sp = t)
+            motorDir.run_timed(speed_sp = velocidade - deltaEsq, time_sp = t)
+        if corEsq.value() in lista:
+            motorDir.run_timed(speed_sp = velocidade - 10, time_sp = t)
+            motorEsq.run_timed(speed_sp = velocidade - deltaDir, time_sp = t)
+    #alinhaCor_sai()
+    if alinhar == True:
+        print("u")
+        alinhamento_sai(listas = listas)
+        saindoReto(alinhar = False)
+#        while atribuiCor(corCheck.value()) not in branco:
+#            avancar(-20, velocidade = -100)
+#funcao seguir frente dependendo da necessidade
+def avancar(x_avancar, velocidade = velocidade/1.5):
+    print("avancando")
+    motorDir.run_to_rel_pos(position_sp = x_avancar, speed_sp = velocidade)
+    motorEsq.run_to_rel_pos(position_sp = x_avancar, speed_sp = velocidade)
+    motorDir.wait_while("running")
+    motorEsq.wait_while("running")
+#funcao curva direita
+def curvaDir(pos_dir = pos_dir):
+    print("curva direita")
+    motorDir.run_to_rel_pos(position_sp = - pos_dir, speed_sp = v_curva)
+    motorEsq.run_to_rel_pos(position_sp = pos_dir, speed_sp = v_curva)
+    motorDir.wait_while("running")
+    motorEsq.wait_while("running")
+#funcao curva esquerda
+def curvaEsq(pos_esq = pos_esq):
+    print("curva esquerda")
+    motorDir.run_to_rel_pos(position_sp = pos_esq, speed_sp = v_curva)
+    motorEsq.run_to_rel_pos(position_sp = - pos_esq, speed_sp = v_curva)
+    motorDir.wait_while("running")
+    motorEsq.wait_while("running")
+def meiaVolta():
+    print("meia volta")
+    curvaDir(pos_volta)
+def parar():
+    print("parou")
+    sleep(0.2)
+    motorDir.stop(stop_action = "coast")
+    motorEsq.stop(stop_action = "coast")
+    sleep(0.2)
+def atribuiCor(cor):
+    if cor in [2, 3]:
+        return 2
+    if cor in [8, 9, 10]:
+        return 8
+    if cor in [4, 5]:
+        return 4
+    if cor in branco:
+        return 17
+    if cor == 0:
+        return 4
+def associaCor(corDoSensor):
+    if atribuiCor(corDoSensor) == 2:
+        return 0
+    elif atribuiCor(corDoSensor) == 4:
+        return 1
+    elif atribuiCor(corDoSensor) == 8:
+        return 2
+def sabeCor(cor):
+    # comeca com [47, 47, 47]
+    if cor == 47:
+        return True
+    if robot.aprendizado[associaCor(cor)] == 47:
+        return False
+    else:
+        return True
+def executaCor(corr):
+    corx = atribuiCor(corr)
+    indice = associaCor(corx)
+    avancar(x_cor + 150); sleep(0.2)
+    if robot.rampa_pos != -1:
+        avancar(x_avancar); sleep(0.2)
+    if robot.aprendizado[indice] == -1:         # aprendizado.index(cor) da o indice da 'cor'
+        #avancar(-x_cor); sleep(0.2)
+        curvaDir()                          # temos indice 0 pra direita, 1 pra frente, 2 pra esquerda
+        saindoReto(lista = [0,6])
+    elif robot.aprendizado[indice] == 0:
+        saindoReto(lista=[0,6])
+    elif robot.aprendizado[indice] == 1:
+        #avancar(-x_cor); sleep(0.2)
+        curvaEsq()
+        saindoReto(lista = [0,6])
+    print("Fim do executaCor")
+def aprender(aprendizado):
+    print("aprendeu", robot.corAntiga, "atribuindo", atribuiCor(robot.corAntiga))
+    if atribuiCor(robot.corAntiga) != 17:
+        aprendizado[associaCor(robot.corAntiga)] = robot.contador
+    salvarAprendizado(aprendizado)
+    robot.contador = -1
+#############
+v_alinhamento = -100
+def alinha_recuando(x, lista = corLat, v_ajeita = v_alinhamento):
+    start = time()
+    if x == 0:
+        while corDir.value() in lista and time() - start < 4:
+            motorEsq.run_timed(speed_sp = -v_ajeita, time_sp = t)
+            motorEsq.wait_while("running")
+    if x == 1:
+        while corEsq.value() in lista and time() - start < 4:
+            motorDir.run_timed(speed_sp = -v_ajeita, time_sp = t)
+            motorDir.wait_while("running")
+def alinha_lado_oposto(x, lista = [6], v_ajeita = v_alinhamento):
+    start = time()
+    if x == 0:
+        while corEsq.value() in lista and time() - start < 4:
+            motorDir.run_timed(speed_sp = v_ajeita, time_sp = t)
+            motorDir.wait_while("running")
+    if x == 1:
+        while corDir.value() in lista and time() - start < 4:
+            motorEsq.run_timed(speed_sp = v_ajeita, time_sp = t)
+            motorEsq.wait_while("running")
+def alinha_final(x, lista = [6], v_ajeita = v_alinhamento):
+    start = time()
+    if x == 0:
+        while corDir.value() in lista and time() - start < 4:
+            motorEsq.run_timed(speed_sp = v_ajeita, time_sp = t)
+            motorEsq.wait_while("running")
+    if x == 1:
+        while corEsq.value() in lista and time() - start < 4:
+            motorDir.run_timed(speed_sp = v_ajeita, time_sp = t)
+            motorDir.wait_while("running")
+def alinhamento_entra(velocidade = velocidade/2):
+    # andar ate encontrar cor em um dos sensores (chama esse sensor de A)
+    while (corDir.value() not in corLat and corEsq.value() not in corLat):
+        print("WAITING do alinhamento entra")
+        motorDir.run_timed(time_sp = t, speed_sp = velocidade)
+        motorEsq.run_timed(time_sp = t, speed_sp = velocidade)
+        motorEsq.wait_while("running")
+        motorDir.wait_while("running")
+    # recuar o lado A ate ver branco
+    # avancar o lado B ate ver cor
+    # avancar o lado A ate ver cor
+    if corDir.value() in corLat:
+        alinha_recuando(0)
+        alinha_lado_oposto(0)
+        alinha_final(0)
+    if corEsq.value() in corLat:
+        alinha_recuando(1)
+        alinha_lado_oposto(1)
+        alinha_final(1)
+def alinhamento_sai(velocidade = velocidade/2, listas = [0,6]):
+    # anda ate encontrar branco com um dos sensores (lado A)
+    start = time()
+    while ( corDir.value() not in listas and corEsq.value() not in listas ) and time() - start < 5:
+        motorDir.run_timed(time_sp = t, speed_sp = velocidade)
+        motorEsq.run_timed(time_sp = t, speed_sp = velocidade)
+        motorEsq.wait_while("running")
+        motorDir.wait_while("running")
+    # recua lado A ate ver cor
+    # avancar o lado B ate ver branco
+    # avanca lado A ate ver branco
+    if corDir.value() == 6:
+        alinha_recuando(0, [6])
+        alinha_lado_oposto(0, corLat)
+        alinha_final(0, corLat)
+    if corEsq.value() == 6:
+        alinha_recuando(1, [6])
+        alinha_lado_oposto(1, corLat)
+        alinha_final(1, corLat)
+#############
+def alinhaRampa():
+    print("Alinha cor")
+    parar()
+    if corDir.value() not in corLat:
+        print("vou ajeitar a direita", corDir.value(), "sendo esquerda", corEsq.value())
+        while corEsq.value() in corLat:
+            print("direita, esquerda", corDir.value(), corEsq.value())
+            motorDir.run_timed(speed_sp = v_ajeita, time_sp = t)
+    elif corEsq.value() not in corLat:
+        print("vou ajeitar a esquerda", corEsq.value(), "sendo direita", corDir.value())
+        while corDir.value() in corLat:
+            print("direita, esquerda", corDir.value(), corEsq.value())
+            motorEsq.run_timed(speed_sp = v_ajeita, time_sp = t)
+    parar()#; sleep(0.1)
+def alinhaCor():
+    if corDir.value() not in corLat and corDir.value() != 0:
+        print("vou ajeitar a direita", corDir.value(), "sendo esquerda", corEsq.value())
+        while corDir.value() not in corLat:
+            print("direita, esquerda", corDir.value(), corEsq.value())
+            motorEsq.run_timed(speed_sp = v_ajeita, time_sp = t)
+    elif corEsq.value() not in corLat and corEsq.value() != 0:
+        print("vou ajeitar a esquerda", corEsq.value(), "sendo direita", corDir.value())
+        while corEsq.value() not in corLat:
+            print("direita, esquerda", corDir.value(), corEsq.value())
+            motorDir.run_timed(speed_sp = v_ajeita, time_sp = t)
+def rampa_ida():
+    print("na rampa - rampa_bool - ", robot.rampa_bool)
+    if robot.bonecos == 0:
+        sleep(0.2); avancar(100); sleep(0.2)
+        meiaVolta()
+        print("rampa depois da meia volta")
+        robot.ida += 1
+        robot.aprendizado = reverte(robot.aprendizado)
+        robot.rampa_bool = False
+    else:
+        if corDir.value() == 0 or corEsq.value() == 0:
+            saindoReto()
+            alinhaRampa()
+            start = time()
+            print("andaretore zero")
+            while time() - start < 1.5:
+                andaRetoRe(0)
+                sleep(0.3)
+            start = time()
+            print("andaretore zuno", "robot andaretore", robot.andaRetoRe)
+            while time() - start < 0.02:
+                andaRetoRe(1)
+            robot.andaRetoRe = -1
+            sleep(0.3)
+            start = time()
+            while corCheck.value() in branco:
+                andaReto()
+            alinhaCor()
+            saindoReto()
+            #alinhaRampa()
+            avancar(100)
         else:
-            esquerdo = 0
-
-        if preto_direito[0]<=right[0] and preto_direito[1]>=right[0] and preto_direito[2]<=right[1] and preto_direito[3]>=right[1] and preto_direito[4]<=right[2] and preto_direito[5]>=right[2]:
-            direito = 1
+            if robot.ida == 2:
+                sleep(0.2)
+                avancar(-x_avancar)
+                sleep(0.2)
+            alinhamento_entra(); sleep(0.2)
+        avancar(100); sleep(0.2)
+        curvaDir(); sleep(0.2)
+        print("Ultrassom?", ultrassom.value())
+        avancar(50); sleep(0.2)
+        if ultrassom.value() < 300:
+            while ultrassom.value() < 300:
+                print(ultrassom.value())
+                avancar(-10)
+#        else:
+#            while ultrassom.value() > 300:
+#                print(ultrassom.value())
+#                avancar(10)
+        parar(); avancar(45)
+        parar(); sleep(0.2)
+        curvaEsq()
+        while corCheck.value() in branco:
+            andaReto(-200)
+        alinhamento_entra()
+        saindoReto(-200)
+        robot.plaza = True
+        plaza()
+def plaza():
+    start = time()
+    while time() - start < 12:
+        andaRetoPlaza()
+    sleep(0.2); avancar(50)
+    while corCheck.value() != 0:
+        avancar(20)
+    desce()
+    atiraBonecos()
+    avancar(-500);        sobe();        avancar(500)
+    curvaEsq(); sleep(0.2);    avancar(-1600); sleep(0.2)
+    curvaDir(); sleep(0.2);    avancar(-3300); sleep(0.2); avancar(400); sleep(0.2)
+    curvaDir(); sleep(0.2);   avancar(-700); sleep(0.2)
+    while ultrassom.value() < 200:
+        avancar(-10)
+    sleep(0.1)
+    avancar(6); sleep(0.1); curvaEsq(); sleep(0.2)
+    start = time()
+    while time() - start < 4:
+        andaRetoPlaza()
+    sleep(0.1); avancar(200); sleep(0.2)
+    curvaDir()
+    while corCheck.value() in branco:
+        andaReto(velocidade=velocidade/1.5)
+    saindoReto()
+    robot.ida += 1
+    robot.plaza = False
+    robot.rampa_bool = False
+    robot.aprendizado = reverte(robot.aprendizado)
+def andaRetoPlaza(velocidade = velocidade):
+    motorEsq.run_timed(speed_sp = velocidade/1.2 , time_sp = t, stop_action = 'coast')
+    motorDir.run_timed(speed_sp = velocidade/1.5, time_sp = t, stop_action = 'coast')
+def saindoRetoPlaza():
+    motorEsq.run_timed(speed_sp = -velocidade , time_sp = t)
+    motorDir.run_timed(speed_sp = -velocidade, time_sp = t)
+def testaRampa():
+    if robot.rampa_pos == -1:
+        cor1 = [-1,-1,-1]   # Vou testar 3 leituras de cor
+        cor1[0] = atribuiCor( corCheck.value() )
+        print("cores de rampa", cor1[0])
+        avancar(x_avancar/2)
+        cor1[1] = atribuiCor( corCheck.value() )
+        print("cores de rampa", cor1[1])
+        avancar(x_avancar/2)
+        cor1[2] = atribuiCor( corCheck.value() )
+        print("cores de rampa", cor1[2])
+        if cor1[0] == cor1[1]:
+            print("nao eh rampa")
+            return False
         else:
-            direito = 0
-
-    def verificaEstado(self):
-        global esquerdo
-        global direito
-        global meio
-        global estado
-        if(esquerdo != 1 and meio == 1 and direito == 1): #NPP
-            estado = States(1)
-        if(esquerdo == 1 and meio == 1 and direito != 1): #PPN
-            estado = States(2)
-        if(esquerdo != 1 and meio == 1 and direito != 1): #NPN
-            estado = States(3)
-        if(esquerdo == 1 and meio == 1 and direito == 1): #PPP
-            estado = States(4)
-        if(esquerdo != 1 and meio != 1 and direito == 1): #NNP
-            estado = States(5)
-        if(esquerdo == 1 and meio != 1 and direito != 1): #PNN
-            estado = States(6)
-        if(esquerdo != 1 and meio != 1 and direito != 1): #NNN
-            estado = States(7)
-        if(esquerdo == 1 and meio != 1 and direito == 1): #PNP
-            estado = States(8)
-    def desvia_do_obstaculo(self, speed,time):
-        Robot.turn_right(self,speed,time)
-        Robot.go_forward(self,speed,time)
-        Robot.turn_left(self,speed,time)
-        Robot.go_forward(self,speed,time)
-        Robot.turn_left(self,speed,time)
-        Robot.go_forward(self,speed,time)
-        Robot.turn_right(self,speed,time)
-    '''def encontrar_obstaculo(self):
-        self.us.mode = 'US-DIST-CM'
-        if(self.us.value()<=50):
-            Robot.desvia_do_obstaculo(self, 600,950)'''
-    def follow_line(self,speed_reta,speed_curva):
-        while(True):
-            global left
-            global right
-            global esquerdo
-            global meio
-            global direito
-            global estado
-            global e_verde
-            global d_verde
-            #Robot.encontrar_obstaculo(self)
-            Robot.verificaCor(self)
-            Robot.verificaEstado(self)
-            Robot.verificaVerde(self)
-            print(esquerdo, " ", meio, " ", direito, " ", estado)
-
-            if(estado == States(1)): #caso NPP
-                if(d_verde == True):
-                    #curva para a direita
-                    Robot.curva_direita(self,speed_curva)
+            if cor1[1] == cor1[2]:
+                print("nao eh rampa")
+                return False
+            else:
+                robot.rampa_pos = robot.ladrilhos
+                print("eh rampa")
+                return True
+    else:
+        return robot.rampa_bool
+def entrandoQuadrado():
+    if corDir.value() in [0,1] or corEsq.value() in [0, 1]:
+        start = time()
+        print("andaretore zero")
+        while time() - start < 1.5:
+            andaRetoRe(0)
+            sleep(0.3)
+        start = time()
+        print("andaretore zuno", "robot andaretore", robot.andaRetoRe)
+        while time() - start < 0.02:
+            andaRetoRe(1)
+        robot.andaRetoRe = -1
+        sleep(0.3)
+        start = time()
+        while corCheck.value() in branco:
+            andaReto(velocidade = velocidade/1.5)
+    alinhamento_entra()
+    while atribuiCor(corCheck.value()) not in [2, 4, 8]:
+        avancar(-20, -100)
+def vendoBranco():
+    andaReto()          # Quando ve branco, anda reto
+def vendoPreto():
+    meiaVolta()
+    saindoReto(lista = [0])
+    robot.corAntiga = 0                 # ao ver preto, o robot para
+def testarDirecao(robot, aprendizado):          #
+    saindoReto(branco = [11, 12, 13, 14, 15, 16, 17, 0], lista = [0,6], listas = [0,1,6]); sleep(0.2); avancar(-x_cor); sleep(0.2)
+    curvaDir()
+    saindoReto(lista = [0,6])
+def vendoCor():
+    corAtual = atribuiCor(corCheck.value())
+    print(corAtual)                            # corAtual eh a cor vista no ladrilho
+    if sabeCor( corAtual ):
+        print("sabe cor atual")                                 # testa se conhece a corAtual
+        if not sabeCor( robot.corAntiga ) and robot.corAntiga != 47:
+            aprender(robot.aprendizado)
+        executaCor( corCheck.value() )
+        if robot.ida % 2 == 0:
+            robot.ladrilhos += 1
+        if robot.ida % 2 == 1:
+            robot.ladrilhos -= 1
+        robot.corAntiga = corAtual
+    else:
+        print("Nao sabe cor atual")
+        if robot.corAntiga == 0:                ## PRETO EH ZERO
+            robot.contador += 1
+            testarDirecao(robot, robot.aprendizado)
+            robot.corAntiga = corAtual
+        else:
+            robot.ladrilhos += 1
+            if not sabeCor( robot.corAntiga ):
+                aprender(robot.aprendizado)
+            if robot.corAntiga == 47:
+                testarDirecao(robot, robot.aprendizado)
+            else:
+                if atribuiCor(robot.corAntiga) != atribuiCor(corAtual):
+                    testarDirecao(robot, robot.aprendizado)
                 else:
-                    #segue reto
-                    Robot.go_forward(self,speed_reta,30)
-
-            if(estado == States(2)): #caso PPN
-                if(e_verde == True):
-                    #curva para a esquerda
-                    Robot.curva_esquerda(self,speed_curva)
-
+                    executaCor(corAtual)
+            robot.corAntiga = corAtual
+def alinhaCor_sai():
+    print("Alinha cor saindo")
+    parar()#; sleep(0.1)
+    if corDir.value() in corLat:
+        print("vou ajeitar a direita", corDir.value(), "sendo esquerda", corEsq.value())
+        while corDir.value() in corLat:
+            print("direita, esquerda", corDir.value(), corEsq.value())
+            motorEsq.run_timed(speed_sp = v_ajeita, time_sp = t)
+            motorDir.run_timed(speed_sp = -30, time_sp = t)
+    elif corEsq.value() in corLat:
+        print("vou ajeitar a esquerda", corEsq.value(), "sendo direita", corDir.value())
+        while corEsq.value() in corLat:
+            print("direita, esquerda", corDir.value(), corEsq.value())
+            motorDir.run_timed(speed_sp = v_ajeita, time_sp = t)
+            motorEsq.run_timed(speed_sp = -30, time_sp = t)
+    parar()#; sleep(0.1)
+def interpretaCor(cs):         # sendo 'cor' a cor vista por corCheck
+    cor = cs.value()
+    if cor == 0:
+        if cs.value(2) > 9:
+            cor = 4
+    if cor == 0:
+        vendoPreto()            # se cor == 0 (preto), executa vendoPreto()
+    elif cor in branco:
+        vendoBranco()           # se cor in branco, executa vendoBranco() ( andaReto() )
+    elif type(cor) == type(None):
+        ev3.Sound.beep(); sleep(0.2); print("viu None")
+    else:
+        entrandoQuadrado()
+        if testaRampa() == False:
+            vendoCor()              # qualquer outra vai ser uma cor: executa vendoCor()
+            if robot.rampa_pos == robot.ladrilhos:
+                robot.rampa_bool = True
+        else:
+            if not sabeCor( robot.corAntiga ):
+                aprender(robot.aprendizado)
+            rampa_ida()
+def sobe(time = 800, garra_speed = 1500):
+    motorGarra.run_timed(time_sp = time, speed_sp = garra_speed)
+    motorGarra.wait_while("running")
+def desce(time = 800, garra_speed = 1500):
+    motorGarra.run_timed(time_sp = time, speed_sp = -garra_speed)
+    motorGarra.wait_while("running")
+def desceCatapulta(time = 400,  garra_pos = 300, garra_speed = 1500):
+    motorCatapulta.run_timed(time_sp = time, speed_sp = garra_speed)
+    motorCatapulta.wait_while("running")
+def sobeCatapulta(time = 400, garra_pos = 300, garra_speed = 1500):
+    motorCatapulta.run_timed(time_sp = time, speed_sp = -garra_speed)
+    motorCatapulta.wait_while("running")
+def atiraBonecos():
+    desceCatapulta()
+    avancar(100); avancar(-100)
+    sobeCatapulta()
+    robot.bonecos = 0
+def pegaBonecos():
+    if robot.ladrilhos == robot.rampa_pos:
+        pass
+    else:
+        if robot.bonecos == 0:
+            parar()
+            avancar(avanco_pre_0)
+            parar()
+        else:
+            parar()
+            avancar(avanco_pre_1)
+            parar()
+        sleep(0.2); curvaDir(415); sleep(0.2);  avancar(-100, -300); sleep(0.2); desce(); sleep(0.1)
+        avancar(avanco_bonecos);  parar(); sleep(0.2);  sobe(800)
+        if robot.bonecos == 0:
+            desce(140)
+        else:
+            desce(90)
+        sobe(140)
+        desce(120); sobe(200);  desce(120);        sobe(200)
+        avancar(-avanco_bonecos); sleep(0.3);  avancar(100, 400); sleep(0.3)
+        robot.bonecos += 1
+        if robot.bonecos >= 2 and robot.ida % 2 == 1:
+            curvaDir(415)
+            robot.ida += 1
+            robot.aprendizado = reverte(robot.aprendizado)
+        else:
+            curvaEsq(415)
+def imprimeCores():
+    cl = corCheck
+    while True:
+        print(cl.value(0), '(',  cl.value(1), cl.value(2), cl.value(3), ')', "ultrassom", ultrassom.value())
+        sleep(0.4)
+def imprimiDistancia():
+    while True:
+        print(ultrassom.value())
+        sleep(0.5)
+# -------------------------------------
+#------- Main comeca aqui! ------------
+# -------------------------------------
+#p1 = Process(target = imprimeCores)
+#p1.start()
+#p2 = Process(target = imprimiDistancia)
+#p2.start()
+btn = ev3.Button()
+def right(state):
+    if state == True:
+        sleep(1)
+        robot.variavel *= -1
+    return robot.variavel
+btn.on_right = right
+#robot.ida = 4
+#robot.rampa_pos = 1
+robot.variavel = 1
+#robot.bonecos = 2
+while True:
+    btn.process()
+    if robot.variavel == -1:
+        print("--- Em espera ---")
+        sleep(1)
+    else:
+        if robot.ida == 0:                            # Enquanto o robot estiver na ida
+            interpretaCor( corCheck )       # interpreta a cor do corCheck (veja interpretaCor)
+        if robot.ida == 1:
+            print("vou voltar")
+            while robot.ladrilhos != 0:
+                interpretaCor( corCheck )
+            avancar(x_inicio)
+            meiaVolta()
+            robot.aprendizado = reverte(robot.aprendizado)
+            robot.ida = 2
+        if robot.ida > 1:
+            if robot.ida % 2 == 0:
+                if ultrassom.value() < dist_bonecos and robot.bonecos < 2 and corCheck.value() in branco and robot.ladrilhos != robot.rampa_pos:
+                    pegaBonecos()
                 else:
-                    #segue reto
-                    Robot.go_forward(self,speed_reta,30)
-
-            if(estado == States(3)): #caso NPN
-                #segue reto
-                Robot.go_forward(self,speed_reta,30)
-
-            if(estado == States(4)): #caso PPP
-                if(e_verde == True and d_verde == False):
-                    #curva para a esquerda
-                    Robot.curva_esquerda(self,speed_curva)
-
-                elif(e_verde == False and d_verde == True):
-                    #curva para a direita
-                    Robot.curva_direita(self,speed_curva)
-
-                '''elif(e_verde == True and d_verde == True):
-                    #Robot.meia_volta(self,600)
-                #elif(e_verde == False and d_verde == False):
-                    #procurar verde
-                    '''
-
-            if(estado == States(5)): #caso NNP
-                #curva para a direita
-                Robot.curva_direita(self,speed_curva)
-
-            if(estado == States(6)): #caso PNN
-                #curva para a esquerda
-                Robot.curva_esquerda(self,speed_curva)
-
-            if(estado == States(7)): #caso NNN
-                #segue reto
-                Robot.go_forward(self,speed_reta,30)
-
-            if(estado == States(8)): #caso PNP
-                if(e_verde == True and d_verde == False):
-                    #curva para a esquerda
-                    Robot.curva_esquerda(self,speed_curva)
-
-                elif(e_verde == False and d_verde == True):
-                    #curva para a direita
-                    Robot.curva_direita(self,speed_curva)
-
-                elif(e_verde == True and d_verde == True):
-                    meia_volta(self, 600)
-
-                #elif(e_verde == False and d_verde == False):
-                    #procurar verde
-
-e_verde = False
-d_verde = False
-esquerdo = 0
-direito = 0
-meio = 0
-estado = 0
-left = [0,0,0]
-right = [0,0,0]
-middle = [0,0,0]
-branco = [0,0,0,0,0,0]
-branco_direito = [0,0,0,0,0,0]
-branco_meio = [0,0,0,0,0,0]
-preto = [0,0,0,0,0,0]
-preto_direito = [0,0,0,0,0,0]
-preto_meio = [0,0,0,0,0,0]
-verde = [0,0,0,0,0,0]
-verde_direito = [0,0,0,0,0,0]
-Corsa = Robot('outB','outD','in2','in3','in4')
-Corsa.abrirAprendizadoBranco()
-Corsa.abrirAprendizadoPreto()
-Corsa.abrirAprendizadoVerde()
-Corsa.abrirAprendizadoBranco_meio()
-Corsa.abrirAprendizadoPreto_meio()
-Corsa.abrirAprendizadoBranco_direito()
-Corsa.abrirAprendizadoPreto_direito()
-Corsa.abrirAprendizadoVerde_direito()
-Corsa.follow_line(600,500)
+                    interpretaCor(corCheck)
+            if robot.ida % 2 == 1:
+                if ultrassom.value() < dist_bonecos and robot.ladrilhos != robot.rampa_pos:
+                    pegaBonecos()
+                else:
+                    interpretaCor(corCheck)
+                    if robot.ladrilhos == 0:
+                        avancar(x_inicio)
+                        meiaVolta()
+                        robot.aprendizado = reverte(robot.aprendizado)
+                        robot.ida += 1
+                        print("robot.ida - ", robot.ida)
+'''
