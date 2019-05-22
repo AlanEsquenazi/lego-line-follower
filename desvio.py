@@ -6,7 +6,8 @@ from enum import Enum
 #from multiprocessing import Process
 from time import sleep
 from time import time
-
+posicao_dir = 413           # as curvas
+posicao_esq = 411
 class Robot_US:
     def __init__(self,out1,out2,in1):
 
@@ -29,19 +30,42 @@ class Robot_US:
     def go_forward(self,speed,time):
         self.lm1.run_timed(speed_sp = -speed, time_sp = time, stop_action = 'coast')
         self.lm2.run_timed(speed_sp = -speed, time_sp = time, stop_action = 'coast')
-    def desvia_do_obstaculo(self, speed,time):
-        Robot_US.turn_right(self,speed,time)
+    def curva_esquerda(self,v_curva,pos_esq):
+        print("curva esquerda")
+        Robot.verificaCor(self)
+        Robot.verificaEstado(self)
+        Robot.verificaVerde(self)
+        print(esquerdo, " ", meio, " ", direito, " ", estado)
+        self.lm2.run_to_rel_pos(position_sp =  0, speed_sp = v_curva)
+        self.lm1.run_to_rel_pos(position_sp = pos_esq, speed_sp = v_curva)
+        self.lm2.wait_while("running")
+        self.lm1.wait_while("running")
+
+    def curva_direita(self,v_curva, pos_dir):
+        print("curva direita")
+        Robot.verificaCor(self)
+        Robot.verificaEstado(self)
+        Robot.verificaVerde(self)
+        print(esquerdo, " ", meio, " ", direito, " ", estado)
+        self.lm2.run_to_rel_pos(position_sp =  pos_dir, speed_sp = v_curva)
+        self.lm1.run_to_rel_pos(position_sp = 0, speed_sp = v_curva)
+        self.lm2.wait_while("running")
+        self.lm1.wait_while("running")
+    def desvia_do_obstaculo(self, speed,time, pesq, pdir):
+        Robot_US.curva_direita(self,speed,pdir)
         Robot_US.go_forward(self,speed,time)
-        Robot_US.turn_left(self,speed,time)
+        Robot_US.curva_esquerda(self,speed,pesq)
         Robot_US.go_forward(self,speed,time)
-        Robot_US.turn_left(self,speed,time)
+        Robot_US.curva_esquerda(self,speed,pesq)
         Robot_US.go_forward(self,speed,time)
-        Robot_US.turn_right(self,speed,time)
+        Robot_US.curva_direita(self,speed,pdir)
 
     def encontrar_obstaculo(self):
+        global posicao_dir
+        global posicao_esq
         self.us.mode = 'US-DIST-CM'
         if(self.us.value()<=50):
-            Robot_US.desvia_do_obstaculo(self, 600,950)
+            Robot_US.desvia_do_obstaculo(self, 600,950, posicao_esq, posicao_dir)
 
 corsinha2  = Robot_US("outB", "outD", "in4")
 while(1):
