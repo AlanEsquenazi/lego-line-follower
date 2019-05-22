@@ -58,8 +58,8 @@ class Robot:
         print(esquerdo, " ", meio, " ", direito, " ", estado)
         self.lm2.run_to_rel_pos(position_sp =  pos_dir, speed_sp = v_curva)
         self.lm1.run_to_rel_pos(position_sp = 0, speed_sp = v_curva)
-        lm2.wait_while("running")
-        lm1.wait_while("running")
+        self.lm2.wait_while("running")
+        self.lm1.wait_while("running")
 
     '''def meia_volta(self,speed, lendo_preto = 0, conta=0):
         global direito
@@ -258,6 +258,7 @@ class Robot:
             Robot.verificaCor(self)
             Robot.verificaEstado(self)
             Robot.verificaVerde(self)
+            print(esquerdo, meio, direito, estado)
             print(esquerdo, " ", meio, " ", direito, " ", estado)
             if(estado == States(-1)):
                 Robot.curva_esquerda(self,speed_curva,150)
