@@ -10,5 +10,5 @@ lm1 = ev3.LargeMotor('outD')
 lm2 = ev3.LargeMotor('outA')
 
 while(True):
-    lm1.run_timed(speed_sp = -800, time_sp = 10000, stop_action = 'coast')
-    lm2.run_timed(speed_sp = -800, time_sp = 10000, stop_action = 'coast')
+    lm1.run_timed(speed_sp = -400, time_sp = 10000, stop_action = 'coast')
+    lm2.run_timed(speed_sp = -400, time_sp = 10000, stop_action = 'coast')
