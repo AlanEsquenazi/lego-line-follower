@@ -6,8 +6,8 @@ from enum import Enum
 #from multiprocessing import Process
 from time import sleep
 from time import time
-posicao_dir = 1650         # as curvas
-posicao_esq = 1650
+posicao_dir = 800        # as curvas
+posicao_esq = 800
 class Robot_US:
     def __init__(self,out1,out2,in1):
 
@@ -33,34 +33,26 @@ class Robot_US:
         self.lm2.wait_while("running")
         self.lm1.wait_while("running")
     def curva_esquerda(self,v_curva,pos_esq):
-        self.lm2.run_to_rel_pos(position_sp =  0, speed_sp = v_curva, stop_action = 'hold')
+        self.lm2.run_to_rel_pos(position_sp =  -pos_esq, speed_sp = v_curva, stop_action = 'hold')
         self.lm1.run_to_rel_pos(position_sp = pos_esq, speed_sp = v_curva, stop_action = 'hold')
         self.lm2.wait_while("running")
         self.lm1.wait_while("running")
 
     def curva_direita(self,v_curva, pos_dir):
         self.lm2.run_to_rel_pos(position_sp =  pos_dir, speed_sp = v_curva, stop_action = 'hold')
-        self.lm1.run_to_rel_pos(position_sp = 0, speed_sp = v_curva, stop_action = 'hold')
+        self.lm1.run_to_rel_pos(position_sp = -pos_dir, speed_sp = v_curva, stop_action = 'hold')
         print("antes wait")
         self.lm2.wait_while("running")
         self.lm1.wait_while("running")
         print("dps wait")
     def desvia_do_obstaculo(self, speed,time, pesq, pdir):
-        for i in range (7):
-            Robot_US.curva_direita(self,speed,pdir/5)
-            Robot_US.go_forward(self,speed,time/20)
+        Robot_US.curva_direita(self,speed,pdir)
         Robot_US.go_forward(self,speed,1.5*time)
-        for i in range (7):
-            Robot_US.curva_esquerda(self,speed,pesq/6)
-            Robot_US.go_forward(self,speed,time/20)
+        Robot_US.curva_esquerda(self,speed,pesq)
         Robot_US.go_forward(self,speed,2.5*time)
-        for i in range (7):
-            Robot_US.curva_esquerda(self,speed,pesq/6)
-            Robot_US.go_forward(self,speed,time/20)
+        Robot_US.curva_esquerda(self,speed,1.4*pesq)
         Robot_US.go_forward(self,speed,1.5*time)
-        for i in range (7):
-            Robot_US.curva_direita(self,speed,pdir/5.5)
-            Robot_US.go_forward(self,speed,time/20)
+        Robot_US.curva_direita(self,speed,1.2*pdir)
 
     def encontrar_obstaculo(self):
         global posicao_dir
