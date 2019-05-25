@@ -209,9 +209,9 @@ class Robot:
             elif(esquerdo == 0 and meio == 1 and direito == 0): #BPB
                 estado = States(0)
             elif(esquerdo == 0 and meio == 1 and direito == 1): #BPP
-                estado = States(0)
+                estado = States(1)
             elif(esquerdo == 1 and meio == 1 and direito == 0): #PPB
-                estado = States(0)
+                estado = States(-1)
             elif(esquerdo == 1 and meio == 1 and direito == 1): #PPP
                 estado = States(0)
             elif(esquerdo == 0 and meio == 0 and direito == 1): #BBP
