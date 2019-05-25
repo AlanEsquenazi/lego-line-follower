@@ -5,10 +5,10 @@ from ev3dev.ev3 import *
 #from multiprocessing import Process
 from time import sleep
 from time import time
-lm1 = ev3.LargeMotor('outD'); assert lm1.connected
-lm2 = ev3.LargeMotor('outB'); assert lm2.connected
+lm1 = ev3.LargeMotor('outA'); assert lm1.connected
+lm2 = ev3.LargeMotor('outC'); assert lm2.connected
 
-cor = ev3.ColorSensor('in3'); assert cor.connected
+cor = ev3.ColorSensor('in4'); assert cor.connected
 class Calibracao:
     def __init__(self, color, speed, time):
         self.color = color
@@ -43,14 +43,19 @@ class Calibracao:
             arquivo.write(",")
             arquivo.write(str(self.p3[1]))
             arquivo.write(",")
-branco = Calibracao("branco_meio.txt", 400, 10)
+branco = Calibracao("branco_direito.txt", 400, 10)
 branco.calibrate(400, 10, 0, 100)
 branco.escrever()
 print("Calibrar preto")
 sleep(10)
 print("agora")
-preto = Calibracao("preto_meio.txt",0,0)
+preto = Calibracao("preto_direito.txt",0,0)
 preto.calibrate(0,0,0.1, 100)
 preto.escrever()
-
+print("Calibrar verde")
+sleep(10)
+print("agora")
+verde = Calibracao("verde_direito.txt",0,0)
+verde.calibrate(0,0,0.1, 100)
+verde.escrever()
 
