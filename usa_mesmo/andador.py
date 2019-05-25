@@ -128,28 +128,6 @@ class Robot:
         left = self.se.raw
         right = self.sd.raw
         middle = self.sm.raw
-Preto_meio
-preto_meio
-preto_meio
-preto_meio
-preto_meio
-preto_meio
-preto_meio
-preto_meio
-preto_meio
-preto_meio
-preto_meio
-preto_meio
-preto_meio
-preto_meio
-preto_meio
-preto_meio
-preto_meio
-preto_meio
-preto_meio
-preto_meio
-preto_meio
-Preto_meio
         if preto_meio[0]<=middle[0] and preto_meio[1]>=middle[0] and preto_meio[2]<=middle[1] and preto_meio[3]>=middle[1] and preto_meio[4]<=middle[2] and preto_meio[5]>=middle[2]:
             meio = 1
         elif preto_meio[0]<=middle[0] and preto_meio[1]>=middle[0] and preto_meio[2]<=middle[1] and preto_meio[3]>=middle[1] and preto_meio[4]<=middle[2] and preto_meio[5]>=middle[2]:
