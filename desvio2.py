@@ -7,7 +7,7 @@ from enum import Enum
 from time import sleep
 from time import time
 posicao_dir = 800        # as curvas
-posicao_esq = 800
+posicao_esq = 850
 class Robot_US:
     def __init__(self,out1,out2,in1):
 
@@ -45,14 +45,14 @@ class Robot_US:
         self.lm2.wait_while("running")
         self.lm1.wait_while("running")
         print("dps wait")
-    def desvia_do_obstaculo(self, speed,time, pesq, pdir):
-        Robot_US.curva_direita(self,speed,pdir)
-        Robot_US.go_forward(self,speed,1.5*time)
-        Robot_US.curva_esquerda(self,speed,pesq)
-        Robot_US.go_forward(self,speed,2.5*time)
-        Robot_US.curva_esquerda(self,speed,1.4*pesq)
-        Robot_US.go_forward(self,speed,1.5*time)
-        Robot_US.curva_direita(self,speed,1.2*pdir)
+    def desvia_do_obstaculo(self, speed_reta,speed_curva,time, pesq, pdir):
+        Robot_US.curva_direita(self,speed_curva,pdir)
+        Robot_US.go_forward(self,speed_reta,1.5*time)
+        Robot_US.curva_esquerda(self,speed_curva,pesq)
+        Robot_US.go_forward(self,speed_reta,2.5*time)
+        Robot_US.curva_esquerda(self,speed_curva,1.4*pesq)
+        Robot_US.go_forward(self,speed_reta,1.5*time)
+        Robot_US.curva_direita(self,speed_curva,1.2*pdir)
 
     def encontrar_obstaculo(self):
         global posicao_dir
@@ -61,7 +61,7 @@ class Robot_US:
         print(self.us.value())
         if(self.us.value()<=50):
             print("entrou")
-            Robot_US.desvia_do_obstaculo(self, 600,950, posicao_esq, posicao_dir)
+            Robot_US.desvia_do_obstaculo(self, 600,170,950, posicao_esq, posicao_dir)
             print("desviou")
 
 corsinha2  = Robot_US("outB", "outD", "in4")

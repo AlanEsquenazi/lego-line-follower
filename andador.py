@@ -43,24 +43,6 @@ class Robot:
         self.lm1.run_timed(speed_sp = 0, time_sp = time, stop_action = 'coast')
         self.lm2.run_timed(speed_sp = 0, time_sp = time, stop_action = 'coast')
 
-    def curva_esquerda(self,v_curva,pos_esq):
-        print("curva esquerda")
-        Robot.verificaCor(self)
-        Robot.verificaEstado(self)
-        print(esquerdo, " ", meio, " ", direito, " ", estado)
-        self.lm2.run_to_rel_pos(position_sp = -pos_esq, speed_sp = v_curva)
-        self.lm1.run_to_rel_pos(position_sp = pos_esq, speed_sp = v_curva)
-        self.lm1.wait_while("running")
-
-    def curva_direita(self,v_curva, pos_dir):
-        print("curva direita")
-        Robot.verificaCor(self)
-        Robot.verificaEstado(self)
-        print(esquerdo, " ", meio, " ", direito, " ", estado)
-        self.lm2.run_to_rel_pos(position_sp =  pos_dir, speed_sp = v_curva)
-        self.lm1.run_to_rel_pos(position_sp =  -pos_dir, speed_sp = v_curva)
-        self.lm2.wait_while("running")
-
     '''def meia_volta(self,speed, lendo_preto = 0, conta=0):
         global direito
         if not conta==2:
@@ -224,9 +206,9 @@ class Robot:
             elif(esquerdo == 0 and meio == 1 and direito == 0): #BPB
                 estado = States(0)
             elif(esquerdo == 0 and meio == 1 and direito == 1): #BPP
-                estado = States(1)
+                estado = States(0)
             elif(esquerdo == 1 and meio == 1 and direito == 0): #PPB
-                estado = States(-1)
+                estado = States(0)
             elif(esquerdo == 1 and meio == 1 and direito == 1): #PPP
                 estado = States(0)
             elif(esquerdo == 0 and meio == 0 and direito == 1): #BBP
@@ -282,10 +264,27 @@ class Robot:
             else: #TODO aqui tb
                 estado = States(0)
 
-
-
-
         Robot.escrever_estados(self)
+
+    def curva_esquerda(self,v_curva,pos_esq):
+        print("curva esquerda")
+        Robot.verificaCor(self)
+        Robot.verificaEstado(self)
+        print(esquerdo, " ", meio, " ", direito, " ", estado)
+        self.lm2.run_to_rel_pos(position_sp = -pos_esq, speed_sp = v_curva)
+        self.lm1.run_to_rel_pos(position_sp = pos_esq, speed_sp = v_curva)
+        Robot.verificaCor(self)
+        Robot.verificaEstado(self)
+
+    def curva_direita(self,v_curva, pos_dir):
+        print("curva direita")
+        Robot.verificaCor(self)
+        Robot.verificaEstado(self)
+        print(esquerdo, " ", meio, " ", direito, " ", estado)
+        self.lm2.run_to_rel_pos(position_sp =  pos_dir, speed_sp = v_curva)
+        self.lm1.run_to_rel_pos(position_sp =  -pos_dir, speed_sp = v_curva)
+        Robot.verificaCor(self)
+        Robot.verificaEstado(self)
 
     def follow_line(self,speed_reta,speed_curva):
         while(True):
@@ -301,22 +300,20 @@ class Robot:
             Robot.verificaCor(self)
             Robot.verificaEstado(self)
             print(esquerdo, " ", meio, " ", direito, " ", estado)
-            if(estado == States(-2)):
+            if(estado == States(-2)): #VerdeEsquerda
                 Robot.go_forward(self,speed_reta,30)
-            elif(estado == States(-1)):
+            elif(estado == States(-1)): #Esquerda
                 Robot.curva_esquerda(self,speed_curva,150)
-            elif(estado == States(0)):
+            elif(estado == States(0)): #Reto
                 Robot.go_forward(self,speed_reta,30)
-            elif(estado == States(1)):
+            elif(estado == States(1)): #Direita
                 Robot.curva_direita(self,speed_curva,150)
-            elif(estado == States(2)):
+            elif(estado == States(2)): #VerdeDireita
                 Robot.go_forward(self,speed_reta,30)
-            #elif(estado == States(3)):
+            #elif(estado == States(3)): #VerdeMeiaVolta
                 #TODO aqui também
 
 
-e_verde = False
-d_verde = False
 esquerdo = 0
 direito = 0
 meio = 0
@@ -333,6 +330,15 @@ preto_meio = [0,0,0,0,0,0]
 verde = [0,0,0,0,0,0]
 verde_direito = [0,0,0,0,0,0]
 Corsa = Robot('outB','outD','in2','in3','in4')
+Sound.speak('Hello, I am Robot').wait()
+Sound.play('bark.wav').wait()
+Sound.play_song((
+    ('D4', 'e3'),
+    ('D4', 'e3'),
+    ('D4', 'e3'),
+    ('G4', 'h'),
+    ('D5', 'h')
+))
 Corsa.abrirAprendizadoBranco()
 Corsa.abrirAprendizadoPreto()
 Corsa.abrirAprendizadoVerde()
