@@ -125,30 +125,46 @@ class Robot:
         global esquerdo
         global direito
         global meio
-        global verde
-        global verde_direito
         left = self.se.raw
         right = self.sd.raw
         middle = self.sm.raw
-
+Preto_meio
+preto_meio
+preto_meio
+preto_meio
+preto_meio
+preto_meio
+preto_meio
+preto_meio
+preto_meio
+preto_meio
+preto_meio
+preto_meio
+preto_meio
+preto_meio
+preto_meio
+preto_meio
+preto_meio
+preto_meio
+preto_meio
+preto_meio
+preto_meio
+Preto_meio
         if preto_meio[0]<=middle[0] and preto_meio[1]>=middle[0] and preto_meio[2]<=middle[1] and preto_meio[3]>=middle[1] and preto_meio[4]<=middle[2] and preto_meio[5]>=middle[2]:
             meio = 1
-        elif branco_meio[0]<=middle[0] and branco_meio[1]>=middle[0] and branco_meio[2]<=middle[1] and branco_meio[3]>=middle[1] and branco_meio[4]<=middle[2] and branco_meio[5]>=middle[2]:
+        elif preto_meio[0]<=middle[0] and preto_meio[1]>=middle[0] and preto_meio[2]<=middle[1] and preto_meio[3]>=middle[1] and preto_meio[4]<=middle[2] and preto_meio[5]>=middle[2]:
             meio = 0
 
         if preto[0]<=left[0] and preto[1]>=left[0] and preto[2]<=left[1] and preto[3]>=left[1] and preto[4]<=left[2] and preto[5]>=left[2]:
             esquerdo = 1
-        elif verde[0]<=left[0] and verde[1]>=left[0] and verde[2]<=left[1] and verde[3]>=left[1] and verde[4]<=left[2] and verde[5]>=left[2]:
-            esquerdo = 2
-        elif branco[0]<=middle[0] and branco[1]>=middle[0] and branco[2]<=middle[1] and branco[3]>=middle[1] and branco[4]<=middle[2] and branco[5]>=middle[2]:
+        else:
             esquerdo = 0
 
         if preto_direito[0]<=right[0] and preto_direito[1]>=right[0] and preto_direito[2]<=right[1] and preto_direito[3]>=right[1] and preto_direito[4]<=right[2] and preto_direito[5]>=right[2]:
             direito = 1
-        if verde_direito[0]<=right[0] and verde_direito[1]>=right[0] and verde_direito[2]<=right[1] and verde_direito[3]>=right[1] and verde_direito[4]<=right[2] and verde_direito[5]>=right[2]:
-            direito = 2
-        elif branco_direito[0]<=middle[0] and branco_direito[1]>=middle[0] and branco_direito[2]<=middle[1] and branco_direito[3]>=middle[1] and branco_direito[4]<=middle[2] and branco_direito[5]>=middle[2]:
+        else:
             direito = 0
+
     def escrever_estados(self):
         with open('estados.txt', "a") as arquivo:
             arquivo.write(str(esquerdo))
@@ -194,10 +210,10 @@ class Robot:
             elif(esquerdo == 1 and meio == 1 and direito == 0): #PPB
                 estado = States(-1)
             #TODO analisar os verdes e os casos de baixo
-            '''elif(esquerdo == 1 and meio == 1 and direito == 0): #PBP
-                ?? '''
-            '''elif(esquerdo == 1 and meio == 1 and direito == 1): #PPP
-                 ???'''
+            elif(esquerdo == 1 and meio == 1 and direito == 0): #PBP
+                estado = States(0)
+            elif(esquerdo == 1 and meio == 1 and direito == 1): #PPP
+                 estado = States(0)
             #BBP e BPP não tem transição direta -> viram para a direita
 
         elif(estado == States(0)):
@@ -238,10 +254,10 @@ class Robot:
             elif(esquerdo == 0 and meio == 1 and direito == 1): #BPP
                 estado = States(1)
             #TODO analisar os casos com verde e os dois de baixo
-            '''elif(esquerdo == 1 and meio == 1 and direito == 0): #PBP
-                ?? '''
-            '''elif(esquerdo == 1 and meio == 1 and direito == 1): #PPP
-                 ???'''
+            elif(esquerdo == 1 and meio == 1 and direito == 0): #PBP
+                estado = States(0)
+            elif(esquerdo == 1 and meio == 1 and direito == 1): #PPP
+                estado = States(0)
             #PBB e PPB não tem transição direta -> viram para a esquerda
 
         elif(estado == States(2)):
@@ -301,14 +317,24 @@ class Robot:
             Robot.verificaEstado(self)
             print(esquerdo, " ", meio, " ", direito, " ", estado)
             if(estado == States(-2)): #VerdeEsquerda
+                Robot.verificaCor(self)
+                Robot.verificaEstado(self)
                 Robot.go_forward(self,speed_reta,30)
             elif(estado == States(-1)): #Esquerda
-                Robot.curva_esquerda(self,speed_curva,150)
+                Robot.verificaCor(self)
+                Robot.verificaEstado(self)
+                Robot.curva_esquerda(self,speed_curva,50)
             elif(estado == States(0)): #Reto
+                Robot.verificaCor(self)
+                Robot.verificaEstado(self)
                 Robot.go_forward(self,speed_reta,30)
             elif(estado == States(1)): #Direita
-                Robot.curva_direita(self,speed_curva,150)
+                Robot.verificaCor(self)
+                Robot.verificaEstado(self)
+                Robot.curva_direita(self,speed_curva,50)
             elif(estado == States(2)): #VerdeDireita
+                Robot.verificaCor(self)
+                Robot.verificaEstado(self)
                 Robot.go_forward(self,speed_reta,30)
             #elif(estado == States(3)): #VerdeMeiaVolta
                 #TODO aqui também
@@ -331,23 +357,23 @@ verde = [0,0,0,0,0,0]
 verde_direito = [0,0,0,0,0,0]
 Corsa = Robot('outB','outD','in2','in3','in4')
 Sound.speak('Hello, I am Corsa').wait()
-Sound.play('bark.wav')
+Sound.speak('ATENCAO ATENCAO').wait()
 Sound.play_song((
     ('D4', 'e3'),
     ('D4', 'e3'),
     ('D4', 'e3'),
     ('G4', 'h'),
-    ('D5', 'h')
+    ('D5', 'h'),
     ('D4', 'e3'),
     ('D4', 'e3'),
     ('D4', 'e3'),
     ('G4', 'h'),
-    ('D5', 'h')
+    ('D5', 'h'),
     ('D4', 'e3'),
     ('D4', 'e3'),
     ('D4', 'e3'),
     ('G4', 'h'),
-    ('D5', 'h')
+    ('D5', 'h'),
     ('D4', 'e3'),
     ('D4', 'e3'),
     ('D4', 'e3'),
@@ -362,6 +388,6 @@ Corsa.abrirAprendizadoPreto_meio()
 Corsa.abrirAprendizadoBranco_direito()
 Corsa.abrirAprendizadoPreto_direito()
 Corsa.abrirAprendizadoVerde_direito()
-Corsa.follow_line(600,170)
+Corsa.follow_line(400,170)
 
 
