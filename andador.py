@@ -8,19 +8,16 @@ from time import sleep
 from time import time
 
 class States(Enum):
-    '''P = preto
-    N = not(preto)'''
+    VerdeEsquerda = -2
+    Esquerda = -1
+    Reto = 0
+    Direita = 1
+    VerdeDireita = 2
+    VerdeMeiaVolta = 3
 
-    NPP = 1
-    PPN = 2
-    NPN = 3
-    PPP = 4
-    NNP = 5
-    PNN = 6
-    NNN = 7
-    PNP = 8
 
 class Robot:
+    #def __init__(self,out1,out2,in1,in2,in3, in4):
     def __init__(self,out1,out2,in1,in2,in3):
 
         self.lm1 = ev3.LargeMotor(out1); assert self.lm1.connected
@@ -46,27 +43,23 @@ class Robot:
         self.lm1.run_timed(speed_sp = 0, time_sp = time, stop_action = 'coast')
         self.lm2.run_timed(speed_sp = 0, time_sp = time, stop_action = 'coast')
 
-    def curva_esquerda(self,speed):
-        #self.lm1.run_timed(speed_sp = 0, time_sp = 500, stop_action = 'coast')
-        #self.lm2.run_timed(speed_sp = 0, time_sp = 500, stop_action = 'coast')
-        while(not(meio == 1)):
-            Robot.verificaCor(self)
-            Robot.verificaEstado(self)
-            Robot.verificaVerde(self)
-            Robot.turn_left(self,speed, 60)
-            Robot.stop(self,30)
-            print(esquerdo, " ", meio, " ", direito, " ", estado)
+    def curva_esquerda(self,v_curva,pos_esq):
+        print("curva esquerda")
+        Robot.verificaCor(self)
+        Robot.verificaEstado(self)
+        print(esquerdo, " ", meio, " ", direito, " ", estado)
+        self.lm2.run_to_rel_pos(position_sp = -pos_esq, speed_sp = v_curva)
+        self.lm1.run_to_rel_pos(position_sp = pos_esq, speed_sp = v_curva)
+        self.lm1.wait_while("running")
 
-    def curva_direita(self,speed):
-        #self.lm1.run_timed(speed_sp = 0, time_sp = 500, stop_action = 'coast')
-        #self.lm2.run_timed(speed_sp = 0, time_sp = 500, stop_action = 'coast')
-        while(not(meio == 1)):
-            Robot.verificaCor(self)
-            Robot.verificaEstado(self)
-            Robot.verificaVerde(self)
-            Robot.turn_right(self,speed, 60)
-            Robot.stop(self,20)
-            print(esquerdo, " ", meio, " ", direito, " ", estado)
+    def curva_direita(self,v_curva, pos_dir):
+        print("curva direita")
+        Robot.verificaCor(self)
+        Robot.verificaEstado(self)
+        print(esquerdo, " ", meio, " ", direito, " ", estado)
+        self.lm2.run_to_rel_pos(position_sp =  pos_dir, speed_sp = v_curva)
+        self.lm1.run_to_rel_pos(position_sp =  -pos_dir, speed_sp = v_curva)
+        self.lm2.wait_while("running")
 
     '''def meia_volta(self,speed, lendo_preto = 0, conta=0):
         global direito
@@ -136,21 +129,6 @@ class Robot:
             verde_direito.pop()
             verde_direito = [int(x) for x in verde_direito]     # tornamos as strings em inteiros
 
-    def verificaVerde(self):
-        global e_verde
-        global d_verde
-        global verde
-        global verde_direito
-
-        if verde[0]<=left[0] and verde[1]>=left[0] and verde[2]<=left[1] and verde[3]>=left[1] and verde[4]<=left[2] and verde[5]>=left[2]:
-            e_verde= True
-        elif esquerdo == 0:
-            e_verde = False
-        if verde_direito[0]<=right[0] and verde_direito[1]>=right[0] and verde_direito[2]<=right[1] and verde_direito[3]>=right[1] and verde_direito[4]<=right[2] and verde_direito[5]>=right[2]:
-            d_verde = True
-        elif direito == 0:
-            d_verde = False
-
     def verificaCor(self):
         # 1 preto e 0 branco
         global branco
@@ -165,58 +143,150 @@ class Robot:
         global esquerdo
         global direito
         global meio
+        global verde
+        global verde_direito
         left = self.se.raw
         right = self.sd.raw
         middle = self.sm.raw
 
         if preto_meio[0]<=middle[0] and preto_meio[1]>=middle[0] and preto_meio[2]<=middle[1] and preto_meio[3]>=middle[1] and preto_meio[4]<=middle[2] and preto_meio[5]>=middle[2]:
             meio = 1
-        else:
+        elif branco_meio[0]<=middle[0] and branco_meio[1]>=middle[0] and branco_meio[2]<=middle[1] and branco_meio[3]>=middle[1] and branco_meio[4]<=middle[2] and branco_meio[5]>=middle[2]:
             meio = 0
 
         if preto[0]<=left[0] and preto[1]>=left[0] and preto[2]<=left[1] and preto[3]>=left[1] and preto[4]<=left[2] and preto[5]>=left[2]:
             esquerdo = 1
-        else:
+        elif verde[0]<=left[0] and verde[1]>=left[0] and verde[2]<=left[1] and verde[3]>=left[1] and verde[4]<=left[2] and verde[5]>=left[2]:
+            esquerdo = 2
+        elif branco[0]<=middle[0] and branco[1]>=middle[0] and branco[2]<=middle[1] and branco[3]>=middle[1] and branco[4]<=middle[2] and branco[5]>=middle[2]:
             esquerdo = 0
 
         if preto_direito[0]<=right[0] and preto_direito[1]>=right[0] and preto_direito[2]<=right[1] and preto_direito[3]>=right[1] and preto_direito[4]<=right[2] and preto_direito[5]>=right[2]:
             direito = 1
-        else:
+        if verde_direito[0]<=right[0] and verde_direito[1]>=right[0] and verde_direito[2]<=right[1] and verde_direito[3]>=right[1] and verde_direito[4]<=right[2] and verde_direito[5]>=right[2]:
+            direito = 2
+        elif branco_direito[0]<=middle[0] and branco_direito[1]>=middle[0] and branco_direito[2]<=middle[1] and branco_direito[3]>=middle[1] and branco_direito[4]<=middle[2] and branco_direito[5]>=middle[2]:
             direito = 0
+    def escrever_estados(self):
+        with open('estados.txt', "a") as arquivo:
+            arquivo.write(str(esquerdo))
+            arquivo.write(" ")
+            arquivo.write(",")
+            arquivo.write(" ")
+            arquivo.write(str(meio))
+            arquivo.write(" ")
+            arquivo.write(",")
+            arquivo.write(" ")
+            arquivo.write(str(direito))
+            arquivo.write(" ")
+            arquivo.write(",")
+            arquivo.write(" ")
+            arquivo.write(str(estado))
+            arquivo.write("\n")
 
     def verificaEstado(self):
         global esquerdo
         global direito
         global meio
         global estado
-        if(esquerdo != 1 and meio == 1 and direito == 1): #NPP
-            estado = States(1)
-        if(esquerdo == 1 and meio == 1 and direito != 1): #PPN
-            estado = States(2)
-        if(esquerdo != 1 and meio == 1 and direito != 1): #NPN
-            estado = States(3)
-        if(esquerdo == 1 and meio == 1 and direito == 1): #PPP
-            estado = States(4)
-        if(esquerdo != 1 and meio != 1 and direito == 1): #NNP
-            estado = States(5)
-        if(esquerdo == 1 and meio != 1 and direito != 1): #PNN
-            estado = States(6)
-        if(esquerdo != 1 and meio != 1 and direito != 1): #NNN
-            estado = States(7)
-        if(esquerdo == 1 and meio != 1 and direito == 1): #PNP
-            estado = States(8)
-    def desvia_do_obstaculo(self, speed,time):
-        Robot.turn_right(self,speed,time)
-        Robot.go_forward(self,speed,time)
-        Robot.turn_left(self,speed,time)
-        Robot.go_forward(self,speed,time)
-        Robot.turn_left(self,speed,time)
-        Robot.go_forward(self,speed,time)
-        Robot.turn_right(self,speed,time)
-    '''def encontrar_obstaculo(self):
-        self.us.mode = 'US-DIST-CM'
-        if(self.us.value()<=50):
-            Robot.desvia_do_obstaculo(self, 600,950)'''
+
+        if(estado == States(-2)):
+            if(esquerdo == 2 and meio == 1 and direito == 0): #VPB
+                estado = States(-2)
+            elif(esquerdo == 0 and meio == 1 and direito == 0): #BPB
+                estado = States(0)
+            elif(esquerdo == 1 and meio == 1 and direito == 0): #PPB
+                estado = States(-1)
+            elif(esquerdo == 1 and meio == 1 and direito == 1): #PPP
+                estado = States(-1)
+            elif(esquerdo == 1 and meio == 0 and direito == 1): #PBP
+                estado = States(-1)
+
+        elif(estado == States(-1)):
+            if(esquerdo == 0 and meio == 0 and direito == 0): #BBB
+                estado = States(0)
+            elif(esquerdo == 0 and meio == 1 and direito == 0): #BPB
+                estado = States(0)
+            elif(esquerdo == 1 and meio == 0 and direito == 0): #PBB
+                estado = States(-1)
+            elif(esquerdo == 1 and meio == 1 and direito == 0): #PPB
+                estado = States(-1)
+            #TODO analisar os verdes e os casos de baixo
+            '''elif(esquerdo == 1 and meio == 1 and direito == 0): #PBP
+                ?? '''
+            '''elif(esquerdo == 1 and meio == 1 and direito == 1): #PPP
+                 ???'''
+            #BBP e BPP não tem transição direta -> viram para a direita
+
+        elif(estado == States(0)):
+            if(esquerdo == 0 and meio == 0 and direito == 0): #BBB
+                estado = States(0)
+            elif(esquerdo == 0 and meio == 1 and direito == 0): #BPB
+                estado = States(0)
+            elif(esquerdo == 0 and meio == 1 and direito == 1): #BPP
+                estado = States(1)
+            elif(esquerdo == 1 and meio == 1 and direito == 0): #PPB
+                estado = States(-1)
+            elif(esquerdo == 1 and meio == 1 and direito == 1): #PPP
+                estado = States(0)
+            elif(esquerdo == 0 and meio == 0 and direito == 1): #BBP
+                estado = States(1)
+            elif(esquerdo == 1 and meio == 0 and direito == 0): #PBB
+                estado = States(-1)
+            elif(esquerdo == 2 and meio == 1 and direito == 0): #VPB
+                estado = States(-2)
+            elif(esquerdo == 0 and meio == 1 and direito == 2): #BPV
+                estado = States(2)
+            elif(esquerdo == 2 and meio == 1 and direito == 2): #VPV
+                estado = States(3)
+            elif(esquerdo == 2 and meio == 0 and direito == 2): #VBV
+                estado = States(3)
+            '''elif(esquerdo == 1 and meio == 1 and direito == 0): #PBP
+                ?? '''
+            '''elif(esquerdo == 1 and meio == 1 and direito == 1): #PPP
+                 ???'''
+
+        elif(estado == States(1)):
+            if(esquerdo == 0 and meio == 0 and direito == 0): #BBB
+                estado = States(0)
+            elif(esquerdo == 0 and meio == 1 and direito == 0): #BPB
+                estado = States(0)
+            elif(esquerdo == 0 and meio == 0 and direito == 1): #BBP
+                estado = States(1)
+            elif(esquerdo == 0 and meio == 1 and direito == 1): #BPP
+                estado = States(1)
+            #TODO analisar os casos com verde e os dois de baixo
+            '''elif(esquerdo == 1 and meio == 1 and direito == 0): #PBP
+                ?? '''
+            '''elif(esquerdo == 1 and meio == 1 and direito == 1): #PPP
+                 ???'''
+            #PBB e PPB não tem transição direta -> viram para a esquerda
+
+        elif(estado == States(2)):
+            if(esquerdo == 0 and meio == 1 and direito == 2): #BPV
+                estado = States(2)
+            elif(esquerdo == 0 and meio == 1 and direito == 0): #BPB
+                estado = States(0)
+            elif(esquerdo == 0 and meio == 1 and direito == 1): #BPP
+                estado = States(1)
+            elif(esquerdo == 1 and meio == 1 and direito == 1): #PPP
+                estado = States(1)
+            elif(esquerdo == 1 and meio == 0 and direito == 1): #PBP
+                estado = States(1)
+
+        elif(estado == States(3)):
+            if(esquerdo == 2 and meio == 1 and direito == 2): #VPV
+                estado = States(3)
+            elif(esquerdo == 2 and meio == 0 and direito == 2): #VBV
+                estado = States(3)
+            else: #TODO aqui tb
+                estado = States(0)
+
+
+
+
+        Robot.escrever_estados(self)
+
     def follow_line(self,speed_reta,speed_curva):
         while(True):
             global left
@@ -230,78 +300,27 @@ class Robot:
             #Robot.encontrar_obstaculo(self)
             Robot.verificaCor(self)
             Robot.verificaEstado(self)
-            Robot.verificaVerde(self)
             print(esquerdo, " ", meio, " ", direito, " ", estado)
-
-            if(estado == States(1)): #caso NPP
-                if(d_verde == True):
-                    #curva para a direita
-                    Robot.curva_direita(self,speed_curva)
-                else:
-                    #segue reto
-                    Robot.go_forward(self,speed_reta,30)
-
-            if(estado == States(2)): #caso PPN
-                if(e_verde == True):
-                    #curva para a esquerda
-                    Robot.curva_esquerda(self,speed_curva)
-
-                else:
-                    #segue reto
-                    Robot.go_forward(self,speed_reta,30)
-
-            if(estado == States(3)): #caso NPN
-                #segue reto
+            if(estado == States(-2)):
                 Robot.go_forward(self,speed_reta,30)
-
-            if(estado == States(4)): #caso PPP
-                if(e_verde == True and d_verde == False):
-                    #curva para a esquerda
-                    Robot.curva_esquerda(self,speed_curva)
-
-                elif(e_verde == False and d_verde == True):
-                    #curva para a direita
-                    Robot.curva_direita(self,speed_curva)
-
-                '''elif(e_verde == True and d_verde == True):
-                    #Robot.meia_volta(self,600)
-                #elif(e_verde == False and d_verde == False):
-                    #procurar verde
-                    '''
-
-            if(estado == States(5)): #caso NNP
-                #curva para a direita
-                Robot.curva_direita(self,speed_curva)
-
-            if(estado == States(6)): #caso PNN
-                #curva para a esquerda
-                Robot.curva_esquerda(self,speed_curva)
-
-            if(estado == States(7)): #caso NNN
-                #segue reto
+            elif(estado == States(-1)):
+                Robot.curva_esquerda(self,speed_curva,150)
+            elif(estado == States(0)):
                 Robot.go_forward(self,speed_reta,30)
+            elif(estado == States(1)):
+                Robot.curva_direita(self,speed_curva,150)
+            elif(estado == States(2)):
+                Robot.go_forward(self,speed_reta,30)
+            #elif(estado == States(3)):
+                #TODO aqui também
 
-            if(estado == States(8)): #caso PNP
-                if(e_verde == True and d_verde == False):
-                    #curva para a esquerda
-                    Robot.curva_esquerda(self,speed_curva)
-
-                elif(e_verde == False and d_verde == True):
-                    #curva para a direita
-                    Robot.curva_direita(self,speed_curva)
-
-                elif(e_verde == True and d_verde == True):
-                    meia_volta(self, 600)
-
-                #elif(e_verde == False and d_verde == False):
-                    #procurar verde
 
 e_verde = False
 d_verde = False
 esquerdo = 0
 direito = 0
 meio = 0
-estado = 0
+estado = States(0)
 left = [0,0,0]
 right = [0,0,0]
 middle = [0,0,0]
@@ -322,4 +341,6 @@ Corsa.abrirAprendizadoPreto_meio()
 Corsa.abrirAprendizadoBranco_direito()
 Corsa.abrirAprendizadoPreto_direito()
 Corsa.abrirAprendizadoVerde_direito()
-Corsa.follow_line(600,500)
+Corsa.follow_line(600,170)
+
+
