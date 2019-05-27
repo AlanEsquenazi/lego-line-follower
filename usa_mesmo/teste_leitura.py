@@ -17,12 +17,14 @@ class States(Enum):
 
 
 class Robot:
-    def __init__(in3):
-
+    def __init__(self, in3):
         self.sd = ev3.ColorSensor(in3); assert self.sd.connected
 
     def abrirAprendizadoBranco(self):
         global branco
+        with open("teste_leitura.txt", "w") as arquivo:
+            arquivo.write("inicio")
+            arquivo.write('\n')
         with open('branco_direito.txt', "r") as ft:            # a lista de aprendizado serah "azul, verde, vermelho"
             branco = ft.read().split(',')              # aqui, criamos uma lista de strings, cada elemento eh a cor
             branco.pop()
@@ -31,7 +33,7 @@ class Robot:
 
     def abrirAprendizadoPreto(self):
         global preto
-        with open('preto_direito.txt', "r") as ft:            # a lista de aprendizado serah "azul, verde, vermelho"
+        with open('preto.txt', "r") as ft:            # a lista de aprendizado serah "azul, verde, vermelho"
             preto = ft.read().split(',')              # aqui, criamos uma lista de strings, cada elemento eh a cor
             preto.pop()
             preto = [int(x) for x in preto]     # tornamos as strings em inteiros
@@ -39,7 +41,7 @@ class Robot:
 
     def abrirAprendizadoVerde(self):
         global verde
-        with open('verde_direito.txt', "r") as ft:            # a lista de aprendizado serah "azul, verde, vermelho"
+        with open('verde.txt', "r") as ft:            # a lista de aprendizado serah "azul, verde, vermelho"
             verde = ft.read().split(',')              # aqui, criamos uma lista de strings, cada elemento eh a cor
             verde.pop()
             verde = [int(x) for x in verde]     # tornamos as strings em inteiros
@@ -54,16 +56,21 @@ class Robot:
         right = self.sd.raw
 
 
-        if preto_direito[0]<=right[0] and preto_direito[1]>=right[0] and preto_direito[2]<=right[1] and preto_direito[3]>=right[1] and preto_direito[4]<=right[2] and preto_direito[5]>=right[2]:
+        if preto[0]<=right[0] and preto[1]>=right[0] and preto[2]<=right[1] and preto[3]>=right[1] and preto[4]<=right[2] and preto[5]>=right[2]:
             direito = 1
 
-        elif verde_direito[0] - 10<=left[0] and verde_direito[1] + 10>=left[0] and verde_direito[2] - 10<=left[1] and verde_direito[3] + 10>=left[1] and verde_direito[4] - 10<=left[2] and verde_direito[5] + 10>=left[2]:
+        elif verde[0] - 10<=right[0] and verde[1] + 10>=right[0] and verde[2] - 10<=right[1] and verde[3] + 10>=right[1] and verde[4] - 10<=right[2] and verde[5] + 10>=right[2]:
             direito = 2
 
         else:
             direito = 0
 
-        print(direito)
+        print(right, " ", direito)
+        with open("teste_leitura.txt", "a") as arquivo:
+            arquivo.write(str(right))
+            arquivo.write(" ")
+            arquivo.write(str(direito))
+            arquivo.write('\n')
 
 
 
@@ -74,11 +81,12 @@ branco = [0,0,0,0,0,0]
 preto = [0,0,0,0,0,0]
 verde = [0,0,0,0,0,0]
 Corsa = Robot('in4')
-Sound.speak('Hello, I am Corsa').wait()
+#Sound.speak('Hello, I am Corsa').wait()
 
 Corsa.abrirAprendizadoBranco()
 Corsa.abrirAprendizadoPreto()
 Corsa.abrirAprendizadoVerde()
-Corsa.verificaCor()
+while(1):
+    Corsa.verificaCor()
 
 
