@@ -130,14 +130,14 @@ class Robot:
         left = self.se.raw
         right = self.sd.raw
         middle = self.sm.raw
-        if preto_meio[0]<=middle[0] and preto_meio[1]>=middle[0] and preto_meio[2]<=middle[1] and preto_meio[3]>=middle[1] and preto_meio[4]<=middle[2] and preto_meio[5]>=middle[2]:
+        if preto_meio[0]-10<=middle[0] and preto_meio[1]+10>=middle[0] and preto_meio[2]-10<=middle[1] and preto_meio[3]+10>=middle[1] and preto_meio[4]-10<=middle[2] and preto_meio[5]+10>=middle[2]:
             meio = 1
 
         else:
             meio = 0
 
 
-        if preto[0]<=left[0] and preto[1]>=left[0] and preto[2]<=left[1] and preto[3]>=left[1] and preto[4]<=left[2] and preto[5]>=left[2]:
+        if preto[0]-10<=left[0] and preto[1]+10>=left[0] and preto[2]-10<=left[1] and preto[3]+10>=left[1] and preto[4]-10<=left[2] and preto[5]+10>=left[2]:
             esquerdo = 1
 
         elif verde[0] - 10<=left[0] and verde[1] + 10>=left[0] and verde[2] - 10<=left[1] and verde[3] + 10>=left[1] and verde[4] - 10<=left[2] and verde[5] + 10>=left[2]:
@@ -146,10 +146,10 @@ class Robot:
         else:
             esquerdo = 0
 
-        if preto_direito[0]<=right[0] and preto_direito[1]>=right[0] and preto_direito[2]<=right[1] and preto_direito[3]>=right[1] and preto_direito[4]<=right[2] and preto_direito[5]>=right[2]:
+        if preto_direito[0]-10<=right[0] and preto_direito[1]+10>=right[0] and preto_direito[2]-10<=right[1] and preto_direito[3]+10>=right[1] and preto_direito[4]-10<=right[2] and preto_direito[5]+10>=right[2]:
             direito = 1
 
-        elif verde_direito[0] - 10<=left[0] and verde_direito[1] + 10>=left[0] and verde_direito[2] - 10<=left[1] and verde_direito[3] + 10>=left[1] and verde_direito[4] - 10<=left[2] and verde_direito[5] + 10>=left[2]:
+        elif verde_direito[0] - 10<=right[0] and verde_direito[1] + 10>=right[0] and verde_direito[2] - 10<=right[1] and verde_direito[3] + 10>=right[1] and verde_direito[4] - 10<=right[2] and verde_direito[5] + 10>=right[2]:
             direito = 2
 
         else:
@@ -376,6 +376,6 @@ Corsa.abrirAprendizadoPreto_meio()
 Corsa.abrirAprendizadoBranco_direito()
 Corsa.abrirAprendizadoPreto_direito()
 Corsa.abrirAprendizadoVerde_direito()
-Corsa.follow_line(400,170)
+Corsa.follow_line(250,70)
 
 
