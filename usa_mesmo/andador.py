@@ -125,6 +125,8 @@ class Robot:
         global esquerdo
         global direito
         global meio
+        global verde
+        global verde_direito
         left = self.se.raw
         right = self.sd.raw
         middle = self.sm.raw
@@ -298,8 +300,6 @@ class Robot:
             global meio
             global direito
             global estado
-            global e_verde
-            global d_verde
             #Robot.encontrar_obstaculo(self)
             Robot.verificaCor(self)
             Robot.verificaEstado(self)
@@ -345,7 +345,7 @@ verde = [0,0,0,0,0,0]
 verde_direito = [0,0,0,0,0,0]
 Corsa = Robot('outB','outD','in2','in3','in4')
 Sound.speak('Hello, I am Corsa').wait()
-Sound.speak('ATENCAO ATENCAO').wait()
+Sound.speak('ATENTION ATENTION').wait()
 Sound.play_song((
     ('D4', 'e3'),
     ('D4', 'e3'),
