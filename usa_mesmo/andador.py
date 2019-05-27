@@ -140,7 +140,7 @@ class Robot:
         if preto[0]<=left[0] and preto[1]>=left[0] and preto[2]<=left[1] and preto[3]>=left[1] and preto[4]<=left[2] and preto[5]>=left[2]:
             esquerdo = 1
 
-        elif verde[0]<=left[0] and verde[1]>=left[0] and verde[2]<=left[1] and verde[3]>=left[1] and verde[4]<=left[2] and verde[5]>=left[2]:
+        elif verde[0] - 10<=left[0] and verde[1] + 10>=left[0] and verde[2] - 10<=left[1] and verde[3] + 10>=left[1] and verde[4] - 10<=left[2] and verde[5] + 10>=left[2]:
             esquerdo = 2
 
         else:
@@ -149,7 +149,7 @@ class Robot:
         if preto_direito[0]<=right[0] and preto_direito[1]>=right[0] and preto_direito[2]<=right[1] and preto_direito[3]>=right[1] and preto_direito[4]<=right[2] and preto_direito[5]>=right[2]:
             direito = 1
 
-        elif verde_direito[0]<=left[0] and verde_direito[1]>=left[0] and verde_direito[2]<=left[1] and verde_direito[3]>=left[1] and verde_direito[4]<=left[2] and verde_direito[5]>=left[2]:
+        elif verde_direito[0] - 10<=left[0] and verde_direito[1] + 10>=left[0] and verde_direito[2] - 10<=left[1] and verde_direito[3] + 10>=left[1] and verde_direito[4] - 10<=left[2] and verde_direito[5] + 10>=left[2]:
             direito = 2
 
         else:
@@ -191,9 +191,9 @@ class Robot:
                 estado = States(-1)
 
         elif(estado == States(-1)):
-            if(esquerdo == 0 and meio == 0 and direito == 0): #BBB
-                estado = States(0)
-            elif(esquerdo == 0 and meio == 1 and direito == 0): #BPB
+            #if(esquerdo == 0 and meio == 0 and direito == 0): #BBB
+            #    estado = States(0)
+            if(esquerdo == 0 and meio == 1 and direito == 0): #BPB
                 estado = States(0)
             elif(esquerdo == 1 and meio == 0 and direito == 0): #PBB
                 estado = States(-1)
@@ -235,9 +235,9 @@ class Robot:
                  ???'''
 
         elif(estado == States(1)):
-            if(esquerdo == 0 and meio == 0 and direito == 0): #BBB
-                estado = States(0)
-            elif(esquerdo == 0 and meio == 1 and direito == 0): #BPB
+            #if(esquerdo == 0 and meio == 0 and direito == 0): #BBB
+            #    estado = States(0)
+            if(esquerdo == 0 and meio == 1 and direito == 0): #BPB
                 estado = States(0)
             elif(esquerdo == 0 and meio == 0 and direito == 1): #BBP
                 estado = States(1)
@@ -311,7 +311,7 @@ class Robot:
             elif(estado == States(-1)): #Esquerda
                 Robot.verificaCor(self)
                 Robot.verificaEstado(self)
-                Robot.curva_esquerda(self,speed_curva,50)
+                Robot.curva_esquerda(self,speed_curva,150)
             elif(estado == States(0)): #Reto
                 Robot.verificaCor(self)
                 Robot.verificaEstado(self)
@@ -319,7 +319,7 @@ class Robot:
             elif(estado == States(1)): #Direita
                 Robot.verificaCor(self)
                 Robot.verificaEstado(self)
-                Robot.curva_direita(self,speed_curva,50)
+                Robot.curva_direita(self,speed_curva,150)
             elif(estado == States(2)): #VerdeDireita
                 Robot.verificaCor(self)
                 Robot.verificaEstado(self)
