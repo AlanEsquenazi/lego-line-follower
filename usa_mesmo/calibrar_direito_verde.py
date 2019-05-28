@@ -5,8 +5,6 @@ from ev3dev.ev3 import *
 #from multiprocessing import Process
 from time import sleep
 from time import time
-lm1 = ev3.LargeMotor('outA'); assert lm1.connected
-lm2 = ev3.LargeMotor('outC'); assert lm2.connected
 
 cor = ev3.ColorSensor('in4'); assert cor.connected
 class Calibracao:
@@ -17,11 +15,8 @@ class Calibracao:
         self.p1 = [1021,-1]
         self.p2 = [1021,-1]
         self.p3 = [1021,-1]
-    def calibrate(self, speed,time, wait_time, repeat):
+    def calibrate(wait_time, repeat):
         for i in range(repeat):
-            lm1.run_timed(speed_sp = -1*speed, time_sp = time, stop_action = 'coast')
-            lm2.run_timed(speed_sp = -1*speed, time_sp = time, stop_action = 'coast')
-            sleep(wait_time)
             cor_lida = cor.raw
             self.p1[0] = min(cor.raw[0], self.p1[0])
             self.p1[1] = max(cor.raw[0], self.p1[1])
@@ -29,6 +24,7 @@ class Calibracao:
             self.p2[1] = max(cor.raw[1], self.p2[1])
             self.p3[0] = min(cor.raw[2], self.p3[0])
             self.p3[1] = max(cor.raw[2], self.p3[1])
+            sleep(wait_time)
     def escrever(self):
         with open(self.color, "w") as arquivo:
             arquivo.write(str(self.p1[0]))
@@ -45,6 +41,6 @@ class Calibracao:
             arquivo.write(",")
 Sound.speak("Calibrate")
 verde = Calibracao("verde_direito.txt",0,0)
-verde.calibrate(0,0,0.1, 100)
+verde.calibrate(0.1, 100)
 verde.escrever()
 

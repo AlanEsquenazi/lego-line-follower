@@ -311,7 +311,7 @@ class Robot:
             elif(estado == States(-1)): #Esquerda
                 Robot.verificaCor(self)
                 Robot.verificaEstado(self)
-                Robot.curva_esquerda(self,speed_curva,50)
+                Robot.curva_esquerda(self,speed_curva,30)
             elif(estado == States(0)): #Reto
                 Robot.verificaCor(self)
                 Robot.verificaEstado(self)
@@ -319,7 +319,7 @@ class Robot:
             elif(estado == States(1)): #Direita
                 Robot.verificaCor(self)
                 Robot.verificaEstado(self)
-                Robot.curva_direita(self,speed_curva,50)
+                Robot.curva_direita(self,speed_curva,30)
             elif(estado == States(2)): #VerdeDireita
                 Robot.verificaCor(self)
                 Robot.verificaEstado(self)
@@ -354,6 +354,6 @@ Corsa.abrirAprendizadoPreto_meio()
 Corsa.abrirAprendizadoBranco_direito()
 Corsa.abrirAprendizadoPreto_direito()
 Corsa.abrirAprendizadoVerde_direito()
-Corsa.follow_line(400,100)
+Corsa.follow_line(450,140)
 
 
