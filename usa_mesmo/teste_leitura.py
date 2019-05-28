@@ -33,7 +33,7 @@ class Robot:
 
     def abrirAprendizadoPreto(self):
         global preto
-        with open('preto.txt', "r") as ft:            # a lista de aprendizado serah "azul, verde, vermelho"
+        with open('preto_direito.txt', "r") as ft:            # a lista de aprendizado serah "azul, verde, vermelho"
             preto = ft.read().split(',')              # aqui, criamos uma lista de strings, cada elemento eh a cor
             preto.pop()
             preto = [int(x) for x in preto]     # tornamos as strings em inteiros
@@ -41,7 +41,7 @@ class Robot:
 
     def abrirAprendizadoVerde(self):
         global verde
-        with open('verde.txt', "r") as ft:            # a lista de aprendizado serah "azul, verde, vermelho"
+        with open('verde_direito.txt', "r") as ft:            # a lista de aprendizado serah "azul, verde, vermelho"
             verde = ft.read().split(',')              # aqui, criamos uma lista de strings, cada elemento eh a cor
             verde.pop()
             verde = [int(x) for x in verde]     # tornamos as strings em inteiros

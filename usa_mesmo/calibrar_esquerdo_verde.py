@@ -8,7 +8,7 @@ from time import time
 lm1 = ev3.LargeMotor('outA'); assert lm1.connected
 lm2 = ev3.LargeMotor('outC'); assert lm2.connected
 
-cor = ev3.ColorSensor('in3'); assert cor.connected
+cor = ev3.ColorSensor('in2'); assert cor.connected
 class Calibracao:
     def __init__(self, color, speed, time):
         self.color = color
@@ -44,8 +44,7 @@ class Calibracao:
             arquivo.write(str(self.p3[1]))
             arquivo.write(",")
 Sound.speak("Calibrate")
-preto = Calibracao("preto_meio.txt",0,0)
-preto.calibrate(0,0,0.1, 100)
-preto.escrever()
-
+verde = Calibracao("verde.txt",0,0)
+verde.calibrate(0,0,0.1, 100)
+verde.escrever()
 

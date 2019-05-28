@@ -6,7 +6,7 @@ from enum import Enum
 #from multiprocessing import Process
 from time import sleep
 from time import time
-se = ev3.ColorSensor('in2'); assert se.connected
+se = ev3.ColorSensor('in4'); assert se.connected
 
 class Robot:
     def __init__(self):
@@ -15,14 +15,14 @@ class Robot:
 
     def abrirAprendizadoBranco(self):
         global branco
-        with open('branco.txt', "r") as ft:            # a lista de aprendizado serah "azul, verde, vermelho"
+        with open('branco_direito.txt', "r") as ft:            # a lista de aprendizado serah "azul, verde, vermelho"
             branco = ft.read().split(',')              # aqui, criamos uma lista de strings, cada elemento eh a cor
             branco.pop()
             branco = [int(x) for x in branco]     # tornamos as strings em inteiros
 
     def abrirAprendizadoPreto(self):
         global preto
-        with open('preto.txt', "r") as ft:            # a lista de aprendizado serah "azul, verde, vermelho"
+        with open('preto_direito.txt', "r") as ft:            # a lista de aprendizado serah "azul, verde, vermelho"
             preto = ft.read().split(',')              # aqui, criamos uma lista de strings, cada elemento eh a cor
             preto.pop()
             preto = [int(x) for x in preto]     # tornamos as strings em inteiros

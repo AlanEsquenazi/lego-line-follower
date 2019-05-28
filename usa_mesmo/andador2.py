@@ -8,12 +8,14 @@ from time import sleep
 from time import time
 
 class States(Enum):
+    CurvaVerdeEsquerda = -3
     VerdeEsquerda = -2
     Esquerda = -1
     Reto = 0
     Direita = 1
     VerdeDireita = 2
-    VerdeMeiaVolta = 3
+    CurvaVerdeDireita = 3
+    VerdeMeiaVolta = 4
 
 
 class Robot:
@@ -304,7 +306,17 @@ class Robot:
             Robot.verificaCor(self)
             Robot.verificaEstado(self)
             print(esquerdo, " ", meio, " ", direito, " ", estado)
-            if(estado == States(-2)): #VerdeEsquerda
+            if(estado == States(-3)): #CurvaVerdeEsquerda
+                if(meio == 1):
+                    while(not(meio == 0)):
+                        Robot.curva_esquerda(self,speed_curva,50)
+                    while(not(meio == 1)):
+                        Robot.curva_esquerda(self,speed_curva,50)
+                elif(meio == 0):
+                    while(not(meio == 1)):
+                        Robot.curva_esquerda(self,speed_curva,50)
+                estado = States(0)
+            elif(estado == States(-2)): #VerdeEsquerda
                 Robot.verificaCor(self)
                 Robot.verificaEstado(self)
                 Robot.go_forward(self,speed_reta,30)
@@ -324,7 +336,18 @@ class Robot:
                 Robot.verificaCor(self)
                 Robot.verificaEstado(self)
                 Robot.go_forward(self,speed_reta,30)
-            #elif(estado == States(3)): #VerdeMeiaVolta
+            elif(estado == States(3)): #CurvaVerdeDireita
+                if(meio == 1):
+                    while(not(meio == 0)):
+                        Robot.curva_direita(self,speed_curva,50)
+                    while(not(meio == 1)):
+                        Robot.curva_direita(self,speed_curva,50)
+                elif(meio == 0):
+                    while(not(meio == 1)):
+                        Robot.curva_direita(self,speed_curva,50)
+                estado = States(0)
+
+            #elif(estado == States(4)): #VerdeMeiaVolta
                 #TODO aqui também
 
 
