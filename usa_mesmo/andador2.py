@@ -17,7 +17,6 @@ class States(Enum):
     CurvaVerdeDireita = 3
     VerdeMeiaVolta = 4
 
-
 class Robot:
     #def __init__(self,out1,out2,in1,in2,in3, in4):
     def __init__(self,out1,out2,in1,in2,in3):
@@ -179,23 +178,33 @@ class Robot:
         global direito
         global meio
         global estado
+        if(estado == States(-3)):
+            if(esquerdo == 1 and meio == 1 and direito == 0):
+                estado = States(-3)
+            elif(esquerdo == 1 and meio == 1 and direito == 1):
+                estado = States(-3)
+            elif(esquerdo == 1 and meio == 0 and direito == 1):
+                estado = States(-3)
+                #Transição para Andar Reto na função LineFollower
 
-        if(estado == States(-2)):
-            if(esquerdo == 2 and meio == 1 and direito == 0): #VPB
+        elif(estado == States(-2)):
+            if(esquerdo == 2 and direito != 2): #V-NV
                 estado = States(-2)
             elif(esquerdo == 0 and meio == 1 and direito == 0): #BPB
                 estado = States(0)
+            elif(esquerdo == 0 and meio == 0 and direito == 0): #BBB
+                estado = States(0)
             elif(esquerdo == 1 and meio == 1 and direito == 0): #PPB
-                estado = States(-1)
+                estado = States(-3)
             elif(esquerdo == 1 and meio == 1 and direito == 1): #PPP
-                estado = States(-1)
+                estado = States(-3)
             elif(esquerdo == 1 and meio == 0 and direito == 1): #PBP
-                estado = States(-1)
+                estado = States(-3)
 
         elif(estado == States(-1)):
             #if(esquerdo == 0 and meio == 0 and direito == 0): #BBB
             #    estado = States(0)
-            if(esquerdo == 0 and meio == 1 and direito == 0): #BPB
+            if(esquerdo != 1 and meio == 1 and direito != 1): #BPB
                 estado = States(0)
             elif(esquerdo == 1 and meio == 0 and direito == 0): #PBB
                 estado = States(-1)
@@ -223,23 +232,21 @@ class Robot:
                 estado = States(1)
             elif(esquerdo == 1 and meio == 0 and direito == 0): #PBB
                 estado = States(-1)
-            elif(esquerdo == 2 and meio == 1 and direito == 0): #VPB
+            elif(esquerdo == 2 and direito != 2): #V-NV
                 estado = States(-2)
-            elif(esquerdo == 0 and meio == 1 and direito == 2): #BPV
+            elif(esquerdo != 2 and direito == 2): #NV-V
                 estado = States(2)
-            elif(esquerdo == 2 and meio == 1 and direito == 2): #VPV
-                estado = States(3)
-            elif(esquerdo == 2 and meio == 0 and direito == 2): #VBV
-                estado = States(3)
-            '''elif(esquerdo == 1 and meio == 1 and direito == 0): #PBP
-                ?? '''
-            '''elif(esquerdo == 1 and meio == 1 and direito == 1): #PPP
-                 ???'''
+            elif(esquerdo == 2 and direito == 2): #V-V
+                estado = States(4)
+            elif(esquerdo == 1 and meio == 0 and direito == 1): #PBP
+                estado = States(0)
+            elif(esquerdo == 1 and meio == 1 and direito == 1): #PPP
+                estado = States(0)
 
         elif(estado == States(1)):
             #if(esquerdo == 0 and meio == 0 and direito == 0): #BBB
             #    estado = States(0)
-            if(esquerdo == 0 and meio == 1 and direito == 0): #BPB
+            if(esquerdo != 1 and meio == 1 and direito != 1): #BPB
                 estado = States(0)
             elif(esquerdo == 0 and meio == 0 and direito == 1): #BBP
                 estado = States(1)
@@ -253,22 +260,29 @@ class Robot:
             #PBB e PPB não tem transição direta -> viram para a esquerda
 
         elif(estado == States(2)):
-            if(esquerdo == 0 and meio == 1 and direito == 2): #BPV
+            if(esquerdo != 2 and direito == 2): #NV-V
                 estado = States(2)
             elif(esquerdo == 0 and meio == 1 and direito == 0): #BPB
                 estado = States(0)
             elif(esquerdo == 0 and meio == 1 and direito == 1): #BPP
-                estado = States(1)
+                estado = States(3)
             elif(esquerdo == 1 and meio == 1 and direito == 1): #PPP
-                estado = States(1)
+                estado = States(3)
             elif(esquerdo == 1 and meio == 0 and direito == 1): #PBP
-                estado = States(1)
-
+                estado = States(3)
         elif(estado == States(3)):
+            if(esquerdo == 0 and meio == 1 and direito == 1):
+                estado = States(3)
+            elif(esquerdo == 1 and meio == 1 and direito == 1):
+                estado = States(3)
+            elif(esquerdo == 1 and meio == 0 and direito == 1):
+                estado = States(3)
+                #Transição para Andar Reto na função LineFollower
+        elif(estado == States(4)):
             if(esquerdo == 2 and meio == 1 and direito == 2): #VPV
-                estado = States(3)
+                estado = States(4)
             elif(esquerdo == 2 and meio == 0 and direito == 2): #VBV
-                estado = States(3)
+                estado = States(4)
             else: #TODO aqui tb
                 estado = States(0)
 

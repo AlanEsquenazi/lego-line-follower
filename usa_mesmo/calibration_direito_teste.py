@@ -56,7 +56,7 @@ class Robot:
         right = self.sd.raw
 
 
-        if preto[0]<=right[0] and preto[1]>=right[0] and preto[2]<=right[1] and preto[3]>=right[1] and preto[4]<=right[2] and preto[5]>=right[2]:
+        if preto[0] - 10<=right[0] and preto[1] + 10>=right[0] and preto[2] - 10<=right[1] and preto[3] + 10>=right[1] and preto[4] - 10<=right[2] and preto[5] + 10>=right[2]:
             direito = 1
 
         elif verde[0] - 10<=right[0] and verde[1] + 10>=right[0] and verde[2] - 10<=right[1] and verde[3] + 10>=right[1] and verde[4] - 10<=right[2] and verde[5] + 10>=right[2]:
