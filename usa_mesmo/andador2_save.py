@@ -174,7 +174,7 @@ class Robot:
         if(estado == States(-3)):
             if(self.us.value(<=50)):
                 estado = States(5)
-            elif(esquerdo == 1 and meio == 1 and direito == 0):
+            elif(esquerdo == 1 and meio == 1 and direito == 0): #PPB
                 estado = States(-3)
             elif(esquerdo == 1 and meio == 1 and direito == 1): #PPP
                 estado = States(-3)
@@ -183,10 +183,9 @@ class Robot:
                 #Transição para Andar Reto na função LineFollower
 
         elif(estado == States(-2)):
-            if(esquerdo == 2 and meio == 1 and direito == 0): #VPB
             if(self.us.value(<=50)):
                 estado = States(5)
-            elif(esquerdo == 2 and direito != 2): #V-NV
+            elif(esquerdo == 2 and meio == 1 and direito == 0): #VPB
                 estado = States(-2)
             elif(esquerdo == 0 and meio == 1 and direito == 0): #BPB
                 estado = States(0)
@@ -198,7 +197,6 @@ class Robot:
                 estado = States(-3)
             elif(esquerdo == 1 and meio == 0 and direito == 1): #PBP
                 estado = States(-3)
-
         elif(estado == States(-1)):
             #if(esquerdo == 0 and meio == 0 and direito == 0): #BBB
             #    estado = States(0)
@@ -216,6 +214,7 @@ class Robot:
             elif(esquerdo == 1 and meio == 1 and direito == 1): #PPP
                  estado = States(0)
             #BBP e BPP não tem transição direta -> viram para a direita
+
 
         elif(estado == States(0) or estado==States(5)):
             if(self.us.value(<=50)):
@@ -253,6 +252,8 @@ class Robot:
             #    estado = States(0)
             if(self.us.value(<=50)):
                 estado = States(5)
+            #if(esquerdo == 0 and meio == 0 and direito == 0): #BBB
+            #    estado = States(0)
             elif(esquerdo != 1 and meio == 1 and direito != 1): #BPB
                 estado = States(0)
             elif(esquerdo == 0 and meio == 0 and direito == 1): #BBP
@@ -266,10 +267,11 @@ class Robot:
                 estado = States(0)
             #PBB e PPB não tem transição direta -> viram para a esquerda
 
+
         elif(estado == States(2)):
             if(self.us.value(<=50)):
                 estado = States(5)
-            elif(esquerdo != 2 and direito == 2): #NV-V
+            elif(esquerdo == 0 and meio == 1 and direito == 2): #BPV
                 estado = States(2)
             elif(esquerdo == 0 and meio == 1 and direito == 0): #BPB
                 estado = States(0)
@@ -284,7 +286,7 @@ class Robot:
         elif(estado == States(3)):
             if(self.us.value(<=50)):
                 estado = States(5)
-            elif(esquerdo == 0 and meio == 1 and direito == 1):
+            elif(esquerdo == 0 and meio == 1 and direito == 1): #BPP
                 estado = States(3)
             elif(esquerdo == 1 and meio == 1 and direito == 1): #PPP
                 estado = States(3)
