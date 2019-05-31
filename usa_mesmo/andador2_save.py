@@ -6,7 +6,7 @@ from enum import Enum
 #from multiprocessing import Process
 from time import sleep
 from time import time
-
+cabo = 0
 class States(Enum):
     CurvaVerdeEsquerda = -3
     VerdeEsquerda = -2
@@ -171,6 +171,7 @@ class Robot:
         global direito
         global meio
         global estado
+        global cabo
         if(estado == States(-3)):
             if(self.us.value(<=50)):
                 estado = States(5)
@@ -216,7 +217,7 @@ class Robot:
             #BBP e BPP não tem transição direta -> viram para a direita
 
 
-        elif(estado == States(0) or estado==States(5)):
+        elif(estado == States(0) or (estado==States(5) and cabo =1)):
             if(self.us.value(<=50)):
                 estado = States(5)
             elif(esquerdo == 0 and meio == 0 and direito == 0): #BBB
@@ -326,6 +327,8 @@ class Robot:
         Robot.verificaCor(self)
         Robot.verificaEstado(self)
     def desvia_do_obstaculo(self, speed_reta,speed_curva,time, pesq, pdir):
+        global cabo
+        cabo = 0 
         Robot.curva_direita(self,speed_curva,0.85*pdir)
         Robot.go_forward(self,speed_reta,1.5*time)
         Robot.curva_esquerda(self,speed_curva,0.85*pesq)
@@ -333,6 +336,7 @@ class Robot:
         Robot.curva_esquerda(self,speed_curva,0.85*pesq)
         Robot.go_forward(self,speed_reta,1.3*time)
         Robot.curva_direita(self,speed_curva,0.85*pdir)
+        cabo = 1
     def follow_line(self,speed_reta,speed_curva):
         while(True):
             global left
@@ -391,6 +395,7 @@ class Robot:
                         Robot.curva_direita(self,speed_curva,50)
                 estado = States(0)
             elif(estado == States(5)):
+
                 Robot.desvia_do_obstaculo(self, 400,170,950, 800, 800)
 
             #elif(estado == States(4)): #VerdeMeiaVolta

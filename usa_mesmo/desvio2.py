@@ -7,7 +7,7 @@ from enum import Enum
 from time import sleep
 from time import time
 posicao_dir = 800        # as curvas
-posicao_esq = 850
+posicao_esq = 800
 class Robot_US:
     def __init__(self,out1,out2,in1):
 
@@ -51,7 +51,7 @@ class Robot_US:
         Robot_US.curva_esquerda(self,speed_curva,0.85*pesq)
         Robot_US.go_forward(self,speed_reta,2.7*time)
         Robot_US.curva_esquerda(self,speed_curva,0.85*pesq)
-        Robot_US.go_forward(self,speed_reta,1.3*time)
+        Robot_US.go_forward(self,speed_reta,1.4*time)
         Robot_US.curva_direita(self,speed_curva,0.85*pdir)
 
     def encontrar_obstaculo(self):
