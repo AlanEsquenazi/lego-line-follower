@@ -16,18 +16,25 @@ class States(Enum):
     VerdeDireita = 2
     CurvaVerdeDireita = 3
     VerdeMeiaVolta = 4
-    Desviando = 5
 
 class Robot:
     #def __init__(self,out1,out2,in1,in2,in3, in4):
-    def __init__(self,out1,out2,in1,in2,in3, in4):
+    def __init__(self,out1,out2,in1,in2,in3):
 
         self.lm1 = ev3.LargeMotor(out1); assert self.lm1.connected
         self.lm2 = ev3.LargeMotor(out2); assert self.lm2.connected
         self.se = ev3.ColorSensor(in1); assert self.se.connected
         self.sm = ev3.ColorSensor(in2); assert self.sm.connected
         self.sd = ev3.ColorSensor(in3); assert self.sd.connected
-        self.us = ev3.UltrasonicSensor(in4); assert self.us.connected
+        #self.us = ev3.UltrasonicSensor(in4); assert self.us.connected
+
+    def turn_left(self,speed,time):
+        self.lm1.run_timed(speed_sp = speed, time_sp = time, stop_action = 'coast')
+        self.lm2.run_timed(speed_sp = 0, time_sp = time, stop_action = 'coast')
+
+    def turn_right(self,speed,time):
+        self.lm1.run_timed(speed_sp = 0, time_sp = time, stop_action = 'coast')
+        self.lm2.run_timed(speed_sp = speed, time_sp = time, stop_action = 'coast')
 
     def go_forward(self,speed,time):
         self.lm1.run_timed(speed_sp = -speed, time_sp = time, stop_action = 'coast')
@@ -172,9 +179,7 @@ class Robot:
         global meio
         global estado
         if(estado == States(-3)):
-            if(self.us.value(<=50)):
-                estado = States(5)
-            elif(esquerdo == 1 and meio == 1 and direito == 0):
+            if(esquerdo == 1 and meio == 1 and direito == 0): #PPB
                 estado = States(-3)
             elif(esquerdo == 1 and meio == 1 and direito == 1): #PPP
                 estado = States(-3)
@@ -184,9 +189,6 @@ class Robot:
 
         elif(estado == States(-2)):
             if(esquerdo == 2 and meio == 1 and direito == 0): #VPB
-            if(self.us.value(<=50)):
-                estado = States(5)
-            elif(esquerdo == 2 and direito != 2): #V-NV
                 estado = States(-2)
             elif(esquerdo == 0 and meio == 1 and direito == 0): #BPB
                 estado = States(0)
@@ -202,9 +204,7 @@ class Robot:
         elif(estado == States(-1)):
             #if(esquerdo == 0 and meio == 0 and direito == 0): #BBB
             #    estado = States(0)
-            if(self.us.value(<=50)):
-                estado = States(5)
-            elif(esquerdo != 1 and meio == 1 and direito != 1): #BPB
+            if(esquerdo != 1 and meio == 1 and direito != 1): #BPB
                 estado = States(0)
             elif(esquerdo == 1 and meio == 0 and direito == 0): #PBB
                 estado = States(-1)
@@ -217,10 +217,8 @@ class Robot:
                  estado = States(0)
             #BBP e BPP não tem transição direta -> viram para a direita
 
-        elif(estado == States(0) or estado==States(5)):
-            if(self.us.value(<=50)):
-                estado = States(5)
-            elif(esquerdo == 0 and meio == 0 and direito == 0): #BBB
+        elif(estado == States(0)):
+            if(esquerdo == 0 and meio == 0 and direito == 0): #BBB
                 estado = States(0)
             elif(esquerdo == 0 and meio == 1 and direito == 0): #BPB
                 estado = States(0)
@@ -251,9 +249,7 @@ class Robot:
         elif(estado == States(1)):
             #if(esquerdo == 0 and meio == 0 and direito == 0): #BBB
             #    estado = States(0)
-            if(self.us.value(<=50)):
-                estado = States(5)
-            elif(esquerdo != 1 and meio == 1 and direito != 1): #BPB
+            if(esquerdo != 1 and meio == 1 and direito != 1): #BPB
                 estado = States(0)
             elif(esquerdo == 0 and meio == 0 and direito == 1): #BBP
                 estado = States(1)
@@ -267,9 +263,7 @@ class Robot:
             #PBB e PPB não tem transição direta -> viram para a esquerda
 
         elif(estado == States(2)):
-            if(self.us.value(<=50)):
-                estado = States(5)
-            elif(esquerdo != 2 and direito == 2): #NV-V
+            if(esquerdo == 0 and meio == 1 and direito == 2): #BPV
                 estado = States(2)
             elif(esquerdo == 0 and meio == 1 and direito == 0): #BPB
                 estado = States(0)
@@ -282,9 +276,7 @@ class Robot:
 
 
         elif(estado == States(3)):
-            if(self.us.value(<=50)):
-                estado = States(5)
-            elif(esquerdo == 0 and meio == 1 and direito == 1):
+            if(esquerdo == 0 and meio == 1 and direito == 1): #BPP
                 estado = States(3)
             elif(esquerdo == 1 and meio == 1 and direito == 1): #PPP
                 estado = States(3)
@@ -293,9 +285,7 @@ class Robot:
                 #Transição para Andar Reto na função LineFollower
 
         elif(estado == States(4)):
-            if(self.us.value(<=50)):
-                estado = States(5)
-            elif(esquerdo == 2 and meio == 1 and direito == 2): #VPV
+            if(esquerdo == 2 and meio == 1 and direito == 2): #VPV
                 estado = States(4)
             elif(esquerdo == 2 and meio == 0 and direito == 2): #VBV
                 estado = States(4)
@@ -323,14 +313,7 @@ class Robot:
         self.lm1.run_to_rel_pos(position_sp =  -pos_dir, speed_sp = v_curva)
         Robot.verificaCor(self)
         Robot.verificaEstado(self)
-    def desvia_do_obstaculo(self, speed_reta,speed_curva,time, pesq, pdir):
-        Robot.curva_direita(self,speed_curva,0.85*pdir)
-        Robot.go_forward(self,speed_reta,1.5*time)
-        Robot.curva_esquerda(self,speed_curva,0.85*pesq)
-        Robot.go_forward(self,speed_reta,2.7*time)
-        Robot.curva_esquerda(self,speed_curva,0.85*pesq)
-        Robot.go_forward(self,speed_reta,1.3*time)
-        Robot.curva_direita(self,speed_curva,0.85*pdir)
+
     def follow_line(self,speed_reta,speed_curva):
         while(True):
             global left
@@ -388,8 +371,6 @@ class Robot:
                     while(not(meio == 1)):
                         Robot.curva_direita(self,speed_curva,50)
                 estado = States(0)
-            elif(estado == States(5)):
-                Robot.desvia_do_obstaculo(self, 400,170,950, 800, 800)
 
             #elif(estado == States(4)): #VerdeMeiaVolta
                 #TODO aqui também
@@ -410,7 +391,7 @@ preto_direito = [0,0,0,0,0,0]
 preto_meio = [0,0,0,0,0,0]
 verde = [0,0,0,0,0,0]
 verde_direito = [0,0,0,0,0,0]
-Corsa = Robot('outB','outD','in2','in3','in4', 'in1')
+Corsa = Robot('outB','outD','in2','in3','in4')
 Sound.speak('Hello, I am Corsa').wait()
 Sound.speak('ATENTION ATENTION').wait()
 Corsa.abrirAprendizadoBranco()
