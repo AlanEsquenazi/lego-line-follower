@@ -179,16 +179,16 @@ class Robot:
         global meio
         global estado
         if(estado == States(-3)):
-            if(esquerdo == 1 and meio == 1 and direito == 0):
+            if(esquerdo == 1 and meio == 1 and direito == 0): #PPB
                 estado = States(-3)
-            elif(esquerdo == 1 and meio == 1 and direito == 1):
+            elif(esquerdo == 1 and meio == 1 and direito == 1): #PPP
                 estado = States(-3)
-            elif(esquerdo == 1 and meio == 0 and direito == 1):
+            elif(esquerdo == 1 and meio == 0 and direito == 1): #PBP
                 estado = States(-3)
                 #Transição para Andar Reto na função LineFollower
 
         elif(estado == States(-2)):
-            if(esquerdo == 2 and direito != 2): #V-NV
+            if(esquerdo == 2 and meio == 1 and direito == 0): #VPB
                 estado = States(-2)
             elif(esquerdo == 0 and meio == 1 and direito == 0): #BPB
                 estado = States(0)
@@ -232,11 +232,14 @@ class Robot:
                 estado = States(1)
             elif(esquerdo == 1 and meio == 0 and direito == 0): #PBB
                 estado = States(-1)
-            elif(esquerdo == 2 and direito != 2): #V-NV
+            elif(esquerdo == 2 and meio == 1 and direito == 0): #VPB
                 estado = States(-2)
-            elif(esquerdo != 2 and direito == 2): #NV-V
+            elif(esquerdo == 0 and meio == 1 and direito == 2): #BPV
                 estado = States(2)
-            elif(esquerdo == 2 and direito == 2): #V-V
+                #TODO caso PPV e VPP (quando ele entra torto tlgd)
+            elif(esquerdo == 2 and meio == 1 and direito == 2): #VPV
+                estado = States(4)
+            elif(esquerdo == 2 and meio == 0 and direito == 2): #VBV
                 estado = States(4)
             elif(esquerdo == 1 and meio == 0 and direito == 1): #PBP
                 estado = States(0)
@@ -260,7 +263,7 @@ class Robot:
             #PBB e PPB não tem transição direta -> viram para a esquerda
 
         elif(estado == States(2)):
-            if(esquerdo != 2 and direito == 2): #NV-V
+            if(esquerdo == 0 and meio == 1 and direito == 2): #BPV
                 estado = States(2)
             elif(esquerdo == 0 and meio == 1 and direito == 0): #BPB
                 estado = States(0)
@@ -270,14 +273,17 @@ class Robot:
                 estado = States(3)
             elif(esquerdo == 1 and meio == 0 and direito == 1): #PBP
                 estado = States(3)
+
+
         elif(estado == States(3)):
-            if(esquerdo == 0 and meio == 1 and direito == 1):
+            if(esquerdo == 0 and meio == 1 and direito == 1): #BPP
                 estado = States(3)
-            elif(esquerdo == 1 and meio == 1 and direito == 1):
+            elif(esquerdo == 1 and meio == 1 and direito == 1): #PPP
                 estado = States(3)
-            elif(esquerdo == 1 and meio == 0 and direito == 1):
+            elif(esquerdo == 1 and meio == 0 and direito == 1): #PBP
                 estado = States(3)
                 #Transição para Andar Reto na função LineFollower
+
         elif(estado == States(4)):
             if(esquerdo == 2 and meio == 1 and direito == 2): #VPV
                 estado = States(4)
@@ -331,25 +337,30 @@ class Robot:
                         Robot.curva_esquerda(self,speed_curva,50)
                 estado = States(0)
             elif(estado == States(-2)): #VerdeEsquerda
-                Robot.verificaCor(self)
-                Robot.verificaEstado(self)
-                Robot.go_forward(self,speed_reta,30)
+                while(estado == States(-2)):
+                    Robot.verificaCor(self)
+                    Robot.verificaEstado(self)
+                    Robot.go_forward(self,speed_reta,30)
             elif(estado == States(-1)): #Esquerda
-                Robot.verificaCor(self)
-                Robot.verificaEstado(self)
-                Robot.curva_esquerda(self,speed_curva,50)
+                while(estado == States(-1)):
+                    Robot.verificaCor(self)
+                    Robot.verificaEstado(self)
+                    Robot.curva_esquerda(self,speed_curva,50)
             elif(estado == States(0)): #Reto
-                Robot.verificaCor(self)
-                Robot.verificaEstado(self)
-                Robot.go_forward(self,speed_reta,30)
+                while(estado == States(0)):
+                    Robot.verificaCor(self)
+                    Robot.verificaEstado(self)
+                    Robot.go_forward(self,speed_reta,30)
             elif(estado == States(1)): #Direita
-                Robot.verificaCor(self)
-                Robot.verificaEstado(self)
-                Robot.curva_direita(self,speed_curva,50)
+                while(estado == States(1)):
+                    Robot.verificaCor(self)
+                    Robot.verificaEstado(self)
+                    Robot.curva_direita(self,speed_curva,50)
             elif(estado == States(2)): #VerdeDireita
-                Robot.verificaCor(self)
-                Robot.verificaEstado(self)
-                Robot.go_forward(self,speed_reta,30)
+                while(estado == States(2)):
+                    Robot.verificaCor(self)
+                    Robot.verificaEstado(self)
+                    Robot.go_forward(self,speed_reta,30)
             elif(estado == States(3)): #CurvaVerdeDireita
                 if(meio == 1):
                     while(not(meio == 0)):
@@ -391,6 +402,6 @@ Corsa.abrirAprendizadoPreto_meio()
 Corsa.abrirAprendizadoBranco_direito()
 Corsa.abrirAprendizadoPreto_direito()
 Corsa.abrirAprendizadoVerde_direito()
-Corsa.follow_line(400,100)
+Corsa.follow_line(500,100)
 
 
