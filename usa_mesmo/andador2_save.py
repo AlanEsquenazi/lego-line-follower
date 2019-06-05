@@ -312,8 +312,8 @@ class Robot:
         Robot.verificaCor(self)
         Robot.verificaEstado(self)
         print(esquerdo, " ", meio, " ", direito, " ", estado)
-        self.lm2.run_to_rel_pos(position_sp = pos_esq, speed_sp = v_curva)
-        self.lm1.run_to_rel_pos(position_sp = -pos_esq, speed_sp = v_curva)
+        self.lm2.run_to_rel_pos(position_sp = 1, speed_sp = v_curva)
+        self.lm1.run_to_rel_pos(position_sp = -1, speed_sp = v_curva)
         Robot.verificaCor(self)
         Robot.verificaEstado(self)
 
@@ -322,8 +322,8 @@ class Robot:
         Robot.verificaCor(self)
         Robot.verificaEstado(self)
         print(esquerdo, " ", meio, " ", direito, " ", estado)
-        self.lm2.run_to_rel_pos(position_sp =  -pos_dir, speed_sp = v_curva)
-        self.lm1.run_to_rel_pos(position_sp =  pos_dir, speed_sp = v_curva)
+        self.lm2.run_to_rel_pos(position_sp =  -1, speed_sp = v_curva)
+        self.lm1.run_to_rel_pos(position_sp =  1, speed_sp = v_curva)
         Robot.verificaCor(self)
         Robot.verificaEstado(self)
     def desvia_do_obstaculo(self, speed_reta,speed_curva,time, pesq, pdir):
