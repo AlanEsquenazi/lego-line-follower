@@ -30,8 +30,8 @@ class Robot:
         self.us = ev3.UltrasonicSensor(in4); assert self.us.connected
 
     def go_forward(self,speed,time):
-        self.lm1.run_timed(speed_sp = speed, time_sp = time, stop_action = 'coast')
-        self.lm2.run_timed(speed_sp = speed, time_sp = time, stop_action = 'coast')
+        self.lm1.run_timed(speed_sp = -speed, time_sp = time, stop_action = 'coast')
+        self.lm2.run_timed(speed_sp = -speed, time_sp = time, stop_action = 'coast')
 
     def stop(self,time):
         self.lm1.run_timed(speed_sp = 0, time_sp = time, stop_action = 'coast')
@@ -173,7 +173,7 @@ class Robot:
         global estado
         global cabo
         if(estado == States(-3)):
-            if(self.us.value(<=50)):
+            if(self.us.value<=50):
                 estado = States(5)
             elif(esquerdo == 1 and meio == 1 and direito == 0): #PPB
                 estado = States(-3)
@@ -184,7 +184,7 @@ class Robot:
                 #Transição para Andar Reto na função LineFollower
 
         elif(estado == States(-2)):
-            if(self.us.value(<=50)):
+            if(self.us.value<=50):
                 estado = States(5)
             elif(esquerdo == 2 and meio == 1 and direito == 0): #VPB
                 estado = States(-2)
@@ -201,7 +201,7 @@ class Robot:
         elif(estado == States(-1)):
             #if(esquerdo == 0 and meio == 0 and direito == 0): #BBB
             #    estado = States(0)
-            if(self.us.value(<=50)):
+            if(self.us.value<=50):
                 estado = States(5)
             elif(esquerdo != 1 and meio == 1 and direito != 1): #BPB
                 estado = States(0)
@@ -218,7 +218,7 @@ class Robot:
 
 
         elif(estado == States(0) or (estado==States(5) and cabo =1)):
-            if(self.us.value(<=50)):
+            if(self.us.value<=50):
                 estado = States(5)
             elif(esquerdo == 0 and meio == 0 and direito == 0): #BBB
                 estado = States(0)
@@ -251,7 +251,7 @@ class Robot:
         elif(estado == States(1)):
             #if(esquerdo == 0 and meio == 0 and direito == 0): #BBB
             #    estado = States(0)
-            if(self.us.value(<=50)):
+            if(self.us.value<=50):
                 estado = States(5)
             #if(esquerdo == 0 and meio == 0 and direito == 0): #BBB
             #    estado = States(0)
@@ -270,7 +270,7 @@ class Robot:
 
 
         elif(estado == States(2)):
-            if(self.us.value(<=50)):
+            if(self.us.value<=50):
                 estado = States(5)
             elif(esquerdo == 0 and meio == 1 and direito == 2): #BPV
                 estado = States(2)
@@ -285,7 +285,7 @@ class Robot:
 
 
         elif(estado == States(3)):
-            if(self.us.value(<=50)):
+            if(self.us.value<=50):
                 estado = States(5)
             elif(esquerdo == 0 and meio == 1 and direito == 1): #BPP
                 estado = States(3)
@@ -296,7 +296,7 @@ class Robot:
                 #Transição para Andar Reto na função LineFollower
 
         elif(estado == States(4)):
-            if(self.us.value(<=50)):
+            if(self.us.value<=50):
                 estado = States(5)
             elif(esquerdo == 2 and meio == 1 and direito == 2): #VPV
                 estado = States(4)
@@ -312,8 +312,8 @@ class Robot:
         Robot.verificaCor(self)
         Robot.verificaEstado(self)
         print(esquerdo, " ", meio, " ", direito, " ", estado)
-        self.lm2.run_to_rel_pos(position_sp = 1, speed_sp = v_curva)
-        self.lm1.run_to_rel_pos(position_sp = -1, speed_sp = v_curva)
+        self.lm2.run_to_rel_pos(position_sp = -40, speed_sp = v_curva)
+        self.lm1.run_to_rel_pos(position_sp = 40, speed_sp = v_curva)
         Robot.verificaCor(self)
         Robot.verificaEstado(self)
 
@@ -322,8 +322,8 @@ class Robot:
         Robot.verificaCor(self)
         Robot.verificaEstado(self)
         print(esquerdo, " ", meio, " ", direito, " ", estado)
-        self.lm2.run_to_rel_pos(position_sp =  -1, speed_sp = v_curva)
-        self.lm1.run_to_rel_pos(position_sp =  1, speed_sp = v_curva)
+        self.lm2.run_to_rel_pos(position_sp =  40, speed_sp = v_curva)
+        self.lm1.run_to_rel_pos(position_sp =  -40, speed_sp = v_curva)
         Robot.verificaCor(self)
         Robot.verificaEstado(self)
     def desvia_do_obstaculo(self, speed_reta,speed_curva,time, pesq, pdir):
