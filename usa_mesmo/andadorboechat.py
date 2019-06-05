@@ -29,16 +29,16 @@ class Robot:
         #self.us = ev3.UltrasonicSensor(in4); assert self.us.connected
 
     def turn_left(self,speed,time):
-        self.lm1.run_timed(speed_sp = speed, time_sp = time, stop_action = 'coast')
+        self.lm1.run_timed(speed_sp = -speed, time_sp = time, stop_action = 'coast')
         self.lm2.run_timed(speed_sp = 0, time_sp = time, stop_action = 'coast')
 
     def turn_right(self,speed,time):
         self.lm1.run_timed(speed_sp = 0, time_sp = time, stop_action = 'coast')
-        self.lm2.run_timed(speed_sp = speed, time_sp = time, stop_action = 'coast')
+        self.lm2.run_timed(speed_sp = -speed, time_sp = time, stop_action = 'coast')
 
     def go_forward(self,speed,time):
-        self.lm1.run_timed(speed_sp = -speed, time_sp = time, stop_action = 'coast')
-        self.lm2.run_timed(speed_sp = -speed, time_sp = time, stop_action = 'coast')
+        self.lm1.run_timed(speed_sp = speed, time_sp = time, stop_action = 'coast')
+        self.lm2.run_timed(speed_sp = speed, time_sp = time, stop_action = 'coast')
 
     def stop(self,time):
         self.lm1.run_timed(speed_sp = 0, time_sp = time, stop_action = 'coast')
@@ -299,8 +299,8 @@ class Robot:
         Robot.verificaCor(self)
         Robot.verificaEstado(self)
         print(esquerdo, " ", meio, " ", direito, " ", estado)
-        self.lm2.run_to_rel_pos(position_sp = -pos_esq, speed_sp = v_curva)
-        self.lm1.run_to_rel_pos(position_sp = pos_esq, speed_sp = v_curva)
+        self.lm2.run_to_rel_pos(position_sp = pos_esq, speed_sp = v_curva)
+        self.lm1.run_to_rel_pos(position_sp = -pos_esq, speed_sp = v_curva)
         Robot.verificaCor(self)
         Robot.verificaEstado(self)
 
@@ -309,8 +309,8 @@ class Robot:
         Robot.verificaCor(self)
         Robot.verificaEstado(self)
         print(esquerdo, " ", meio, " ", direito, " ", estado)
-        self.lm2.run_to_rel_pos(position_sp =  pos_dir, speed_sp = v_curva)
-        self.lm1.run_to_rel_pos(position_sp =  -pos_dir, speed_sp = v_curva)
+        self.lm2.run_to_rel_pos(position_sp =  -pos_dir, speed_sp = v_curva)
+        self.lm1.run_to_rel_pos(position_sp =  pos_dir, speed_sp = v_curva)
         Robot.verificaCor(self)
         Robot.verificaEstado(self)
 

@@ -30,8 +30,8 @@ class Robot:
         self.us = ev3.UltrasonicSensor(in4); assert self.us.connected
 
     def go_forward(self,speed,time):
-        self.lm1.run_timed(speed_sp = -speed, time_sp = time, stop_action = 'coast')
-        self.lm2.run_timed(speed_sp = -speed, time_sp = time, stop_action = 'coast')
+        self.lm1.run_timed(speed_sp = speed, time_sp = time, stop_action = 'coast')
+        self.lm2.run_timed(speed_sp = speed, time_sp = time, stop_action = 'coast')
 
     def stop(self,time):
         self.lm1.run_timed(speed_sp = 0, time_sp = time, stop_action = 'coast')
@@ -312,8 +312,8 @@ class Robot:
         Robot.verificaCor(self)
         Robot.verificaEstado(self)
         print(esquerdo, " ", meio, " ", direito, " ", estado)
-        self.lm2.run_to_rel_pos(position_sp = -pos_esq, speed_sp = v_curva)
-        self.lm1.run_to_rel_pos(position_sp = pos_esq, speed_sp = v_curva)
+        self.lm2.run_to_rel_pos(position_sp = pos_esq, speed_sp = v_curva)
+        self.lm1.run_to_rel_pos(position_sp = -pos_esq, speed_sp = v_curva)
         Robot.verificaCor(self)
         Robot.verificaEstado(self)
 
@@ -322,13 +322,13 @@ class Robot:
         Robot.verificaCor(self)
         Robot.verificaEstado(self)
         print(esquerdo, " ", meio, " ", direito, " ", estado)
-        self.lm2.run_to_rel_pos(position_sp =  pos_dir, speed_sp = v_curva)
-        self.lm1.run_to_rel_pos(position_sp =  -pos_dir, speed_sp = v_curva)
+        self.lm2.run_to_rel_pos(position_sp =  -pos_dir, speed_sp = v_curva)
+        self.lm1.run_to_rel_pos(position_sp =  pos_dir, speed_sp = v_curva)
         Robot.verificaCor(self)
         Robot.verificaEstado(self)
     def desvia_do_obstaculo(self, speed_reta,speed_curva,time, pesq, pdir):
         global cabo
-        cabo = 0 
+        cabo = 0
         Robot.curva_direita(self,speed_curva,0.85*pdir)
         Robot.go_forward(self,speed_reta,1.5*time)
         Robot.curva_esquerda(self,speed_curva,0.85*pesq)
