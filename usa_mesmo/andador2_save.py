@@ -262,7 +262,7 @@ class Robot:
             elif(esquerdo == 0 and meio == 1 and direito == 1): #BPP
                 estado = States(1)
             #TODO analisar os casos com verde e os dois de baixo
-            elif(esquerdo == 1 and meio == 1 and direito == 0): #PBP
+            elif(esquerdo == 1 and meio == 0 and direito == 1): #PBP
                 estado = States(0)
             elif(esquerdo == 1 and meio == 1 and direito == 1): #PPP
                 estado = States(0)
