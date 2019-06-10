@@ -14,7 +14,7 @@ class Calibracao:
         self.p1 = [1021,-1]
         self.p2 = [1021,-1]
         self.p3 = [1021,-1]
-    def calibrate(wait_time, repeat):
+    def calibrate(self,wait_time, repeat):
         for i in range(repeat):
             cor_lida = cor.raw
             self.p1[0] = min(cor.raw[0], self.p1[0])

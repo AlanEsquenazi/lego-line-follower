@@ -28,17 +28,14 @@ class Robot:
         self.sd = ev3.ColorSensor(in3); assert self.sd.connected
         #self.us = ev3.UltrasonicSensor(in4); assert self.us.connected
 
-    def turn_left(self,speed,time):
-        self.lm1.run_timed(speed_sp = -speed, time_sp = time, stop_action = 'coast')
-        self.lm2.run_timed(speed_sp = 0, time_sp = time, stop_action = 'coast')
 
-    def turn_right(self,speed,time):
-        self.lm1.run_timed(speed_sp = 0, time_sp = time, stop_action = 'coast')
-        self.lm2.run_timed(speed_sp = -speed, time_sp = time, stop_action = 'coast')
-
-    def go_forward(self,speed,time):
-        self.lm1.run_timed(speed_sp = -speed, time_sp = time, stop_action = 'coast')
-        self.lm2.run_timed(speed_sp = -speed, time_sp = time, stop_action = 'coast')
+    def go_forward(self,speed):
+        Robot.verificaCor(self)
+        Robot.verificaEstado(self)
+        self.lm1.run_forever(speed_sp = -speed)
+        self.lm2.run_forever(speed_sp = -speed)
+        Robot.verificaCor(self)
+        Robot.verificaEstado(self)
 
     def stop(self,time):
         self.lm1.run_timed(speed_sp = 0, time_sp = time, stop_action = 'coast')
@@ -55,28 +52,6 @@ class Robot:
                     meia_volta(self,speed,0, 1)
             if meio==1 and conta==1:
                 meia_volta(self,speed,1,2)'''
-
-
-    def abrirAprendizadoBranco(self):
-        global branco
-        with open('branco.txt', "r") as ft:            # a lista de aprendizado serah "azul, verde, vermelho"
-            branco = ft.read().split(',')              # aqui, criamos uma lista de strings, cada elemento eh a cor
-            branco.pop()
-            branco = [int(x) for x in branco]     # tornamos as strings em inteiros
-
-    def abrirAprendizadoBranco_direito(self):
-        global branco_direito
-        with open('branco_direito.txt', "r") as ft:            # a lista de aprendizado serah "azul, verde, vermelho"
-            branco_direito = ft.read().split(',')              # aqui, criamos uma lista de strings, cada elemento eh a cor
-            branco_direito.pop()
-            branco_direito = [int(x) for x in branco_direito]     # tornamos as strings em inteiros
-
-    def abrirAprendizadoBranco_meio(self):
-        global branco_meio
-        with open('branco_meio.txt', "r") as ft:            # a lista de aprendizado serah "azul, verde, vermelho"
-            branco_meio = ft.read().split(',')              # aqui, criamos uma lista de strings, cada elemento eh a cor
-            branco_meio.pop()
-            branco_meio = [int(x) for x in branco_meio]     # tornamos as strings em inteiros
 
     def abrirAprendizadoPreto(self):
         global preto
@@ -141,7 +116,7 @@ class Robot:
         if preto[0]-10<=left[0] and preto[1]+10>=left[0] and preto[2]-10<=left[1] and preto[3]+10>=left[1] and preto[4]-10<=left[2] and preto[5]+10>=left[2]:
             esquerdo = 1
 
-        elif verde[0] - 10<=left[0] and verde[1] + 10>=left[0] and verde[2] - 10<=left[1] and verde[3] + 10>=left[1] and verde[4] - 10<=left[2] and verde[5] + 10>=left[2]:
+        elif verde[0] - 5<=left[0] and verde[1] + 5>=left[0] and verde[2] - 5<=left[1] and verde[3] + 5>=left[1] and verde[4] - 5<=left[2] and verde[5] + 5>=left[2]:
             esquerdo = 2
 
         else:
@@ -150,7 +125,7 @@ class Robot:
         if preto_direito[0]-10<=right[0] and preto_direito[1]+10>=right[0] and preto_direito[2]-10<=right[1] and preto_direito[3]+10>=right[1] and preto_direito[4]-10<=right[2] and preto_direito[5]+10>=right[2]:
             direito = 1
 
-        elif verde_direito[0] - 10<=right[0] and verde_direito[1] + 10>=right[0] and verde_direito[2] - 10<=right[1] and verde_direito[3] + 10>=right[1] and verde_direito[4] - 10<=right[2] and verde_direito[5] + 10>=right[2]:
+        elif verde_direito[0] - 5<=right[0] and verde_direito[1] + 5>=right[0] and verde_direito[2] - 5<=right[1] and verde_direito[3] + 5>=right[1] and verde_direito[4] - 5<=right[2] and verde_direito[5] + 5>=right[2]:
             direito = 2
 
         else:
@@ -178,6 +153,8 @@ class Robot:
         global direito
         global meio
         global estado
+        global estadoant
+        estadoant = estado
         if(estado == States(-3)):
             if(esquerdo == 1 and meio == 1 and direito == 0): #PPB
                 estado = States(-3)
@@ -189,6 +166,8 @@ class Robot:
 
         elif(estado == States(-2)):
             if(esquerdo == 2 and meio == 1 and direito == 0): #VPB
+                estado = States(-2)
+            elif(esquerdo == 2 and meio == 0 and direito == 1): #VBP
                 estado = States(-2)
             elif(esquerdo == 0 and meio == 1 and direito == 0): #BPB
                 estado = States(0)
@@ -245,6 +224,12 @@ class Robot:
                 estado = States(0)
             elif(esquerdo == 1 and meio == 1 and direito == 1): #PPP
                 estado = States(0)
+            elif(esquerdo == 1 and meio == 0 and direito == 2): #PBV
+                estado = States(2)
+            elif(esquerdo == 2 and meio == 0 and direito == 1): #VBP
+                estado = States(-2)
+            else:
+                estado = States(0)
 
         elif(estado == States(1)):
             #if(esquerdo == 0 and meio == 0 and direito == 0): #BBB
@@ -264,6 +249,8 @@ class Robot:
 
         elif(estado == States(2)):
             if(esquerdo == 0 and meio == 1 and direito == 2): #BPV
+                estado = States(2)
+            elif(esquerdo == 1 and meio == 0 and direito == 2): #PBV
                 estado = States(2)
             elif(esquerdo == 0 and meio == 1 and direito == 0): #BPB
                 estado = States(0)
@@ -294,25 +281,48 @@ class Robot:
 
         Robot.escrever_estados(self)
 
-    def curva_esquerda(self,v_curva,pos_esq):
+    def curva_esquerda(self,v_curva):
         print("curva esquerda")
-        Robot.verificaCor(self)
-        Robot.verificaEstado(self)
-        print(esquerdo, " ", meio, " ", direito, " ", estado)
-        self.lm2.run_to_rel_pos(position_sp = -40, speed_sp = v_curva)
-        self.lm1.run_to_rel_pos(position_sp = 40, speed_sp = v_curva)
-        Robot.verificaCor(self)
-        Robot.verificaEstado(self)
+        while(not(meio == 1)):
+            Robot.verificaCor(self)
+            Robot.verificaEstado(self)
+            print(esquerdo, " ", meio, " ", direito, " ", estado)
+            self.lm2.run_forever(speed_sp = -v_curva)
+            self.lm1.run_forever(speed_sp = v_curva)
+            Robot.verificaCor(self)
+            Robot.verificaEstado(self)
 
-    def curva_direita(self,v_curva, pos_dir):
+    def curva_esquerda1(self,v_curva):
+        print("curva esquerda")
+        while(not(meio == 0)):
+            Robot.verificaCor(self)
+            Robot.verificaEstado(self)
+            print(esquerdo, " ", meio, " ", direito, " ", estado)
+            self.lm2.run_forever(speed_sp = -v_curva)
+            self.lm1.run_forever(speed_sp = v_curva)
+            Robot.verificaCor(self)
+            Robot.verificaEstado(self)
+
+    def curva_direita(self,v_curva):
         print("curva direita")
-        Robot.verificaCor(self)
-        Robot.verificaEstado(self)
-        print(esquerdo, " ", meio, " ", direito, " ", estado)
-        self.lm2.run_to_rel_pos(position_sp =  40, speed_sp = v_curva)
-        self.lm1.run_to_rel_pos(position_sp =  -40, speed_sp = v_curva)
-        Robot.verificaCor(self)
-        Robot.verificaEstado(self)
+        while(not(meio == 1)):
+            Robot.verificaCor(self)
+            Robot.verificaEstado(self)
+            print(esquerdo, " ", meio, " ", direito, " ", estado)
+            self.lm2.run_forever(speed_sp = v_curva)
+            self.lm1.run_forever(speed_sp = -v_curva)
+            Robot.verificaCor(self)
+            Robot.verificaEstado(self)
+    def curva_direita1(self,v_curva):
+        print("curva direita")
+        while(not(meio == 0)):
+            Robot.verificaCor(self)
+            Robot.verificaEstado(self)
+            print(esquerdo, " ", meio, " ", direito, " ", estado)
+            self.lm2.run_forever(speed_sp = v_curva)
+            self.lm1.run_forever(speed_sp = -v_curva)
+            Robot.verificaCor(self)
+            Robot.verificaEstado(self)
 
     def follow_line(self,speed_reta,speed_curva):
         while(True):
@@ -326,50 +336,57 @@ class Robot:
             Robot.verificaCor(self)
             Robot.verificaEstado(self)
             print(esquerdo, " ", meio, " ", direito, " ", estado)
-            if(estado == States(-3)): #CurvaVerdeEsquerda
+            if(estado == States(-3) == estadoant): #CurvaVerdeEsquerda
+                Robot.stop(self,0.1)
                 if(meio == 1):
                     while(not(meio == 0)):
-                        Robot.curva_esquerda(self,speed_curva,50)
+                        Robot.curva_esquerda1(self,speed_curva)
                     while(not(meio == 1)):
-                        Robot.curva_esquerda(self,speed_curva,50)
+                        Robot.curva_esquerda(self,speed_curva)
                 elif(meio == 0):
+                    Robot.stop(self,0.1)
                     while(not(meio == 1)):
-                        Robot.curva_esquerda(self,speed_curva,50)
+                        Robot.curva_esquerda(self,speed_curva)
                 estado = States(0)
             elif(estado == States(-2)): #VerdeEsquerda
-                while(estado == States(-2)):
-                    Robot.verificaCor(self)
-                    Robot.verificaEstado(self)
-                    Robot.go_forward(self,speed_reta,30)
+                Robot.verificaCor(self)
+                Robot.verificaEstado(self)
+                Robot.go_forward(self,speed_reta)
+                Robot.verificaCor(self)
+                Robot.verificaEstado(self)
             elif(estado == States(-1)): #Esquerda
-                while(estado == States(-1)):
-                    Robot.verificaCor(self)
-                    Robot.verificaEstado(self)
-                    Robot.curva_esquerda(self,speed_curva,50)
-            elif(estado == States(0)): #Reto
-                while(estado == States(0)):
-                    Robot.verificaCor(self)
-                    Robot.verificaEstado(self)
-                    Robot.go_forward(self,speed_reta,30)
+                Robot.stop(self,0.1)
+                Robot.verificaCor(self)
+                Robot.verificaEstado(self)
+                Robot.curva_esquerda(self,speed_curva)
+            elif(estado == States(0) == estadoant): #Reto
+                Robot.verificaCor(self)
+                Robot.verificaEstado(self)
+                Robot.go_forward(self,speed_reta)
+                Robot.verificaCor(self)
+                Robot.verificaEstado(self)
             elif(estado == States(1)): #Direita
-                while(estado == States(1)):
-                    Robot.verificaCor(self)
-                    Robot.verificaEstado(self)
-                    Robot.curva_direita(self,speed_curva,50)
+                Robot.stop(self,0.1)
+                Robot.verificaCor(self)
+                Robot.verificaEstado(self)
+                Robot.curva_direita(self,speed_curva)
             elif(estado == States(2)): #VerdeDireita
-                while(estado == States(2)):
-                    Robot.verificaCor(self)
-                    Robot.verificaEstado(self)
-                    Robot.go_forward(self,speed_reta,30)
+                Robot.verificaCor(self)
+                Robot.verificaEstado(self)
+                Robot.go_forward(self,speed_reta)
+                Robot.verificaCor(self)
+                Robot.verificaEstado(self)
             elif(estado == States(3)): #CurvaVerdeDireita
+                Robot.stop(self,0.1)
                 if(meio == 1):
                     while(not(meio == 0)):
-                        Robot.curva_direita(self,speed_curva,50)
+                        Robot.curva_direita1(self,speed_curva)
                     while(not(meio == 1)):
-                        Robot.curva_direita(self,speed_curva,50)
+                        Robot.curva_direita(self,speed_curva)
                 elif(meio == 0):
+                    Robot.stop(self,0.1)
                     while(not(meio == 1)):
-                        Robot.curva_direita(self,speed_curva,50)
+                        Robot.curva_direita(self,speed_curva)
                 estado = States(0)
 
             #elif(estado == States(4)): #VerdeMeiaVolta
@@ -393,15 +410,13 @@ verde = [0,0,0,0,0,0]
 verde_direito = [0,0,0,0,0,0]
 Corsa = Robot('outB','outD','in2','in3','in4')
 Sound.speak('Hello, I am Corsa').wait()
-Sound.speak('ATENTION ATENTION').wait()
-Corsa.abrirAprendizadoBranco()
+Sound.speak('ATTENTION ATTENTION').wait()
 Corsa.abrirAprendizadoPreto()
 Corsa.abrirAprendizadoVerde()
-Corsa.abrirAprendizadoBranco_meio()
 Corsa.abrirAprendizadoPreto_meio()
-Corsa.abrirAprendizadoBranco_direito()
 Corsa.abrirAprendizadoPreto_direito()
 Corsa.abrirAprendizadoVerde_direito()
-Corsa.follow_line(500,100)
+Corsa.follow_line(100,45)
+
 
 
