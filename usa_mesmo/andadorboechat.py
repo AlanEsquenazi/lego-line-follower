@@ -194,6 +194,8 @@ class Robot:
                 estado = States(0)
             elif(esquerdo == 1 and meio == 1 and direito == 1): #PPP
                  estado = States(0)
+            elif(esquerdo == 0 and meio == 1 and direito == 1): #BPP ??
+                 estado = States(0)
             #BBP e BPP não tem transição direta -> viram para a direita
 
         elif(estado == States(0)):
@@ -244,6 +246,8 @@ class Robot:
                 estado = States(0)
             elif(esquerdo == 1 and meio == 1 and direito == 1): #PPP
                 estado = States(0)
+            elif(esquerdo == 1 and meio == 1 and direito == 0): #PPB ??
+                estado = States(0)
             #PBB e PPB não tem transição direta -> viram para a esquerda
 
         elif(estado == States(2)):
@@ -259,8 +263,6 @@ class Robot:
                 estado = States(3)
             elif(esquerdo == 1 and meio == 0 and direito == 1): #PBP
                 estado = States(3)
-
-
 
         elif(estado == States(3)):
             if(esquerdo == 0 and meio == 1 and direito == 1): #BPP
@@ -355,9 +357,12 @@ class Robot:
                 Robot.verificaEstado(self)
             elif(estado == States(-1) == estadoant): #Esquerda
                 Robot.stop(self,0.1)
+                if(meio == 1):
+                    Robot.curva_esquerda1(self,speed_curva)
+                elif(meio == 0):
+                    Robot.curva_esquerda(self,speed_curva)
                 Robot.verificaCor(self)
                 Robot.verificaEstado(self)
-                Robot.curva_esquerda(self,speed_curva)
             elif(estado == States(0) == estadoant): #Reto
                 Robot.verificaCor(self)
                 Robot.verificaEstado(self)
@@ -366,9 +371,12 @@ class Robot:
                 Robot.verificaEstado(self)
             elif(estado == States(1) == estadoant): #Direita
                 Robot.stop(self,0.1)
+                if(meio == 1):
+                    Robot.curva_direita1(self,speed_curva)
+                elif(meio == 0):
+                    Robot.curva_direita(self,speed_curva)
                 Robot.verificaCor(self)
                 Robot.verificaEstado(self)
-                Robot.curva_direita(self,speed_curva)
             elif(estado == States(2) == estadoant): #VerdeDireita
                 Robot.verificaCor(self)
                 Robot.verificaEstado(self)
