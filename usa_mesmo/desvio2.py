@@ -54,7 +54,7 @@ class Robot_US:
             Robot_US.desvia_do_obstaculo(self, 150,60,950, 800, 800)
             print("desviou")
 
-corsinha2  = Robot_US("outB", "outD", "in2")
+corsinha2  = Robot_US("outB", "outD", "in1")
 while(1):
     print("loop")
     corsinha2.lm1.run_forever(speed_sp = -100)

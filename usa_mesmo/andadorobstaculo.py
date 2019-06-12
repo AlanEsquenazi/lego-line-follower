@@ -20,13 +20,14 @@ class States(Enum):
 
 class Robot:
     #def __init__(self,out1,out2,in1,in2,in3, in4):
-    def __init__(self,out1,out2,in1,in2,in3):
+    def __init__(self,out1,out2,in1,in2,in3, in4):
 
         self.lm1 = ev3.LargeMotor(out1); assert self.lm1.connected
         self.lm2 = ev3.LargeMotor(out2); assert self.lm2.connected
         self.se = ev3.ColorSensor(in1); assert self.se.connected
         self.sm = ev3.ColorSensor(in2); assert self.sm.connected
         self.sd = ev3.ColorSensor(in3); assert self.sd.connected
+        self.us = ev3.UltrasonicSensor(in4); assert self.us.connected
 
 
     def go_forward(self,speed):
@@ -154,6 +155,7 @@ class Robot:
         global meio
         global estado
         global estadoant
+        global cabo
         estadoant = estado
         if(estado == States(-3)):
             if(esquerdo == 1 and meio == 1 and direito == 0): #PPB
@@ -199,7 +201,9 @@ class Robot:
             #BBP e BPP não tem transição direta -> viram para a direita
 
         elif(estado == States(0)):
-            if(esquerdo == 0 and meio == 0 and direito == 0): #BBB
+            if(self.us.value<=50):
+                estado = States(5)
+            elif(esquerdo == 0 and meio == 0 and direito == 0): #BBB
                 estado = States(0)
             elif(esquerdo == 0 and meio == 1 and direito == 0): #BPB
                 estado = States(0)
@@ -280,6 +284,9 @@ class Robot:
                 estado = States(4)
             else: #TODO aqui tb
                 estado = States(0)
+        elif(estado==States(5)):
+            if(cabo==1):
+                estado = States(0)
 
         Robot.escrever_estados(self)
 
@@ -293,7 +300,6 @@ class Robot:
             self.lm1.run_forever(speed_sp = v_curva)
             Robot.verificaCor(self)
             Robot.verificaEstado(self)
-        Robot.stop(self,0.05)
 
     def curva_esquerda1(self,v_curva):
         print("curva esquerda")
@@ -305,7 +311,6 @@ class Robot:
             self.lm1.run_forever(speed_sp = v_curva)
             Robot.verificaCor(self)
             Robot.verificaEstado(self)
-        Robot.stop(self,0.05)
 
     def curva_direita(self,v_curva):
         print("curva direita")
@@ -317,7 +322,6 @@ class Robot:
             self.lm1.run_forever(speed_sp = -v_curva)
             Robot.verificaCor(self)
             Robot.verificaEstado(self)
-        Robot.stop(self,0.05)
     def curva_direita1(self,v_curva):
         print("curva direita")
         while(not(meio == 0)):
@@ -328,7 +332,17 @@ class Robot:
             self.lm1.run_forever(speed_sp = -v_curva)
             Robot.verificaCor(self)
             Robot.verificaEstado(self)
-        Robot.stop(self,0.05)
+    def desvia_do_obstaculo(self, speed_reta,speed_curva,time, pesq, pdir):
+        global cabo
+        cabo = 0
+        Robot.curva_direita(self,speed_curva,0.85*pdir)
+        Robot.go_forward(self,speed_reta,1.5*time)
+        Robot.curva_esquerda(self,speed_curva,0.85*pesq)
+        Robot.go_forward(self,speed_reta,2.7*time)
+        Robot.curva_esquerda(self,speed_curva,0.85*pesq)
+        Robot.go_forward(self,speed_reta,1.3*time)
+        Robot.curva_direita(self,speed_curva,0.85*pdir)
+        cabo = 1
 
     def follow_line(self,speed_reta,speed_curva):
         while(True):
@@ -338,6 +352,7 @@ class Robot:
             global meio
             global direito
             global estado
+            global cabo
             #Robot.encontrar_obstaculo(self)
             Robot.verificaCor(self)
             Robot.verificaEstado(self)
@@ -418,6 +433,9 @@ class Robot:
                     while(not(meio == 1)):
                         Robot.curva_direita(self,speed_curva)
                 estado = States(0)
+            elif(estado==States(5)):
+                Robot.desvia_do_obstaculo(self, 150,60,950, 800, 800)
+
 
 
 esquerdo = 0
@@ -435,7 +453,7 @@ preto_direito = [0,0,0,0,0,0]
 preto_meio = [0,0,0,0,0,0]
 verde = [0,0,0,0,0,0]
 verde_direito = [0,0,0,0,0,0]
-Corsa = Robot('outB','outD','in2','in3','in4')
+Corsa = Robot('outB','outD','in2','in3','in4', 'in1')
 Sound.speak('Hello, I am Corsa').wait()
 Sound.speak('ATTENTION ATTENTION').wait()
 Corsa.abrirAprendizadoPreto()
@@ -443,7 +461,7 @@ Corsa.abrirAprendizadoVerde()
 Corsa.abrirAprendizadoPreto_meio()
 Corsa.abrirAprendizadoPreto_direito()
 Corsa.abrirAprendizadoVerde_direito()
-Corsa.follow_line(100,70)
+Corsa.follow_line(100,100)
 
 
 
