@@ -329,7 +329,25 @@ class Robot:
             Robot.verificaCor(self)
             Robot.verificaEstado(self)
         Robot.stop(self,0.05)
-
+    def meia_volta(self, sp_curv):
+        Robot.stop(self,0.1)
+        if(meio == 1):
+            while(not(meio == 0)):
+                Robot.curva_direita1(self,sp_curv)
+            while(not(meio == 1)):
+                Robot.curva_direita(self,sp_curv)
+            while(not(meio == 0)):
+                Robot.curva_direita1(self,sp_curv)
+            while(not(meio == 1)):
+                Robot.curva_direita(self,sp_curv)
+        elif(meio == 0):
+            while(not(meio == 1)):
+                Robot.curva_direita(self,sp_curv)
+            while(not(meio == 0)):
+                Robot.curva_direita1(self,sp_curv)
+            while(not(meio == 1)):
+                Robot.curva_direita(self,sp_curv)
+        estado = States(0)
     def follow_line(self,speed_reta,speed_curva):
         while(True):
             global left
@@ -400,24 +418,7 @@ class Robot:
                 estado = States(0)
 
             elif(estado == States(4) == estadoant): #VerdeMeiaVolta
-                Robot.stop(self,0.1)
-                if(meio == 1):
-                    while(not(meio == 0)):
-                        Robot.curva_direita1(self,speed_curva)
-                    while(not(meio == 1)):
-                        Robot.curva_direita(self,speed_curva)
-                    while(not(meio == 0)):
-                        Robot.curva_direita1(self,speed_curva)
-                    while(not(meio == 1)):
-                        Robot.curva_direita(self,speed_curva)
-                elif(meio == 0):
-                    while(not(meio == 1)):
-                        Robot.curva_direita(self,speed_curva)
-                    while(not(meio == 0)):
-                        Robot.curva_direita1(self,speed_curva)
-                    while(not(meio == 1)):
-                        Robot.curva_direita(self,speed_curva)
-                estado = States(0)
+                Robot.meia_volta(self, 70)
 
 
 esquerdo = 0
