@@ -36,6 +36,21 @@ class Robot:
         self.lm2.run_forever(speed_sp = -speed)
         Robot.verificaCor(self)
         Robot.verificaEstado(self)
+    def go_forward_slowly(self,speed):
+        Robot.verificaCor(self)
+        Robot.verificaEstado(self)
+        self.lm1.run_timed(speed_sp = -speed,time_sp = 0.5)
+        self.lm2.run_timed(speed_sp = -speed,time_sp = 0.5)
+        Robot.verificaCor(self)
+        Robot.verificaEstado(self)
+        Robot.stop(self,0.2)
+    def go_back(self,speed,time):
+        Robot.verificaCor(self)
+        Robot.verificaEstado(self)
+        self.lm1.run_timed(speed_sp = speed,time_sp = time)
+        self.lm2.run_timed(speed_sp = speed, time_sp = time)
+        Robot.verificaCor(self)
+        Robot.verificaEstado(self)
 
     def stop(self,time):
         self.lm1.run_timed(speed_sp = 0, time_sp = time, stop_action = 'coast')
@@ -374,7 +389,9 @@ class Robot:
             elif(estado == States(-2) == estadoant): #VerdeEsquerda
                 Robot.verificaCor(self)
                 Robot.verificaEstado(self)
-                Robot.go_forward(self,speed_reta)
+                Robot.go_back(self,30,1)
+                while(estado == States(-2)):
+                    Robot.go_forward_slowly(self,30)
                 Robot.verificaCor(self)
                 Robot.verificaEstado(self)
             elif(estado == States(-1) == estadoant): #Esquerda
@@ -402,7 +419,9 @@ class Robot:
             elif(estado == States(2) == estadoant): #VerdeDireita
                 Robot.verificaCor(self)
                 Robot.verificaEstado(self)
-                Robot.go_forward(self,speed_reta)
+                Robot.go_back(self,30,1)
+                while(estado == States(2)):
+                    Robot.go_forward_slowly(self,30)
                 Robot.verificaCor(self)
                 Robot.verificaEstado(self)
             elif(estado == States(3) == estadoant): #CurvaVerdeDireita
@@ -436,15 +455,18 @@ preto_direito = [0,0,0,0,0,0]
 preto_meio = [0,0,0,0,0,0]
 verde = [0,0,0,0,0,0]
 verde_direito = [0,0,0,0,0,0]
+with open('estados.txt', "w") as arquivo:
+    arquivo.write("BEGIN")
+
 Corsa = Robot('outB','outD','in2','in3','in4')
 Sound.speak('Hello, I am Corsa').wait()
-Sound.speak('ATTENTION ATTENTION').wait()
+Sound.speak('HELLO JAMES').wait()
 Corsa.abrirAprendizadoPreto()
 Corsa.abrirAprendizadoVerde()
 Corsa.abrirAprendizadoPreto_meio()
 Corsa.abrirAprendizadoPreto_direito()
 Corsa.abrirAprendizadoVerde_direito()
-Corsa.follow_line(100,70)
+Corsa.follow_line(70,70)
 
 
 
