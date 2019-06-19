@@ -43,4 +43,5 @@ Sound.speak("Calibrate")
 verde = Calibracao("verde_direito.txt",0,0)
 verde.calibrate(0.1, 100)
 verde.escrever()
+Sound.speak("Finished")
 

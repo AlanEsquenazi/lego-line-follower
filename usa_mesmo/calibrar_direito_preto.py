@@ -43,5 +43,6 @@ Sound.speak("Calibrate")
 preto = Calibracao("preto_direito.txt",0,0)
 preto.calibrate(0.1, 100)
 preto.escrever()
+Sound.speaK("Finished")
 
 

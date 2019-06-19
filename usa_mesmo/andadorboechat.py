@@ -7,6 +7,33 @@ from enum import Enum
 from time import sleep
 from time import time
 
+def initialize():
+    esquerdo = 0
+    direito = 0
+    meio = 0
+    e = 0
+    d = 0
+    estado = States(0)
+    left = [0,0,0]
+    right = [0,0,0]
+    middle = [0,0,0]
+    branco = [0,0,0,0,0,0]
+    branco_direito = [0,0,0,0,0,0]
+    branco_meio = [0,0,0,0,0,0]
+    preto = [0,0,0,0,0,0]
+    preto_direito = [0,0,0,0,0,0]
+    preto_meio = [0,0,0,0,0,0]
+    verde = [0,0,0,0,0,0]
+    verde_direito = [0,0,0,0,0,0]
+    #with open('estados.txt', "w") as arquivo:
+    #    arquivo.write("BEGIN")
+    Corsa = Robot('outB','outD','in2','in3','in4')
+    Corsa.abrirAprendizadoPreto()
+    Corsa.abrirAprendizadoVerde()
+    Corsa.abrirAprendizadoPreto_meio()
+    Corsa.abrirAprendizadoPreto_direito()
+    Corsa.abrirAprendizadoVerde_direito()
+
 class States(Enum):
     CurvaVerdeEsquerda = -3
     VerdeEsquerda = -2
@@ -27,7 +54,6 @@ class Robot:
         self.se = ev3.ColorSensor(in1); assert self.se.connected
         self.sm = ev3.ColorSensor(in2); assert self.sm.connected
         self.sd = ev3.ColorSensor(in3); assert self.sd.connected
-
 
     def go_forward(self,speed):
         Robot.verificaCor(self)
@@ -476,34 +502,8 @@ class Robot:
                 Robot.meia_volta(self, 70)
                 estado = States(0)
 
-esquerdo = 0
-direito = 0
-meio = 0
-e = 0
-d = 0
-estado = States(0)
-left = [0,0,0]
-right = [0,0,0]
-middle = [0,0,0]
-branco = [0,0,0,0,0,0]
-branco_direito = [0,0,0,0,0,0]
-branco_meio = [0,0,0,0,0,0]
-preto = [0,0,0,0,0,0]
-preto_direito = [0,0,0,0,0,0]
-preto_meio = [0,0,0,0,0,0]
-verde = [0,0,0,0,0,0]
-verde_direito = [0,0,0,0,0,0]
-#with open('estados.txt', "w") as arquivo:
-#    arquivo.write("BEGIN")
-
-Corsa = Robot('outB','outD','in2','in3','in4')
-Sound.speak('Hello, I am Corsa').wait()
-Sound.speak('HELLO JAMES').wait()
-Corsa.abrirAprendizadoPreto()
-Corsa.abrirAprendizadoVerde()
-Corsa.abrirAprendizadoPreto_meio()
-Corsa.abrirAprendizadoPreto_direito()
-Corsa.abrirAprendizadoVerde_direito()
+initialize()
+Sound.speak('Hello, I am Corsa')
 Corsa.follow_line(70,70)
 
 
