@@ -16,7 +16,8 @@ class States(Enum):
     VerdeDireita = 2
     CurvaVerdeDireita = 3
     VerdeMeiaVolta = 4
-    Obstaculo = 5
+    MeiaVolta = 5
+    Obstaculo = 6
 
 class Robot:
     def __init__(self,out1,out2,in1,in2,in3):
@@ -36,6 +37,21 @@ class Robot:
         Robot.verificaCor(self)
         Robot.verificaEstado(self)
 
+    def corrige_reto(self,speed,time):
+        self.lm1.run_timed(speed_sp = -speed, time_sp = time)
+        self.lm2.run_timed(speed_sp = -speed,time_sp = time)
+
+    def corrige_tras(self,speed,time):
+        self.lm1.run_timed(speed_sp = speed, time_sp = time)
+        self.lm2.run_timed(speed_sp = speed,time_sp = time)
+
+    def corrige_direita(self,speed,time):
+        self.lm2.run_timed(speed_sp = -v_curva,time_sp = time)
+        self.lm1.run_timed(speed_sp = v_curva,time_sp = time)
+
+    def corrige_esquerda(self,speed,time):
+        self.lm2.run_timed(speed_sp = v_curva,time_sp = time)
+        self.lm1.run_timed(speed_sp = -v_curva,time_sp = time)
 
     def stop(self,time):
         self.lm1.run_timed(speed_sp = 0, time_sp = time, stop_action = 'coast')
@@ -193,6 +209,8 @@ class Robot:
                 estado = States(-3)
             elif(esquerdo == 1 and meio == 0 and direito == 1): #PBP
                 estado = States(-3)
+            elif(direito == 2):
+                estado = States(4)
 
         elif(estado == States(-1)):
             #if(esquerdo == 0 and meio == 0 and direito == 0): #BBB
@@ -277,6 +295,8 @@ class Robot:
                 estado = States(3)
             elif(esquerdo == 1 and meio == 0 and direito == 1): #PBP
                 estado = States(3)
+            elif(esquerdo == 2):
+                estado = States(4)
 
         elif(estado == States(3)):
             if(esquerdo == 0 and meio == 1 and direito == 1): #BPP
@@ -292,45 +312,16 @@ class Robot:
                 estado = States(4)
             elif(esquerdo == 2 and meio == 0 and direito == 2): #VBV
                 estado = States(4)
-            else: #TODO aqui tb
+            elif(esquerdo == 0 or direito == 0): #B-B
                 estado = States(0)
+            elif(esquerdo == 1 and meio == 1 and direito == 1): #PPP
+                estado = States(5)
+            elif(esquerdo == 1 and meio == 0 and direito == 1): #PBP
+                estado = States(5)
+
+
         print(esquerdo, " ", meio, " ", direito, " ", estado)
         #Robot.escrever_estados(self)
-
-
-    def esquerda(self,v_curva):
-        print("curva esquerda")
-        while(not(meio == 1)):
-            Robot.verificaCor(self)
-            Robot.verificaEstado(self)
-            self.lm2.run_forever(speed_sp = -v_curva)
-            self.lm1.run_forever(speed_sp = v_curva)
-            Robot.verificaCor(self)
-            Robot.verificaEstado(self)
-            if(direito == 1):
-                Robot.stop(self,0.1)
-                self.lm2.run_timed(speed_sp = 70,time_sp = 0.1)
-                self.lm1.run_timed(speed_sp = 70,time_sp = 0.1) #andadinha para frente para não confundir
-                estado = States(1)
-                break
-        Robot.stop(self,0.05)
-
-    def esquerda1(self,v_curva):
-        print("curva esquerda")
-        while(not(meio == 0)):
-            Robot.verificaCor(self)
-            Robot.verificaEstado(self)
-            self.lm2.run_forever(speed_sp = -v_curva)
-            self.lm1.run_forever(speed_sp = v_curva)
-            Robot.verificaCor(self)
-            Robot.verificaEstado(self)
-            if(direito == 1):
-                Robot.stop(self,0.1)
-                self.lm2.run_timed(speed_sp = 70,time_sp = 0.1)
-                self.lm1.run_timed(speed_sp = 70,time_sp = 0.1) #andadinha para frente para não confundir
-                estado = States(1)
-                break
-        Robot.stop(self,0.05)
 
     def curva_esquerda(self,v_curva):
         print("curva esquerda")
@@ -342,6 +333,7 @@ class Robot:
             Robot.verificaCor(self)
             Robot.verificaEstado(self)
         Robot.stop(self,0.05)
+        Robot.corrige_reto(self,70,2) #tempo mínimo
 
     def curva_esquerda1(self,v_curva):
         print("curva esquerda")
@@ -353,40 +345,7 @@ class Robot:
             Robot.verificaCor(self)
             Robot.verificaEstado(self)
         Robot.stop(self,0.05)
-
-    def direita(self,v_curva):
-        print("curva direita")
-        while(not(meio == 1)):
-            Robot.verificaCor(self)
-            Robot.verificaEstado(self)
-            self.lm2.run_forever(speed_sp = v_curva)
-            self.lm1.run_forever(speed_sp = -v_curva)
-            Robot.verificaCor(self)
-            Robot.verificaEstado(self)
-            if(esquerdo == 1):
-                Robot.stop(self,0.1)
-                self.lm2.run_timed(speed_sp = 70,time_sp = 0.1)
-                self.lm1.run_timed(speed_sp = 70,time_sp = 0.1) #andadinha para frente para não confundir
-                estado = States(-1)
-                break
-        Robot.stop(self,0.05)
-
-    def direita1(self,v_curva):
-        print("curva direita")
-        while(not(meio == 0)):
-            Robot.verificaCor(self)
-            Robot.verificaEstado(self)
-            self.lm2.run_forever(speed_sp = v_curva)
-            self.lm1.run_forever(speed_sp = -v_curva)
-            Robot.verificaCor(self)
-            Robot.verificaEstado(self)
-            if(esquerdo == 1):
-                Robot.stop(self,0.1)
-                self.lm2.run_timed(speed_sp = 70,time_sp = 0.1)
-                self.lm1.run_timed(speed_sp = 70,time_sp = 0.1) #andadinha para frente para não confundir
-                estado = States(-1)
-                break
-        Robot.stop(self,0.05)
+        Robot.corrige_reto(self,70,2) #tempo mínimo
 
     def curva_direita(self,v_curva):
         print("curva direita")
@@ -398,6 +357,7 @@ class Robot:
             Robot.verificaCor(self)
             Robot.verificaEstado(self)
         Robot.stop(self,0.05)
+        Robot.corrige_reto(self,70,2) #tempo mínimo
 
     def curva_direita1(self,v_curva):
         print("curva direita")
@@ -409,26 +369,28 @@ class Robot:
             Robot.verificaCor(self)
             Robot.verificaEstado(self)
         Robot.stop(self,0.05)
+        Robot.corrige_reto(self,70,2) #tempo mínimo
 
     def meia_volta(self, sp_curv):
         Robot.stop(self,0.1)
         if(meio == 1):
-            while(not(meio == 0)):
+            while(meio == 1):
                 Robot.curva_direita1(self,sp_curv)
-            while(not(meio == 1)):
+            while(meio == 0):
                 Robot.curva_direita(self,sp_curv)
-            while(not(meio == 0)):
+            while(meio == 1):
                 Robot.curva_direita1(self,sp_curv)
-            while(not(meio == 1)):
+            while(meio == 0):
                 Robot.curva_direita(self,sp_curv)
         elif(meio == 0):
-            while(not(meio == 1)):
+            while(meio == 0):
                 Robot.curva_direita(self,sp_curv)
-            while(not(meio == 0)):
+            while(meio == 1):
                 Robot.curva_direita1(self,sp_curv)
-            while(not(meio == 1)):
+            while(meio == 0):
                 Robot.curva_direita(self,sp_curv)
         estado = States(0)
+
     def follow_line(self,speed_reta,speed_curva):
         while(True):
             global left
@@ -437,11 +399,12 @@ class Robot:
             global meio
             global direito
             global estado
+            global estadoant
             #Robot.encontrar_obstaculo(self)
             Robot.verificaCor(self)
             Robot.verificaEstado(self)
-            if(estado == States(-3)): #CurvaVerdeEsquerda
-                Robot.stop(self,0.1)
+            if(estado == States(-3) == estadoant): #CurvaVerdeEsquerda
+                Robot.stop(self,0.05)
                 if(meio == 1):
                     while(not(meio == 0)):
                         Robot.curva_esquerda1(self,speed_curva)
@@ -451,42 +414,46 @@ class Robot:
                     while(not(meio == 1)):
                         Robot.curva_esquerda(self,speed_curva)
                 estado = States(0)
-            elif(estado == States(-2)): #VerdeEsquerda
+
+            elif(estado == States(-2) == estadoant): #VerdeEsquerda
                 Robot.verificaCor(self)
                 Robot.verificaEstado(self)
                 Robot.go_forward(self,speed_reta)
                 Robot.verificaCor(self)
                 Robot.verificaEstado(self)
-            elif(estado == States(-1)): #Esquerda
-                Robot.stop(self,0.1)
+
+            elif(estado == States(-1) == estadoant): #Esquerda
                 if(meio == 1):
-                    Robot.esquerda1(self,speed_curva)
+                    Robot.curva_esquerda1(self,speed_curva)
                 elif(meio == 0):
-                    Robot.esquerda(self,speed_curva)
+                    Robot.curva_esquerda(self,speed_curva)
+                Robot.verificaCor(self)
+                Robot.verificaEstado(self)
 
-            elif(estado == States(0)): #Reto
+            elif(estado == States(0) == estadoant): #Reto
                 Robot.verificaCor(self)
                 Robot.verificaEstado(self)
                 Robot.go_forward(self,speed_reta)
                 Robot.verificaCor(self)
                 Robot.verificaEstado(self)
 
-            elif(estado == States(1)): #Direita
-                Robot.stop(self,0.1)
+            elif(estado == States(1) == estadoant): #Direita
                 if(meio == 1):
-                    Robot.direita1(self,speed_curva)
+                    Robot.curva_direita1(self,speed_curva)
                 elif(meio == 0):
-                    Robot.direita(self,speed_curva)
+                    Robot.curva_direita(self,speed_curva)
+                Robot.verificaCor(self)
+                Robot.verificaEstado(self)
 
-            elif(estado == States(2)): #VerdeDireita
+            elif(estado == States(2) == estadoant): #VerdeDireita
                 Robot.verificaCor(self)
                 Robot.verificaEstado(self)
                 Robot.go_forward(self,speed_reta)
                 Robot.verificaCor(self)
                 Robot.verificaEstado(self)
 
-            elif(estado == States(3)): #CurvaVerdeDireita
-                Robot.stop(self,0.1)
+            elif(estado == States(3) == estadoant): #CurvaVerdeDireita
+                Robot.stop(self,0.05)
                 if(meio == 1):
                     while(meio == 1):
                         Robot.curva_direita1(self,speed_curva)
@@ -497,9 +464,17 @@ class Robot:
                         Robot.curva_direita(self,speed_curva)
                 estado = States(0)
 
-            elif(estado == States(4)): #VerdeMeiaVolta
-                Robot.meia_volta(self, 70)
+            elif(estado == States(4) == estadoant): #VerdeMeiaVolta
+                Robot.verificaCor(self)
+                Robot.verificaEstado(self)
+                Robot.go_forward(self,speed_reta)
+                Robot.verificaCor(self)
+                Robot.verificaEstado(self)
 
+            elif(estado == States(5) == estadoant): #MeiaVolta
+                Robot.stop(self,0.05)
+                Robot.meia_volta(self, 70)
+                estado = States(0)
 
 esquerdo = 0
 direito = 0
