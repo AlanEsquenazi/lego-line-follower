@@ -5,8 +5,7 @@ from ev3dev.ev3 import *
 #from multiprocessing import Process
 from time import sleep
 from time import time
-
-cor = ev3.ColorSensor('in4'); assert cor.connected
+cor = ev3.ColorSensor('in3'); assert cor.connected
 class Calibracao:
     def __init__(self, color, speed, time):
         self.color = color
@@ -40,9 +39,8 @@ class Calibracao:
             arquivo.write(str(self.p3[1]))
             arquivo.write(",")
 Sound.speak("Calibrate")
-preto = Calibracao("preto_direito.txt",0,0)
-preto.calibrate(0.1, 100)
-preto.escrever()
-Sound.speaK("Finished")
-
+branco = Calibracao("textos/branco_meio.txt",0,0)
+branco.calibrate(0.1, 100)
+branco.escrever()
+Sound.speak("Finished")
 

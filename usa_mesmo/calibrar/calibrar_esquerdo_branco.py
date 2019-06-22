@@ -39,9 +39,9 @@ class Calibracao:
             arquivo.write(str(self.p3[1]))
             arquivo.write(",")
 Sound.speak("Calibrate")
-preto = Calibracao("preto.txt",0,0)
-preto.calibrate(0.1, 100)
-preto.escrever()
+branco = Calibracao("textos/branco.txt",0,0)
+branco.calibrate(0.1, 100)
+branco.escrever()
 Sound.speak("Finished")
 
 

@@ -39,7 +39,7 @@ class Calibracao:
             arquivo.write(str(self.p3[1]))
             arquivo.write(",")
 Sound.speak("Calibrate")
-preto = Calibracao("preto_meio.txt",0,0)
+preto = Calibracao("textos/preto_meio.txt",0,0)
 preto.calibrate(0.1, 100)
 preto.escrever()
 Sound.speak("Finished")

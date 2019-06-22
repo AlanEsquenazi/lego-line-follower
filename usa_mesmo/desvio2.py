@@ -37,24 +37,25 @@ class Robot_US:
     def desvia_do_obstaculo(self, speed_reta,speed_curva,posret,pesq, pdir):
         Robot_US.curva_direita(self,speed_curva,0.50*pdir)
         Robot_US.go_forward(self,speed_reta,0.55*posret)
-        Robot_US.curva_esquerda(self,speed_curva,0.50*pesq)
-        Robot_US.go_forward(self,speed_reta,0.65*posret)
-        Robot_US.curva_esquerda(self,speed_curva,0.7*pesq)
-        Robot_US.go_forward(self,speed_reta,0.6*posret)
+        Robot_US.curva_esquerda(self,speed_curva,0.47*pesq)
+        Robot_US.go_forward(self,speed_reta,0.45*posret)
+        Robot_US.curva_esquerda(self,speed_curva,0.5*pesq)
+        Robot_US.go_forward(self,speed_reta,0.55*posret)
         Robot_US.curva_direita(self,speed_curva,0.5*pdir)
-        Robot_US.go_forward(self,speed_reta,-0.25*posret) #vai pra trás
+        Robot_US.go_forward(self,speed_reta,-0.15*posret) #vai pra trás
 
     def encontrar_obstaculo(self):
         global posicao_dir
         global posicao_esq
         self.us.mode = 'US-DIST-CM'
         print(self.us.value())
-        if(self.us.value()<=135):
+        if(self.us.value()<=140):
             print("entrou")
             Robot_US.desvia_do_obstaculo(self, 150,60,950, 800, 800)
             print("desviou")
 
 corsinha2  = Robot_US("outB", "outD", "in1")
+Sound.speak("Hello, how are you?")
 while(1):
     print("loop")
     corsinha2.lm1.run_forever(speed_sp = -100)

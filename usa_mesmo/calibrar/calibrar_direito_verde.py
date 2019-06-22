@@ -40,7 +40,7 @@ class Calibracao:
             arquivo.write(str(self.p3[1]))
             arquivo.write(",")
 Sound.speak("Calibrate")
-verde = Calibracao("verde_direito.txt",0,0)
+verde = Calibracao("textos/verde_direito.txt",0,0)
 verde.calibrate(0.1, 100)
 verde.escrever()
 Sound.speak("Finished")

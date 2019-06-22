@@ -6,7 +6,7 @@ from ev3dev.ev3 import *
 from time import sleep
 from time import time
 
-cor = ev3.ColorSensor('in2'); assert cor.connected
+cor = ev3.ColorSensor('in4'); assert cor.connected
 class Calibracao:
     def __init__(self, color, speed, time):
         self.color = color
@@ -40,7 +40,9 @@ class Calibracao:
             arquivo.write(str(self.p3[1]))
             arquivo.write(",")
 Sound.speak("Calibrate")
-verde = Calibracao("verde.txt",0,0)
-verde.calibrate(0.1, 100)
-verde.escrever()
+branco = Calibracao("textos/branco_direito.txt",0,0)
+branco.calibrate(0.1, 100)
+branco.escrever()
 Sound.speak("Finished")
+
+
