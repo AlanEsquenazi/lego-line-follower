@@ -55,7 +55,7 @@ class Robot:
             self.lm1.run_forever(speed_sp = v_curva)
             Robot.verificaCor(self)
             Robot.verificaEstado(self)
-        Robot.stop(self,100)
+        Robot.stop(self,150)
         #Robot.corrige_reto(self,100,150) #tempo mínimo
 
     def esquerda1(self,v_curva):
@@ -67,7 +67,7 @@ class Robot:
             self.lm1.run_forever(speed_sp = v_curva)
             Robot.verificaCor(self)
             Robot.verificaEstado(self)
-        Robot.stop(self,100)
+        Robot.stop(self,150)
         #Robot.corrige_reto(self,100,150) #tempo mínimo
 
     def direita(self,v_curva):
@@ -79,7 +79,7 @@ class Robot:
             self.lm1.run_forever(speed_sp = -v_curva)
             Robot.verificaCor(self)
             Robot.verificaEstado(self)
-        Robot.stop(self,100)
+        Robot.stop(self,250)
         #Robot.corrige_reto(self,100,150) #tempo mínimo
 
     def direita1(self,v_curva):
@@ -91,11 +91,11 @@ class Robot:
             self.lm1.run_forever(speed_sp = -v_curva)
             Robot.verificaCor(self)
             Robot.verificaEstado(self)
-        Robot.stop(self,100)
+        Robot.stop(self,250)
         #Robot.corrige_reto(self,100,150) #tempo mínimo
 
     def curva_esquerda(self,speed_reta,speed_curva):
-        Robot.stop(self,100)
+        Robot.stop(self,250)
         while(not(esquerdo == 0 and meio == 1 and direito == 0)):
             while(meio == 0):
                 Robot.esquerda(self,speed_curva)
@@ -108,6 +108,7 @@ class Robot:
         Robot.verificaCor(self)
         Robot.verificaEstado(self)
     def curva_direita(self,speed_reta,speed_curva):
+        Robot.stop(self,250)
         while(not(esquerdo == 0 and meio == 1 and direito == 0)):
             while(meio == 0):
                 Robot.direita(self,speed_curva)
@@ -161,22 +162,32 @@ class Robot:
     def corrige_reto(self,speed,time):
         self.lm1.run_timed(speed_sp = -speed, time_sp = time)
         self.lm2.run_timed(speed_sp = -speed,time_sp = time)
+        self.lm1.wait_while("running")
+        self.lm2.wait_while("running")
 
     def corrige_tras(self,speed,time):
         self.lm1.run_timed(speed_sp = speed, time_sp = time)
         self.lm2.run_timed(speed_sp = speed,time_sp = time)
+        self.lm1.wait_while("running")
+        self.lm2.wait_while("running")
 
     def corrige_direita(self,speed,time):
         self.lm2.run_timed(speed_sp = -v_curva,time_sp = time)
         self.lm1.run_timed(speed_sp = v_curva,time_sp = time)
+        self.lm1.wait_while("running")
+        self.lm2.wait_while("running")
 
     def corrige_esquerda(self,speed,time):
         self.lm2.run_timed(speed_sp = v_curva,time_sp = time)
         self.lm1.run_timed(speed_sp = -v_curva,time_sp = time)
+        self.lm1.wait_while("running")
+        self.lm2.wait_while("running")
 
     def stop(self,time):
         self.lm1.run_timed(speed_sp = 0, time_sp = time, stop_action = 'coast')
         self.lm2.run_timed(speed_sp = 0, time_sp = time, stop_action = 'coast')
+        self.lm1.wait_while("running")
+        self.lm2.wait_while("running")
 
     def abrirAprendizadoBranco(self):
         global branco
@@ -287,13 +298,13 @@ class Robot:
 
 
 
-        if d == direitoant:  #fazer duas verificações para ter mais precisão
-            direito = d
-        if e == esquerdoant:
-            esquerdo = e
+        #if d == direitoant:  #fazer duas verificações para ter mais precisão
+        direito = d
+        #if e == esquerdoant:
+        esquerdo = e
 
-    '''def escrever_estados(self):
-        with open('estados.txt', "a") as arquivo:l
+    def escrever_estados(self):
+        with open('calibrar/textos/estados.txt', "a") as arquivo:
             arquivo.write(str(esquerdo))
             arquivo.write(" ")
             arquivo.write(",")
@@ -307,7 +318,7 @@ class Robot:
             arquivo.write(",")
             arquivo.write(" ")
             arquivo.write(str(estado))
-            arquivo.write("\n")'''
+            arquivo.write("\n")
 
     def verificaEstado(self):
         global esquerdo
@@ -484,7 +495,7 @@ class Robot:
 
 
         print(esquerdo, " ", meio, " ", direito, " ", estado)
-        #Robot.escrever_estados(self)
+        Robot.escrever_estados(self)
 
     def verificaDistancia(self,distancia_limite):
         global estado
@@ -542,10 +553,13 @@ class Robot:
                 viraDireita = True
         Robot.stop(self,100)
         if(viraEsquerda == True and viraDireita == False):
+            Robot.corrige_reto(self,100,1000)
             estado = States(-3) #curva verde esquerda
         elif(viraEsquerda == False and viraDireita == True):
+            Robot.corrige_reto(self,100,1000)
             estado = States(3) #curva verde direita
         elif(viraEsquerda == True and viraDireita == True):
+            Robot.corrige_reto(self,100,1000)
             estado = States(5) #meia volta
         elif(viraEsquerda == False and viraDireita == False):
             Robot.corrige_reto(self,100,1000)
@@ -561,9 +575,15 @@ class Robot:
             elif(direito == 1):
                 Robot.direita(self,90)
             Robot.go_back(self,90)
-        while(not(esquerdo == 0 and meio == 1 and direito == 0)):
+        while((esquerdo == 1 or direito == 1)):
             Robot.go_back(self,90)
-        Robot.corrige_tras(self,90,300)
+        while(not(esquerdo == 0 and meio == 1 and direito == 0)):
+            if(esquerdo == 1):
+                Robot.esquerda(self,90)
+            elif(direito == 1):
+                Robot.direita(self,90)
+            Robot.go_back(self,90)
+        Robot.corrige_tras(self,200,600)
 
     def seguirLinha(self,speed_reta,speed_curva):
         while(True):
@@ -654,7 +674,7 @@ Corsa.abrirAprendizadoBranco_direito()
 Corsa.abrirAprendizadoPreto_direito()
 Corsa.abrirAprendizadoVerde_direito()
 Sound.speak('Hello, I am Corsa')
-Corsa.seguirLinha(120,90)
+Corsa.seguirLinha(150,90)
 
 
 
