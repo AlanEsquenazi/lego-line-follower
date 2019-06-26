@@ -102,6 +102,3 @@ lastErrorRight = 0
 Corsa = Robot('outB','outD','in2','in3','in4')
 Sound.speak('Hello, I am Corsa')
 Corsa.seguirLinha(200,90)
-
-
-
