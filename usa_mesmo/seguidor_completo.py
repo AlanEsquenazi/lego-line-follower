@@ -26,6 +26,62 @@ class Robot:
         self.sd = ev3.ColorSensor(in3); assert self.sd.connected
         #self.su = ev3.UltrasonicSensor(in4); assert self.su.connected
 
+    def abrirAprendizadoBranco(self):
+        global branco
+        with open('calibrar/textos/branco.txt', "r") as ft:            # a lista de aprendizado serah "azul, verde, vermelho"
+            branco = ft.read().split(',')              # aqui, criamos uma lista de strings, cada elemento eh a cor
+            branco.pop()
+            branco = [int(x) for x in branco]     # tornamos as strings em inteiros
+
+    def abrirAprendizadoBranco_meio(self):
+        global branco_meio
+        with open('calibrar/textos/branco_meio.txt', "r") as ft:            # a lista de aprendizado serah "azul, verde, vermelho"
+            branco_meio = ft.read().split(',')              # aqui, criamos uma lista de strings, cada elemento eh a cor
+            branco_meio.pop()
+            branco_meio = [int(x) for x in branco_meio]     # tornamos as strings em inteiros
+
+    def abrirAprendizadoBranco_direito(self):
+        global branco_direito
+        with open('calibrar/textos/branco_direito.txt', "r") as ft:            # a lista de aprendizado serah "azul, verde, vermelho"
+            branco_direito = ft.read().split(',')              # aqui, criamos uma lista de strings, cada elemento eh a cor
+            branco_direito.pop()
+            branco_direito = [int(x) for x in branco_direito]     # tornamos as strings em inteiros
+
+    def abrirAprendizadoPreto(self):
+        global preto
+        with open('calibrar/textos/preto.txt', "r") as ft:            # a lista de aprendizado serah "azul, verde, vermelho"
+            preto = ft.read().split(',')              # aqui, criamos uma lista de strings, cada elemento eh a cor
+            preto.pop()
+            preto = [int(x) for x in preto]     # tornamos as strings em inteiros
+
+    def abrirAprendizadoPreto_direito(self):
+        global preto_direito
+        with open('calibrar/textos/preto_direito.txt', "r") as ft:            # a lista de aprendizado serah "azul, verde, vermelho"
+            preto_direito = ft.read().split(',')              # aqui, criamos uma lista de strings, cada elemento eh a cor
+            preto_direito.pop()
+            preto_direito = [int(x) for x in preto_direito]     # tornamos as strings em inteiros
+
+    def abrirAprendizadoPreto_meio(self):
+        global preto_meio
+        with open('calibrar/textos/preto_meio.txt', "r") as ft:            # a lista de aprendizado serah "azul, verde, vermelho"
+            preto_meio = ft.read().split(',')              # aqui, criamos uma lista de strings, cada elemento eh a cor
+            preto_meio.pop()
+            preto_meio = [int(x) for x in preto_meio]     # tornamos as strings em inteiros
+
+    def abrirAprendizadoVerde(self):
+        global verde
+        with open('calibrar/textos/verde.txt', "r") as ft:            # a lista de aprendizado serah "azul, verde, vermelho"
+            verde = ft.read().split(',')              # aqui, criamos uma lista de strings, cada elemento eh a cor
+            verde.pop()
+            verde = [int(x) for x in verde]     # tornamos as strings em inteiros
+
+    def abrirAprendizadoVerde_direito(self):
+        global verde_direito
+        with open('calibrar/textos/verde_direito.txt', "r") as ft:            # a lista de aprendizado serah "azul, verde, vermelho"
+            verde_direito = ft.read().split(',')              # aqui, criamos uma lista de strings, cada elemento eh a cor
+            verde_direito.pop()
+            verde_direito = [int(x) for x in verde_direito]     # tornamos as strings em inteiros
+
     def go_forward(self,speed):
         self.lm1.run_forever(speed_sp = -speed)
         self.lm2.run_forever(speed_sp = -speed)
@@ -413,5 +469,13 @@ lastErrorRight = 0
 #    arquivo.write("BEGIN")
 
 Corsa = Robot('outB','outD','in2','in3','in4')
+Corsa.abrirAprendizadoBranco()
+Corsa.abrirAprendizadoPreto()
+Corsa.abrirAprendizadoVerde()
+Corsa.abrirAprendizadoBranco_meio()
+Corsa.abrirAprendizadoPreto_meio()
+Corsa.abrirAprendizadoBranco_direito()
+Corsa.abrirAprendizadoPreto_direito()
+Corsa.abrirAprendizadoVerde_direito()
 Sound.speak('Hello, I am Corsa')
 Corsa.seguirLinha(200,90)
