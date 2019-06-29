@@ -33,22 +33,21 @@ class Robot:
         global errorLeft
         global errorRight
         global kp
-        global turnLeft
-        global turnRight
+        global turn
+        global errorTotal
         left = self.se.reflected_light_intensity
         middle = self.sm.reflected_light_intensity
         right = self.sd.reflected_light_intensity
 
         errorLeft = left - target
         errorRight = right - target
-
-        turnLeft = errorLeft * kp
-        turnRight = errorRight * kp
+        errorTotal = (-errorLeft + errorRight)/2
+        turn = errorTotal * kp
 
 
     def seguidor(self,initialSpeed):
-        self.lm1.run_forever(speed_sp = -(initialSpeed + turnLeft))
-        self.lm2.run_forever(speed_sp = -(initialSpeed + turnRight))
+        self.lm1.run_forever(speed_sp = -(initialSpeed - turn))
+        self.lm2.run_forever(speed_sp = -(initialSpeed + turn))
 
     def seguirLinha(self,speed_reta,speed_curva):
         global esquerdo
@@ -64,10 +63,11 @@ esquerdo = 0
 direito = 0
 meio = 0
 trigger = 28
-kp = 10
-target = 50
+kp = 25
+target = 45
 errorLeft = 0
 errorRight = 0
+errorTotal = 0
 turnLeft = 0
 turnRight = 0
 #with open('estados.txt', "w") as arquivo:
@@ -75,7 +75,7 @@ turnRight = 0
 
 Corsa = Robot('outB','outD','in2','in3','in4')
 Sound.speak('Hello, I am Corsa')
-Corsa.seguirLinha(200,90)
+Corsa.seguirLinha(170,90)
 
 
 
