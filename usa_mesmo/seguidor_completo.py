@@ -17,14 +17,14 @@ class States(Enum):
     Obstaculo = 5
 
 class Robot:
-    def __init__(self,out1,out2,in1,in2,in3):
+    def __init__(self,out1,out2,in1,in2,in3,in4):
 
         self.lm1 = ev3.LargeMotor(out1); assert self.lm1.connected
         self.lm2 = ev3.LargeMotor(out2); assert self.lm2.connected
         self.se = ev3.ColorSensor(in1); assert self.se.connected
         self.sm = ev3.ColorSensor(in2); assert self.sm.connected
         self.sd = ev3.ColorSensor(in3); assert self.sd.connected
-        #self.su = ev3.UltrasonicSensor(in4); assert self.su.connected
+        self.su = ev3.UltrasonicSensor(in4); assert self.su.connected
 
     def encontrarT(self): #encontrar target e trigger
         global target
@@ -492,7 +492,7 @@ class Robot:
         self.su.mode = 'US-DIST-CM'
         if(self.su.value() <= distancia_limite):
             estado = States(5)
-            Robot.desviaObstaculo(self,150,60,950,800,800)
+            Robot.desviaObstaculo(self,150,80,950,800,800)
 
     def desviaObstaculo(self,speed_reta_obstaculo,speed_curva_obstaculo,posret,posesq,posdir):
         global estado
@@ -500,11 +500,11 @@ class Robot:
             Robot.curva_direita_obstaculo(self,speed_curva_obstaculo,0.50*posdir)
             Robot.go_forward_obstaculo(self,speed_reta_obstaculo,0.55*posret)
             Robot.curva_esquerda_obstaculo(self,speed_curva_obstaculo,0.47*posesq)
-            Robot.go_forward_obstaculo(self,speed_reta_obstaculo,0.45*posret)
-            Robot.curva_esquerda_obstaculo(self,speed_curva_obstaculo,0.5*posesq)
-            Robot.go_forward_obstaculo(self,speed_reta_obstaculo,0.75*posret)
-            Robot.curva_direita_obstaculo(self,speed_curva_obstaculo,0.5*posdir)
-            Robot.go_forward_obstaculo(self,speed_reta_obstaculo,-0.15*posret) #vai pra trás
+            Robot.go_forward_obstaculo(self,speed_reta_obstaculo,0.40*posret)
+            Robot.curva_esquerda_obstaculo(self,speed_curva_obstaculo,0.7*posesq)
+            Robot.go_forward_obstaculo(self,speed_reta_obstaculo,0.65*posret)
+            Robot.curva_direita_obstaculo(self,speed_curva_obstaculo,0.6*posdir)
+            Robot.go_forward_obstaculo(self,speed_reta_obstaculo,-0.35*posret) #vai pra trás
             if(meio == 0): #voltar a seguir linha
                 if(esquerdo == 1):
                     estado = States(-1)
@@ -537,21 +537,18 @@ class Robot:
         global estado
         while(True):
             Robot.verificaEstado(self)
+            Robot.verificaDistancia(self,135) #CALIBRAR
             if(estado == States(-1)): #ESQUERDA
                 Robot.verificaIntensidade(self)
                 if(meio == 1):
                     while(meio == 1):
                         Robot.verificaIntensidade(self)
                         Robot.turnLeft(self,speed_curva)
-                    while(meio == 0):
-                        Robot.verificaIntensidade(self)
-                        Robot.turnLeft(self,speed_curva)
+                    Robot.curva_esquerda(self,speed_reta,speed_curva)
                 elif(meio == 0):
-                    while(meio == 0):
-                        Robot.verificaIntensidade(self)
-                        Robot.turnLeft(self,speed_curva)
+                    Robot.curva_esquerda(self,speed_reta,speed_curva)
                 estado = States(2)
-                Robot.corrigeReto(self,200,600)
+                #Robot.corrigeReto(self,200,600)
 
             elif(estado == States(0)): #RETO
                 Robot.verificaIntensidade(self)
@@ -563,19 +560,14 @@ class Robot:
                     while(meio == 1):
                         Robot.verificaIntensidade(self)
                         Robot.turnRight(self,speed_curva)
-                    while(meio == 0):
-                        Robot.verificaIntensidade(self)
-                        Robot.turnRight(self,speed_curva)
+                    Robot.curva_direita(self,speed_reta,speed_curva)
                 elif(meio == 0):
-                    while(meio == 0):
-                        Robot.verificaIntensidade(self)
-                        Robot.turnRight(self,speed_curva)
+                    Robot.curva_direita(self,speed_reta,speed_curva)
                 estado = States(2)
-                Robot.corrigeReto(self,200,600)
+                #Robot.corrigeReto(self,200,600)
 
 
             elif(estado == States(2)): #PID
-                #Robot.verificaDistancia(self,135) #CALIBRAR
                 Robot.verificaIntensidade(self)
                 Robot.PID(self)
                 Robot.seguidor(self,speed_reta,speed_curva) #CALIBRAR
@@ -598,8 +590,8 @@ direito = 0
 meio = 0
 trigger = 0 #28 tem que incluir o verde e o preto
 kp = 9
-ki = -0.05
-kd = 1
+ki = 0 #-0.05
+kd = 0 #8
 target = 0
 errorLeft = 0
 errorRight = 0
@@ -629,7 +621,7 @@ d = 0
 #with open('estados.txt', "w") as arquivo:
 #    arquivo.write("BEGIN")
 
-Corsa = Robot('outB','outD','in2','in3','in4')
+Corsa = Robot('outB','outD','in2','in3','in4','in1')
 Corsa.abrirAprendizadoBranco()
 Corsa.abrirAprendizadoPreto()
 Corsa.abrirAprendizadoVerde()
@@ -640,4 +632,4 @@ Corsa.abrirAprendizadoPreto_direito()
 Corsa.abrirAprendizadoVerde_direito()
 Corsa.encontrarT()
 Sound.speak('Hello, I am Corsa')
-Corsa.seguirLinha(170,100)
+Corsa.seguirLinha(190,80)
