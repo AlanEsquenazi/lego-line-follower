@@ -7,11 +7,8 @@ from enum import Enum
 from time import sleep
 from time import time
 
-sensor = ev3.ColorSensor('in3'); assert sensor.connected
-
 while(True):
-    intensidade = sensor.reflected_light_intensity
-    print(intensidade)
-
-
-
+    tempo1 = time.time()
+    Sound.speak("A").wait()
+    tempo2 = tempo1
+    print(tempo2 - tempo1)

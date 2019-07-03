@@ -17,14 +17,14 @@ class States(Enum):
     Obstaculo = 5
 
 class Robot:
-    def __init__(self,out1,out2,in1,in2,in3,in4):
+    def __init__(self,out1,out2,in1,in2,in3):
 
         self.lm1 = ev3.LargeMotor(out1); assert self.lm1.connected
         self.lm2 = ev3.LargeMotor(out2); assert self.lm2.connected
         self.se = ev3.ColorSensor(in1); assert self.se.connected
         self.sm = ev3.ColorSensor(in2); assert self.sm.connected
         self.sd = ev3.ColorSensor(in3); assert self.sd.connected
-        self.su = ev3.UltrasonicSensor(in4); assert self.su.connected
+        #self.su = ev3.UltrasonicSensor(in4); assert self.su.connected
 
     def encontrarT(self): #encontrar target e trigger
         global target
@@ -38,8 +38,6 @@ class Robot:
         target = target/5
         black = black/5
         trigger = (target + black)/2
-
-
 
     def abrirAprendizadoBranco(self):
         global branco
@@ -126,14 +124,14 @@ class Robot:
         self.lm2.wait_while("running")
 
     def corrigeDireita(self,speed,time):
-        self.lm2.run_timed(speed_sp = -v_curva,time_sp = time)
-        self.lm1.run_timed(speed_sp = v_curva,time_sp = time)
+        self.lm2.run_timed(speed_sp = speed,time_sp = time)
+        self.lm1.run_timed(speed_sp = -speed,time_sp = time)
         self.lm1.wait_while("running")
         self.lm2.wait_while("running")
 
     def corrigeEsquerda(self,speed,time):
-        self.lm2.run_timed(speed_sp = v_curva,time_sp = time)
-        self.lm1.run_timed(speed_sp = -v_curva,time_sp = time)
+        self.lm2.run_timed(speed_sp = -speed,time_sp = time)
+        self.lm1.run_timed(speed_sp = speed,time_sp = time)
         self.lm1.wait_while("running")
         self.lm2.wait_while("running")
 
@@ -174,6 +172,7 @@ class Robot:
             self.lm1.run_forever(speed_sp = v_curva)
 
     def curva_esquerda(self,speed_reta,speed_curva):
+        Robot.corrigeReto(self,100,600)
         while(not(esquerdo == 0 and meio == 1 and direito == 0)):
             while(meio == 0):
                 Robot.verificaIntensidade(self)
@@ -186,6 +185,7 @@ class Robot:
                 if(esquerdo == 0 and meio == 1 and direito == 0):
                     break
     def curva_direita(self,speed_reta,speed_curva):
+        Robot.corrigeReto(self,100,600)
         while(not(esquerdo == 0 and meio == 1 and direito == 0)):
             while(meio == 0):
                 Robot.verificaIntensidade(self)
@@ -197,7 +197,6 @@ class Robot:
                 Robot.goForward(self,speed_reta)
                 if(esquerdo == 0 and meio == 1 and direito == 0):
                     break
-
     def verificaCor(self):
         # 1 preto e 0 branco
         global branco
@@ -255,6 +254,7 @@ class Robot:
 
         print(esquerdo, " ", meio, " ", direito)
 
+
     def verificaIntensidade(self):
         global esquerdo
         global meio
@@ -262,18 +262,51 @@ class Robot:
         global left
         global middle
         global right
+        global target
         global trigger
-
+        global turn
+        global error
+        global kp
+        global ki
+        global kd
+        global correction
+        global integral
+        global derivative
+        global lastError
+        global errorMeio
+        global targetMeio
+        global integralMeio
+        global derivativeMeio
+        global lastErrorMeio
+        global correctionMeio
+        global kpMeio
+        global kiMeio
+        global kdMeio
+        global errorLeft
+        global errorTotal
         left = self.se.reflected_light_intensity
         middle = self.sm.reflected_light_intensity
         right = self.sd.reflected_light_intensity
 
-        if(left < trigger): #preto
-            esquerdo = 1
-        else: #branco
-            esquerdo = 0
+        errorMeio = middle - targetMeio
+        integralMeio += errorMeio
+        derivativeMeio = errorMeio - lastErrorMeio
+        correctionMeio = errorMeio * kpMeio + integralMeio * kiMeio + derivativeMeio * kdMeio
+        lastErrorMeio = errorMeio
 
-        if(middle < trigger): #preto
+        errorLeft = left - target
+        errorRight = right - target
+        errorTotal = (errorLeft + errorRight)/2
+        integral += errorTotal
+        derivative = errorTotal - lastError
+        correction = errorTotal * kp + integral * ki + derivative * kd
+        lastError = errorTotal
+        #correciton = (error * kp) + (integral * ki) + (derivative * kd)
+        #error = target - value
+        #integral = integral + error
+        #derivative = error - last_error
+
+        if(middle < triggerMeio): #preto
             meio = 1
         else: #branco
             meio = 0
@@ -283,54 +316,56 @@ class Robot:
         else: #branco
             direito = 0
 
-        print(left, " ", middle, " ", right)
+        if(left < trigger): #preto
+            esquerdo = 1
+        else: #branco
+            esquerdo = 0
 
-    def PID(self):
-        global esquerdo
-        global meio
-        global direito
-        global target
-        global trigger
-        global turn
-        global errorLeft
-        global errorRight
-        global errorTotal
-        global kp
-        global ki
-        global kd
-        global correction
-        global integral
-        global derivative
-        global lastError
-        left = self.se.reflected_light_intensity
-        middle = self.sm.reflected_light_intensity
-        right = self.sd.reflected_light_intensity
-
-        errorLeft = left - target
-        errorRight = right - target
-        errorTotal = -errorLeft + errorRight
-        integral += errorTotal
-        derivative = errorTotal - lastError
-        correction = errorTotal * kp + integral * ki + derivative * kd
-
-
-        lastError = errorTotal
-        #correciton = (error * kp) + (integral * ki) + (derivative * kd)
-        #error = target - value
-        #integral = integral + error
-        #derivative = error - last_error
+        print(esquerdo, " ", meio, " ", direito, " ", left, " ", middle, " ", right)
 
     def verificaEncruzilhada(self):
         if(esquerdo == 1 and meio == 1 and direito == 0):
             return True
+            #Robot.temCertezaEncruzilhada(self)
         elif(esquerdo == 1 and meio == 0 and direito == 1):
             return True
+            #Robot.temCertezaEncruzilhada(self)
         elif(esquerdo == 0 and meio == 1 and direito == 1):
             return True
+            #Robot.temCertezaEncruzilhada(self)
         elif(esquerdo == 1 and meio == 1 and direito == 1):
+            return True
+            #Robot.temCertezaEncruzilhada(self)
+        else:
+            return False
+
+
+    def temCertezaEncruzilhada(self):
+        for i in range(5):
+            Robot.goForward(self,100)
+            Robot.verificaIntensidade(self)
+            if(esquerdo == 1 and meio == 1 and direito == 0):
+                verdade[i] = True
+            elif(esquerdo == 1 and meio == 0 and direito == 1):
+                verdade[i] = True
+            elif(esquerdo == 0 and meio == 1 and direito == 1):
+                verdade[i] = True
+            elif(esquerdo == 1 and meio == 1 and direito == 1):
+                verdade[i] = True
+            else:
+                return False
+
+        for i in range(4):
+            if(verdade[i] and verdade[i+1]):
+                ok = True
+            else:
+                ok = False
+                break
+        if ok == True:
             return True
         else:
             return False
+
 
     def verificaEstado(self):
         global estado
@@ -346,22 +381,22 @@ class Robot:
             if(esquerdo == 0 and meio == 1 and direito == 0):
                 estado = States(2) #PID
 
-        elif(estado == States(2)): #PID
-            if(Robot.verificaEncruzilhada(self) == True):
-                estado = States(3)
-            #transição p obstaculo
+        '''elif(estado == States(2)): #PID
+            if(Robot.verificaEncruzilhada(self) == True)
+                if(Robot.temCertezaEncruzilhada(self) == True):
+                    estado = States(3)'''
+                #transição p obstaculo
 
         #elif(estado == States(3)): #ENCRUZILHADA
 
-        elif(estado == States(4)):
-            if(esquerdo == 0 and meio == 1 and direito == 0):
-                estado = States(2) #PID
+        #elif(estado == States(4)):
 
         #elif(estado == States(5)):
             #transição para pid
 
     def meiaVolta(self, sp_curv):
         Robot.stop(self,100)
+        print("estou fazendo meia volta")
         if(meio == 1):
             while(meio == 1):
                 Robot.verificaIntensidade(self)
@@ -385,39 +420,63 @@ class Robot:
             while(meio == 0):
                 Robot.verificaIntensidade(self)
                 Robot.turnRight(self,sp_curv)
-        estado = States(2)
+        estado = States(0)
 
-    def encruzilhada(self):
+
+    def encruzilhada(self,speed_reta,speed_curva):
         global estado
         global esquerdo
         global direito
         global viraEsquerda
         global viraDireita
         global jaReleu
-        jaReleu = True
+        global tempoEncruzilhada
+        '''jaReleu = True
         viraEsquerda = False
         viraDireita = False
         Robot.reposicionar(self)
         Robot.verificaIntensidade(self)
         while(not(esquerdo == 1 or direito == 1)):
             Robot.verificaCor(self)
-            Robot.goForward(self,40) #CALIBRAR
-            if(esquerdo == 2):
-                viraEsquerda = True
-            if(direito == 2):
-                viraDireita = True
+            Robot.goForward(self,50) #CALIBRAR'''
+        tempoEncruzilhada = time.time()
+        Robot.stop(self,1000)
+        Robot.verificaCor(self)
+        if(esquerdo == 2):
+            viraEsquerda = True
+        if(direito == 2):
+            viraDireita = True
+
         if(viraEsquerda == True and viraDireita == False):
             Robot.corrigeReto(self,100,1000) #CALIBRAR
-            estado = States(-1) #esquerda
+            Robot.verificaIntensidade(self)
+            if(meio == 1):
+                while(meio == 1):
+                    Robot.verificaIntensidade(self)
+                    Robot.turnLeft(self,speed_curva)
+                Robot.curva_esquerda(self,speed_reta,speed_curva)
+            elif(meio == 0):
+                Robot.curva_esquerda(self,speed_reta,speed_curva)
+
         elif(viraEsquerda == False and viraDireita == True):
             Robot.corrigeReto(self,100,1000) #CALIBRAR
-            estado = States(1) #direita
+            Robot.verificaIntensidade(self)
+            if(meio == 1):
+                while(meio == 1):
+                    Robot.verificaIntensidade(self)
+                    Robot.turnRight(self,speed_curva)
+                Robot.curva_direita(self,speed_reta,speed_curva)
+            elif(meio == 0):
+                Robot.curva_direita(self,speed_reta,speed_curva)
+
         elif(viraEsquerda == True and viraDireita == True):
             Robot.corrigeReto(self,100,1000) #CALIBRAR
-            estado = States(4) #meia volta
-        elif(viraEsquerda == False and viraDireita == False):
+            #estado = States(4) #meia volta
+            Robot.meiaVolta(self,speed_curva)
+        '''elif(viraEsquerda == False and viraDireita == False):
             Robot.corrigeReto(self,200,700) #CALIBRAR
-            estado = States(0) #reto
+            #estado = States(0) #reto
+            Robot.goForward(self,speed_reta)'''
 
         '''Robot.stop(self,100)
         for i in range(5): #100 verificações
@@ -471,20 +530,6 @@ class Robot:
 
     def reposicionar(self): #CALIBRAR
         Robot.stop(self,100)
-        '''while(Robot.verificaEncruzilhada(self) == False): #enquanto não estiver em uma encruzilhada
-            Robot.verificaIntensidade(self)
-            if(esquerdo == 1):
-                Robot.turnLeft(self,90)
-            elif(direito == 1):
-                Robot.turnRight(self,90)
-            Robot.goBack(self,90)
-        while(not(esquerdo == 0 and meio == 1 and direito == 0)): #enquanto não estiver corretamente posicionado
-            Robot.verificaIntensidade(self)
-            if(esquerdo == 1):
-                Robot.turnLeft(self,90)
-            elif(direito == 1):
-                Robot.turnRight(self,90)
-            Robot.goBack(self,90)'''
         Robot.corrigeTras(self,200,500)
 
     def verificaDistancia(self,distancia_limite):
@@ -516,112 +561,75 @@ class Robot:
                 estado = States(0)
 
 
-    def seguidor(self,speed_reta,speed_curva):
-        global correction
-        initialSpeed = speed_reta
-        if(esquerdo == 1 and meio == 0 and direito == 0):
-            Robot.curva_esquerda(self,speed_reta,speed_curva)
-        elif(esquerdo == 0 and meio == 0 and direito == 1):
-            Robot.curva_direita(self,speed_reta,speed_curva)
-        elif(esquerdo == 0 and direito == 0):
-            self.lm1.run_forever(speed_sp = -(initialSpeed - correction))
-            self.lm2.run_forever(speed_sp = -(initialSpeed + correction))
+    def seguidor(self,initialSpeed,speed_reta,speed_curva):
+        global tempoEncruzilhada
+        global tempoAtual
+        tempoAtual = time.time()
+        if(Robot.verificaEncruzilhada(self) == True and (tempoAtual - tempoEncruzilhada) > 1000 ):
+             Robot.encruzilhada(self,speed_reta,speed_curva)
+        if(meio == 0):
+            if(esquerdo == 1 and direito == 0):
+                Robot.turnLeft(self,speed_curva)
+            elif(esquerdo == 0 and direito == 1):
+                Robot.turnRight(self,speed_curva)
+            elif(esquerdo == 0 and direito == 0):
+                Robot.goForward(self,speed_reta)
+            '''self.lm1.run_forever(speed_sp = -(initialSpeed - correction))
+            self.lm2.run_forever(speed_sp = -(initialSpeed + correction))'''
         else:
-            if(Robot.verificaEncruzilhada(self) == True):
-                Robot.encruzilhada(self)
+            self.lm1.run_forever(speed_sp = -(initialSpeed - correctionMeio))
+            self.lm2.run_forever(speed_sp = -(initialSpeed + correctionMeio))
 
     def seguirLinha(self,speed_reta,speed_curva):
         global esquerdo
         global meio
         global direito
-        global estado
         while(True):
-            Robot.verificaEstado(self)
-            Robot.verificaDistancia(self,135) #CALIBRAR
-            if(estado == States(-1)): #ESQUERDA
-                Robot.verificaIntensidade(self)
-                if(meio == 1):
-                    while(meio == 1):
-                        Robot.verificaIntensidade(self)
-                        Robot.turnLeft(self,speed_curva)
-                    Robot.curva_esquerda(self,speed_reta,speed_curva)
-                elif(meio == 0):
-                    Robot.curva_esquerda(self,speed_reta,speed_curva)
-                estado = States(2)
-                #Robot.corrigeReto(self,200,600)
-
-            elif(estado == States(0)): #RETO
-                Robot.verificaIntensidade(self)
-                Robot.goForward(self,speed_reta)
-
-            elif(estado == States(1)): #DIREITA
-                Robot.verificaIntensidade(self)
-                if(meio == 1):
-                    while(meio == 1):
-                        Robot.verificaIntensidade(self)
-                        Robot.turnRight(self,speed_curva)
-                    Robot.curva_direita(self,speed_reta,speed_curva)
-                elif(meio == 0):
-                    Robot.curva_direita(self,speed_reta,speed_curva)
-                estado = States(2)
-                #Robot.corrigeReto(self,200,600)
+            Robot.verificaIntensidade(self)
+            Robot.seguidor(self,speed_reta,speed_reta,speed_curva)
 
 
-            elif(estado == States(2)): #PID
-                Robot.verificaIntensidade(self)
-                Robot.PID(self)
-                Robot.seguidor(self,speed_reta,speed_curva) #CALIBRAR
-
-            elif(estado == States(3)): #ENCRUZILHADA
-                Robot.encruzilhada(self)
-
-            elif(estado == States(4)): #MEIA VOLTA
-                Robot.meiaVolta(self,speed_curva)
-
-            #elif(estado == States(5)): #OBSTACUlO
-
-
-
-
-
+verdade = [0,0,0,0,0]
+right = 0
+left = 0
+middle = 0
 turn = 0
 esquerdo = 0
 direito = 0
 meio = 0
-trigger = 0 #28 tem que incluir o verde e o preto
-kp = 9
-ki = 0 #-0.05
-kd = 0 #8
-target = 0
-errorLeft = 0
-errorRight = 0
-errorTotal = 0
+trigger = 30
+kp = 0
+ki = 0
+kd = 0
+target = 45
+error = 0
 correction = 0
 integral = 0
 derivative = 0
 lastError = 0
-estado = States(2)
-left = [0,0,0]
-right = [0,0,0]
-middle = [0,0,0]
-branco = [0,0,0,0,0,0]
-branco_direito = [0,0,0,0,0,0]
-branco_meio = [0,0,0,0,0,0]
-preto = [0,0,0,0,0,0]
-preto_direito = [0,0,0,0,0,0]
-preto_meio = [0,0,0,0,0,0]
-verde = [0,0,0,0,0,0]
-verde_direito = [0,0,0,0,0,0]
-esquerdo = 0
-direito = 0
-meio = 0
+errorMeio = 0
+targetMeio = 28
+triggerMeio = 35
+integralMeio = 0
+derivativeMeio = 0
+lastErrorMeio = 0
+correctionMeio = 0
+kpMeio = 5
+kiMeio = 0
+kdMeio = 0
+errorLeft = 0
+errorRight = 0
+errorTotal = 0
+viraEsquerda = 0
+viraDireita = 0
 e = 0
+esquerdoant = 0
 d = 0
-
+direitoant = 0
 #with open('estados.txt', "w") as arquivo:
 #    arquivo.write("BEGIN")
 
-Corsa = Robot('outB','outD','in2','in3','in4','in1')
+Corsa = Robot('outB','outD','in2','in3','in4')
 Corsa.abrirAprendizadoBranco()
 Corsa.abrirAprendizadoPreto()
 Corsa.abrirAprendizadoVerde()
@@ -630,6 +638,5 @@ Corsa.abrirAprendizadoPreto_meio()
 Corsa.abrirAprendizadoBranco_direito()
 Corsa.abrirAprendizadoPreto_direito()
 Corsa.abrirAprendizadoVerde_direito()
-Corsa.encontrarT()
-Sound.speak('Hello, I am Corsa')
-Corsa.seguirLinha(190,80)
+Sound.speak('Thomaz, you are corno')
+Corsa.seguirLinha(210,90)
